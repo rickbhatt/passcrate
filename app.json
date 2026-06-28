@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "PasStore",
-    "slug": "PasStore",
+    "slug": "passtores",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
