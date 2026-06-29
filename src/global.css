@@ -3,3 +3,12 @@
 @import "tailwindcss/utilities.css";
 
 @import "nativewind/theme";
+
+@theme {
+  --font-sans: "PlusJakartaSans-Regular";
+  --font-sans-light: "PlusJakartaSans-Light";
+  --font-sans-medium: "PlusJakartaSans-Medium";
+  --font-sans-semibold: "PlusJakartaSans-SemiBold";
+  --font-sans-bold: "PlusJakartaSans-Bold";
+  --font-sans-extrabold: "PlusJakartaSans-ExtraBold";
+}
