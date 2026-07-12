@@ -25,6 +25,7 @@
     "expo-status-bar": "~56.0.4",
     "expo-symbols": "~56.0.6",
     "expo-system-ui": "~56.0.5",
+    "expo-updates": "~56.0.21",
     "expo-web-browser": "~56.0.5",
     "nativewind": "^5.0.0-preview.4",
     "react": "19.2.3",
@@ -43,18 +44,21 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.1",
     "@types/react": "~19.2.2",
+    "cross-env": "^10.1.0",
     "drizzle-kit": "^1.0.0-rc.4",
     "postcss": "^8.5.15",
     "tailwindcss": "^4.3.1",
     "typescript": "~6.0.3"
   },
   "scripts": {
-    "start": "expo start -c",
-    "reset-project": "node ./scripts/reset-project.js",
-    "android": "expo run:android --device",
-    "ios": "expo run:ios",
-    "web": "expo start --web",
-    "lint": "expo lint"
+    "start": "bunx expo start -c",
+    "start:dev": "cross-env APP_VARIANT=development bunx expo start -c",
+    "android": "bunx expo run:android --device",
+    "android:dev": "cross-env APP_VARIANT=development bunx expo run:android --device",
+    "prebuild:dev": "cross-env APP_VARIANT=development bunx expo prebuild --clean",
+    "prebuild": "bunx expo prebuild --clean",
+    "generate:db": "drizzle-kit generate",
+    "ios": "expo run:ios"
   },
   "overrides": {
     "lightningcss": "1.30.1"
