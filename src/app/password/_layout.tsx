@@ -5,7 +5,9 @@ const PasswordLayout = () => {
   return (
     <Stack
       screenOptions={{
-        header: ({ options }) => <ScreenHeader title={options.title ?? ""} />,
+        header: ({ options }) => (
+          <ScreenHeader showBackButton title={options.title ?? ""} />
+        ),
       }}
     >
       <Stack.Screen

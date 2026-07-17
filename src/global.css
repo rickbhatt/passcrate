@@ -100,3 +100,17 @@
   --input: 240 3.7% 15.9%;
   --ring: 240 4.9% 83.9%;
 }
+
+@layer components {
+  .screen-x-padding {
+    @apply px-4;
+  }
+
+  .base-para {
+    @apply font-sans text-base;
+  }
+
+  .btn-active {
+    @apply active:scale-[0.95];
+  }
+}
