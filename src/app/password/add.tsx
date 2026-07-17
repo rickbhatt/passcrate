@@ -1,6 +1,6 @@
 import { Text, View } from "react-native";
 
-const CreatePassword = () => {
+const AddPassword = () => {
   return (
     <View>
       <Text>CreatePassword</Text>
@@ -8,4 +8,4 @@ const CreatePassword = () => {
   );
 };
 
-export default CreatePassword;
+export default AddPassword;

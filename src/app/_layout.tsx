@@ -6,11 +6,12 @@ import "../global.css";
 const Layout = () => {
   return (
     <>
-      <StatusBar style="inverted" />
+      <StatusBar style="dark" />
       <Stack
         screenOptions={{
           headerShown: false,
           animation: "ios_from_right",
+          contentStyle: { backgroundColor: "transparent" },
         }}
       >
         <Stack.Screen name="(tabs)" />
