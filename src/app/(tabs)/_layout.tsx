@@ -7,7 +7,7 @@ import { Tabs, useRouter } from "expo-router";
 import { GestureResponderEvent, Pressable, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-const TAB_ICON_SIZE = 28;
+const TAB_ICON_SIZE = 24;
 const TAB_BAR_CONTENT_HEIGHT = 72;
 
 const ACTIVE_ICON_COLOR = COLORS.primary;
@@ -116,8 +116,8 @@ const TabsLayout = () => {
               label="Home"
               icon={
                 <DynamicIcon
-                  family="MaterialIcons"
-                  name="home"
+                  family="Octicons"
+                  name="home-fill"
                   size={TAB_ICON_SIZE}
                   color={focused ? ACTIVE_ICON_COLOR : INACTIVE_ICON_COLOR}
                 />
@@ -162,7 +162,7 @@ const TabsLayout = () => {
               label="Passwords"
               icon={
                 <DynamicIcon
-                  family="MaterialIcons"
+                  family="FontAwesome6"
                   name="lock"
                   size={TAB_ICON_SIZE}
                   color={focused ? ACTIVE_ICON_COLOR : INACTIVE_ICON_COLOR}
