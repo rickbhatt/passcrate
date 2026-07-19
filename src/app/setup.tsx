@@ -7,12 +7,19 @@ import { ZxcvbnFactory } from "@zxcvbn-ts/core";
 import * as zxcvbnEnPackage from "@zxcvbn-ts/language-en";
 import { useState } from "react";
 import { Image, Text, View } from "react-native";
+import Animated, {
+  FadeInDown,
+  FadeOutUp,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 
 const PASSWORD_STRENGTH_INDICATOR = [
   { label: "Very Weak", color: "bg-red-500" },
   { label: "Weak", color: "bg-orange-500" },
   { label: "Fair", color: "bg-yellow-500" },
-  { label: "Good", color: "bg-lime-500" },
+  { label: "Good", color: "bg-sky-500" },
   { label: "Strong", color: "bg-green-500" },
 ];
 const options = {
@@ -26,8 +33,9 @@ const Setup = () => {
   const [masterPin, setMasterPin] = useState("");
   const [secureTextEntry, setSecureTextEntry] = useState(true);
   const [passwordStrengthScore, setPasswordStrengthScore] = useState(0);
-  const [passwordSuggestion, setPasswordSuggestion] = useState("");
   const [isTypingPassword, setIsTypingPassword] = useState(false);
+
+  const progress = useSharedValue(0);
 
   const zxcvbn = new ZxcvbnFactory(options);
 
@@ -39,10 +47,15 @@ const Setup = () => {
     setIsTypingPassword(true);
     setMasterPin(password);
     let result = zxcvbn.check(password);
+    progress.value = withTiming((result.score + 1) / 5, {
+      duration: 250,
+    });
     setPasswordStrengthScore(result.score);
-    setPasswordSuggestion(result.feedback.suggestions.join(" "));
   };
 
+  const animatedStyle = useAnimatedStyle(() => ({
+    width: `${progress.value * 100}%`,
+  }));
   return (
     <View className="flex-1 flex-col items-center bg-background screen-x-padding pt-safe gap-y-3">
       <View className="flex-col items-center mt-10 gap-y-1">
@@ -51,27 +64,31 @@ const Setup = () => {
       </View>
 
       <View className="flex-col mt-5 w-full gap-y-3">
-        {/* password strength indicator */}
+        {/* password strength indicator section */}
         {isTypingPassword && (
-          <View className="flex-col gap-y-3">
+          <Animated.View
+            className="flex-col gap-y-3"
+            entering={FadeInDown.duration(250)}
+            exiting={FadeOutUp.duration(150)}
+          >
+            {/* progress bar */}
             <View className="h-3 rounded-full bg-gray-200 w-full">
-              <View
+              <Animated.View
                 className={cn(
                   "h-3 rounded-full",
                   PASSWORD_STRENGTH_INDICATOR[passwordStrengthScore].color,
                 )}
-                style={{ width: `${((passwordStrengthScore + 1) / 5) * 100}%` }}
+                style={animatedStyle}
               />
             </View>
             <Text className="font-sans-semibold text-sm">
               {PASSWORD_STRENGTH_INDICATOR[passwordStrengthScore].label}
             </Text>
-            {passwordSuggestion.length > 0 && (
-              <Text className="font-sans-semibold text-sm">
-                {passwordSuggestion}
-              </Text>
-            )}
-          </View>
+
+            <Text className="font-sans-semibold text-sm">
+              Recommended strength: Good or higher.
+            </Text>
+          </Animated.View>
         )}
         <View className="flex-row rounded-md border border-black h-14 overflow-hidden">
           <Input
@@ -92,7 +109,7 @@ const Setup = () => {
         </View>
       </View>
 
-      <Button className="py-3 w-full">
+      <Button className="py-3 w-full" disabled={passwordStrengthScore < 3}>
         <Text className="btn-label">Submit</Text>
       </Button>
       <View>
