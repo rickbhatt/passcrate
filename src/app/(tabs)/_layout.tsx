@@ -1,6 +1,6 @@
 import DynamicIcon from "@/components/dynamic-icon";
 import ScreenHeader from "@/components/screen-header";
-import { COLORS } from "@/contants";
+import { COLORS } from "@/constants/theme";
 import { cn } from "@/lib/utils";
 import * as Haptics from "expo-haptics";
 import { Tabs, useRouter } from "expo-router";

@@ -113,4 +113,8 @@
   .btn-active {
     @apply active:scale-[0.95];
   }
+
+  .btn-label {
+    @apply text-base font-sans-semibold text-white;
+  }
 }

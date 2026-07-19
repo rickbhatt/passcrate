@@ -15,7 +15,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default: cn(
-          "bg-primary shadow-sm shadow-black/5",
+          "bg-primary",
           Platform.select({ web: "hover:bg-primary/90" }),
         ),
         destructive: cn(
@@ -35,22 +35,22 @@ const buttonVariants = cva(
           Platform.select({ web: "hover:bg-secondary/80" }),
         ),
         ghost: cn(
-          "active:bg-accent dark:active:bg-accent/50",
+          "bg-transparent",
           Platform.select({ web: "hover:bg-accent dark:hover:bg-accent/50" }),
         ),
         link: "",
       },
       size: {
         default: cn(
-          "h-10 px-4 py-2 sm:h-9",
+          "px-4 py-2 sm:h-9",
           Platform.select({ web: "has-[>svg]:px-3" }),
         ),
         sm: cn(
-          "h-9 gap-1.5 rounded-md px-3 sm:h-8",
+          "gap-1.5 rounded-md px-3 sm:h-8",
           Platform.select({ web: "has-[>svg]:px-2.5" }),
         ),
         lg: cn(
-          "h-11 rounded-md px-6 sm:h-10",
+          "rounded-md px-6 sm:h-10",
           Platform.select({ web: "has-[>svg]:px-4" }),
         ),
         icon: "h-10 w-10 sm:h-9 sm:w-9",

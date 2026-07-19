@@ -20,7 +20,7 @@ const ScreenHeader = ({
             onPress={() => router.back()}
             className="h-16 w-16 mr-4 rounded-full border border-border bg-transparent"
           >
-            <DynamicIcon family="FontAwesome" name="angle-left" />
+            <DynamicIcon family="FontAwesome6" name="angle-left" />
           </Button>
         )}
         <Text className="text-text-primary text-2xl font-sans-extrabold">
