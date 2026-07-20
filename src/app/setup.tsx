@@ -29,23 +29,22 @@ const options = {
 
   translations: zxcvbnEnPackage.translations,
 };
+const zxcvbn = new ZxcvbnFactory(options);
 const Setup = () => {
-  const [masterPin, setMasterPin] = useState("");
+  const [masterPassword, setMasterPassword] = useState("");
   const [secureTextEntry, setSecureTextEntry] = useState(true);
   const [passwordStrengthScore, setPasswordStrengthScore] = useState(0);
   const [isTypingPassword, setIsTypingPassword] = useState(false);
 
   const progress = useSharedValue(0);
 
-  const zxcvbn = new ZxcvbnFactory(options);
-
   const toggleSecureText = () => {
-    setSecureTextEntry(!secureTextEntry);
+    setSecureTextEntry((prev) => !prev);
   };
 
   const handleTextChange = (password: string) => {
-    setIsTypingPassword(true);
-    setMasterPin(password);
+    setIsTypingPassword(password.length > 0);
+    setMasterPassword(password);
     let result = zxcvbn.check(password);
     progress.value = withTiming((result.score + 1) / 5, {
       duration: 250,
@@ -92,11 +91,15 @@ const Setup = () => {
         )}
         <View className="flex-row rounded-md border border-black h-14 overflow-hidden">
           <Input
-            value={masterPin}
+            value={masterPassword}
             onChangeText={handleTextChange}
             className="flex-1 rounded-none border-0 pl-3 pr-5"
             cursorColor="#000000"
             secureTextEntry={secureTextEntry}
+            autoCapitalize="none"
+            autoCorrect={false}
+            spellCheck={false}
+            textContentType="newPassword"
           />
           <Button variant="ghost" onPress={toggleSecureText}>
             <DynamicIcon
@@ -110,7 +113,7 @@ const Setup = () => {
       </View>
 
       <Button className="py-3 w-full" disabled={passwordStrengthScore < 3}>
-        <Text className="btn-label">Submit</Text>
+        <Text className="btn-label">Create Password</Text>
       </Button>
       <View>
         <Text className="text-text-primary font-sans-semibold text-sm">
