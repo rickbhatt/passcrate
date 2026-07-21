@@ -2,11 +2,18 @@ import DynamicIcon from "@/components/dynamic-icon";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import image from "@/constants/images";
-import { cn } from "@/lib/utils";
+import { SECURE_KEYS } from "@/constants/storage-keys";
+import { useCrypto } from "@/contexts/CryptoContext";
+import { useDb } from "@/db/hooks/useDb";
+import { storeSalt } from "@/db/mutations/appConfig.mutation";
+import { setSecureItem } from "@/lib/secure-storage";
+import { checkBiometricSupport, cn } from "@/lib/utils";
 import { ZxcvbnFactory } from "@zxcvbn-ts/core";
 import * as zxcvbnEnPackage from "@zxcvbn-ts/language-en";
+import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Image, Text, View } from "react-native";
+import QuickCrypto from "react-native-quick-crypto";
 import Animated, {
   FadeInDown,
   FadeOutUp,
@@ -30,11 +37,17 @@ const options = {
   translations: zxcvbnEnPackage.translations,
 };
 const zxcvbn = new ZxcvbnFactory(options);
-const Setup = () => {
+const SetupMasterPassword = () => {
   const [masterPassword, setMasterPassword] = useState("");
   const [secureTextEntry, setSecureTextEntry] = useState(true);
   const [passwordStrengthScore, setPasswordStrengthScore] = useState(0);
   const [isTypingPassword, setIsTypingPassword] = useState(false);
+
+  const db = useDb();
+
+  const { setDerivedKey, setAppState } = useCrypto();
+
+  const router = useRouter();
 
   const progress = useSharedValue(0);
 
@@ -55,6 +68,45 @@ const Setup = () => {
   const animatedStyle = useAnimatedStyle(() => ({
     width: `${progress.value * 100}%`,
   }));
+
+  const handleCreatePassword = async () => {
+    const saltBytes = QuickCrypto.randomBytes(16);
+    const salt = saltBytes.toString("hex");
+
+    try {
+      // derive key
+      const derivedKey = await new Promise<string>((resolve, reject) => {
+        QuickCrypto.pbkdf2(
+          masterPassword,
+          salt,
+          100000,
+          32,
+          "sha256",
+          (err, key) => {
+            if (err || !key) return reject(err);
+            resolve(key.toString("hex"));
+          },
+        );
+      });
+
+      await storeSalt({ db, salt });
+
+      setDerivedKey(derivedKey);
+
+      let isBiometric = await checkBiometricSupport();
+
+      if (isBiometric) {
+        await setSecureItem(SECURE_KEYS.MASTER_PASSWORD, masterPassword);
+        router.replace("/setup/biometric");
+      } else {
+        setAppState("unlocked");
+      }
+    } catch (error) {
+      console.error("🚀 ~ handleCreatePassword ~ error", error);
+      return;
+    }
+  };
+
   return (
     <View className="flex-1 flex-col items-center bg-background screen-x-padding pt-safe gap-y-3">
       <View className="flex-col items-center mt-10 gap-y-1">
@@ -112,7 +164,11 @@ const Setup = () => {
         </View>
       </View>
 
-      <Button className="py-3 w-full" disabled={passwordStrengthScore < 3}>
+      <Button
+        onPress={handleCreatePassword}
+        className="py-3 w-full"
+        disabled={passwordStrengthScore < 3}
+      >
         <Text className="btn-label">Create Password</Text>
       </Button>
       <View>
@@ -125,4 +181,4 @@ const Setup = () => {
   );
 };
 
-export default Setup;
+export default SetupMasterPassword;

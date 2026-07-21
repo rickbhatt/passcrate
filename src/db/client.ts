@@ -3,12 +3,11 @@ import migrations from "@/drizzle/migrations";
 import { sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/expo-sqlite";
 import { migrate } from "drizzle-orm/expo-sqlite/migrator";
-import { SQLiteRunResult, type SQLiteDatabase } from "expo-sqlite";
+import { type SQLiteDatabase } from "expo-sqlite";
 
-import { BaseSQLiteDatabase } from "drizzle-orm/sqlite-core";
+import { Db } from "@/db/types";
 import * as schema from "./schema";
 
-export type Db = BaseSQLiteDatabase<"sync", SQLiteRunResult, typeof schema>;
 let sqliteInstance: SQLiteDatabase | null = null;
 let drizzleInstance: Db | null = null;
 
