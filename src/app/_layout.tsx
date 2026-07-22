@@ -8,6 +8,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { SQLiteDatabase, SQLiteProvider } from "expo-sqlite";
 import { StatusBar } from "expo-status-bar";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { Toaster } from "sonner-native";
 import "../global.css";
 SplashScreen.preventAutoHideAsync();
 
@@ -40,6 +41,7 @@ const Layout = () => {
           <Stack.Screen name="password" />
         </Stack.Protected>
       </Stack>
+      <Toaster position="top-center" richColors />
       <PortalHost />
     </>
   );

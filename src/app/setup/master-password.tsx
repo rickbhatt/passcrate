@@ -1,11 +1,10 @@
-import DynamicIcon from "@/components/dynamic-icon";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import MasterPasswordForm from "@/components/master-password-form";
 import image from "@/constants/images";
-import { SECURE_KEYS } from "@/constants/storage-keys";
+import { SECURE_KEYS } from "@/constants/secure-keys";
 import { useCrypto } from "@/contexts/CryptoContext";
 import { useDb } from "@/db/hooks/useDb";
 import { storeSalt } from "@/db/mutations/appConfig.mutation";
+import { encrypt, getDerivedKey } from "@/lib/crypto";
 import { setSecureItem } from "@/lib/secure-storage";
 import { checkBiometricSupport, cn } from "@/lib/utils";
 import { ZxcvbnFactory } from "@zxcvbn-ts/core";
@@ -21,6 +20,7 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
+import { toast } from "sonner-native";
 
 const PASSWORD_STRENGTH_INDICATOR = [
   { label: "Very Weak", color: "bg-red-500" },
@@ -39,7 +39,7 @@ const options = {
 const zxcvbn = new ZxcvbnFactory(options);
 const SetupMasterPassword = () => {
   const [masterPassword, setMasterPassword] = useState("");
-  const [secureTextEntry, setSecureTextEntry] = useState(true);
+
   const [passwordStrengthScore, setPasswordStrengthScore] = useState(0);
   const [isTypingPassword, setIsTypingPassword] = useState(false);
 
@@ -50,10 +50,6 @@ const SetupMasterPassword = () => {
   const router = useRouter();
 
   const progress = useSharedValue(0);
-
-  const toggleSecureText = () => {
-    setSecureTextEntry((prev) => !prev);
-  };
 
   const handleTextChange = (password: string) => {
     setIsTypingPassword(password.length > 0);
@@ -75,23 +71,15 @@ const SetupMasterPassword = () => {
 
     try {
       // derive key
-      const derivedKey = await new Promise<string>((resolve, reject) => {
-        QuickCrypto.pbkdf2(
-          masterPassword,
-          salt,
-          100000,
-          32,
-          "sha256",
-          (err, key) => {
-            if (err || !key) return reject(err);
-            resolve(key.toString("hex"));
-          },
-        );
-      });
+      const derivedKey = await getDerivedKey({ masterPassword, salt });
 
-      await storeSalt({ db, salt });
+      const verifier = encrypt(SECURE_KEYS.PASSWORD_VERFIER, derivedKey);
+
+      await storeSalt({ db, salt, verifier });
 
       setDerivedKey(derivedKey);
+
+      toast.success("Password created successfully");
 
       let isBiometric = await checkBiometricSupport();
 
@@ -141,36 +129,15 @@ const SetupMasterPassword = () => {
             </Text>
           </Animated.View>
         )}
-        <View className="flex-row rounded-md border border-black h-14 overflow-hidden">
-          <Input
-            value={masterPassword}
-            onChangeText={handleTextChange}
-            className="flex-1 rounded-none border-0 pl-3 pr-5"
-            cursorColor="#000000"
-            secureTextEntry={secureTextEntry}
-            autoCapitalize="none"
-            autoCorrect={false}
-            spellCheck={false}
-            textContentType="newPassword"
-          />
-          <Button variant="ghost" onPress={toggleSecureText}>
-            <DynamicIcon
-              family="Entypo"
-              name={secureTextEntry ? "eye" : "eye-with-line"}
-              size={24}
-              color={"#000000"}
-            />
-          </Button>
-        </View>
+        <MasterPasswordForm
+          value={masterPassword}
+          onChange={handleTextChange}
+          onSubmit={handleCreatePassword}
+          buttonLabel="Create password"
+          disabled={passwordStrengthScore < 3}
+        />
       </View>
 
-      <Button
-        onPress={handleCreatePassword}
-        className="py-3 w-full"
-        disabled={passwordStrengthScore < 3}
-      >
-        <Text className="btn-label">Create Password</Text>
-      </Button>
       <View>
         <Text className="text-text-primary font-sans-semibold text-sm">
           Choose a strong master password you can remember. If you forget it,

@@ -7,5 +7,6 @@ export const appConfig = sqliteTable("app_config", {
   biometricEnabled: integer("biometric_enabled", { mode: "boolean" })
     .notNull()
     .default(false),
+  passwordVerifier: text("password_verifier").notNull(),
   createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
 });

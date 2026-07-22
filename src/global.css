@@ -101,9 +101,12 @@
   --ring: 240 4.9% 83.9%;
 }
 
+@utility screen-x-padding {
+  padding-inline: 1rem;
+}
 @layer components {
-  .screen-x-padding {
-    @apply px-4;
+  .main {
+    @apply flex-1 bg-background screen-x-padding pt-safe;
   }
 
   .base-para {

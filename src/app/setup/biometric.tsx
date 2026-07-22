@@ -1,12 +1,13 @@
 import { Button } from "@/components/ui/button";
 import image from "@/constants/images";
-import { SECURE_KEYS } from "@/constants/storage-keys";
+import { SECURE_KEYS } from "@/constants/secure-keys";
 import { useCrypto } from "@/contexts/CryptoContext";
 import { useDb } from "@/db/hooks/useDb";
 import { updateBiometric } from "@/db/mutations/appConfig.mutation";
 import { deleteSecureItem } from "@/lib/secure-storage";
 import * as LocalAuthentication from "expo-local-authentication";
 import { Image, Text, View } from "react-native";
+import { toast } from "sonner-native";
 
 const SetupBiometric = () => {
   const { setAppState } = useCrypto();
@@ -28,9 +29,27 @@ const SetupBiometric = () => {
 
     if (result.success) {
       await updateBiometric(db);
+      toast.success("Biometric enabled successfully");
       setAppState("unlocked");
     } else {
-      //! not decided yet
+      switch (result.error) {
+        case "user_cancel":
+        case "system_cancel":
+          // user dismissed the prompt — do nothing, let them try again or skip
+          break;
+
+        case "lockout":
+          // too many failed attempts, device locked biometric
+          // treat as skip, inform user
+          await deleteSecureItem(SECURE_KEYS.MASTER_PASSWORD);
+          setAppState("unlocked");
+          toast.info("Biometric locked, you can enable it later in settings");
+          break;
+
+        default:
+          // any other failure — let them retry or skip
+          break;
+      }
     }
   };
 
