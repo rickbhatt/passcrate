@@ -1,11 +1,11 @@
 import { Text, View } from "react-native";
 
-const CreatePassword = () => {
+const AddPassword = () => {
   return (
-    <View>
+    <View className="flex-1 bg-background">
       <Text>CreatePassword</Text>
     </View>
   );
 };
 
-export default CreatePassword;
+export default AddPassword;

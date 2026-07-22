@@ -1,0 +1,1 @@
+ALTER TABLE `app_config` ADD `password_verifier` text NOT NULL;
