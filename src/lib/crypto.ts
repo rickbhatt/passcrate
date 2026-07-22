@@ -18,17 +18,21 @@ export const encrypt = (plainText: string, derivedKey: string): string => {
 };
 
 export const decrypt = (cipherText: string, derivedKey: string): string => {
-  const [ivHex, authTagHex, encrypted] = cipherText.split(":");
-  const keyBuffer = Buffer.from(derivedKey, "hex");
-  const iv = Buffer.from(ivHex, "hex");
+  try {
+    const [ivHex, authTagHex, encrypted] = cipherText.split(":");
+    const keyBuffer = Buffer.from(derivedKey, "hex");
+    const iv = Buffer.from(ivHex, "hex");
 
-  const decipher = QuickCrypto.createDecipheriv("aes-256-gcm", keyBuffer, iv);
-  decipher.setAuthTag(Buffer.from(authTagHex, "hex"));
+    const decipher = QuickCrypto.createDecipheriv("aes-256-gcm", keyBuffer, iv);
+    decipher.setAuthTag(Buffer.from(authTagHex, "hex"));
 
-  let decrypted = decipher.update(encrypted, "hex", "utf8");
-  decrypted += decipher.final("utf8");
+    let decrypted = decipher.update(encrypted, "hex", "utf8");
+    decrypted += decipher.final("utf8");
 
-  return decrypted;
+    return decrypted;
+  } catch (error) {
+    throw new Error("Invalid password or corrupted encrypted data.");
+  }
 };
 
 export const getDerivedKey = async ({

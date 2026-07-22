@@ -20,14 +20,13 @@ const MasterPasswordForm = ({
   buttonLabel,
   disabled,
 }: MasterPasswordFormProps) => {
-  const [masterPassword, setMasterPassword] = useState("");
   const [secureTextEntry, setSecureTextEntry] = useState(true);
   const toggleSecureText = () => {
     setSecureTextEntry((prev) => !prev);
   };
 
   return (
-    <View className="flex-col gap-y-3">
+    <View className="flex-col gap-y-3 self-stretch">
       <View className="flex-row rounded-md border border-black h-14 overflow-hidden">
         <Input
           value={value}
@@ -43,7 +42,11 @@ const MasterPasswordForm = ({
           textAlignVertical="center"
           placeholderTextColor={COLORS.textSecondary}
         />
-        <Button variant="ghost" onPress={toggleSecureText}>
+        <Button
+          className="bg-background border-0 rounded-none"
+          variant="ghost"
+          onPress={toggleSecureText}
+        >
           <DynamicIcon
             family="Entypo"
             name={secureTextEntry ? "eye" : "eye-with-line"}
