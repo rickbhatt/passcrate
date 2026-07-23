@@ -73,7 +73,7 @@ const SetupMasterPassword = () => {
       // derive key
       const derivedKey = await getDerivedKey({ masterPassword, salt });
 
-      const verifier = encrypt(SECURE_KEYS.PASSWORD_VERFIER, derivedKey);
+      const verifier = encrypt(SECURE_KEYS.PASSWORD_VERIFIER, derivedKey);
 
       await storeSalt({ db, salt, verifier });
 

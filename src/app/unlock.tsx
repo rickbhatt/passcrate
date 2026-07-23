@@ -24,7 +24,7 @@ const UnlockScreen = () => {
 
   let isBiometricEnabled = data?.[0]?.biometricEnabled ?? null;
 
-  const validateStoredMasterPassword = async (masterPassword: string) => {
+  const deriveAndVerifyKey = async (masterPassword: string) => {
     const appConfig = await getAppConfig(db);
 
     const salt = appConfig?.salt;
@@ -38,7 +38,7 @@ const UnlockScreen = () => {
     try {
       const decrypted = decrypt(appConfig.passwordVerifier, derivedKey);
 
-      if (decrypted !== SECURE_KEYS.PASSWORD_VERFIER) {
+      if (decrypted !== SECURE_KEYS.PASSWORD_VERIFIER) {
         throw new Error("Password verifier mismatch");
       }
 
@@ -64,7 +64,7 @@ const UnlockScreen = () => {
           toast.error("Something went wrong, cannot authenticate user");
           return;
         }
-        const derivedKey = await validateStoredMasterPassword(masterPassword);
+        const derivedKey = await deriveAndVerifyKey(masterPassword);
 
         if (!derivedKey) {
           toast.error("Something went wrong, cannot authenticate user");
@@ -116,7 +116,7 @@ const UnlockScreen = () => {
 
   const handlePasswordSubmit = async () => {
     try {
-      const derivedKey = await validateStoredMasterPassword(masterPassword);
+      const derivedKey = await deriveAndVerifyKey(masterPassword);
 
       setDerivedKey(derivedKey);
       setAppState("unlocked");
