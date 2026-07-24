@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 type AppState = "loading" | "setup" | "unlock" | "unlocked";
 
@@ -20,6 +20,18 @@ export const CryptoProvider = ({ children }: { children: React.ReactNode }) => {
     setDerivedKey(null);
     setAppState("unlock");
   };
+
+  useEffect(() => {
+    console.log("CryptoProvider mounted");
+
+    return () => {
+      console.log("CryptoProvider unmounted");
+    };
+  }, []);
+
+  useEffect(() => {
+    console.log("appState =", appState);
+  }, [appState]);
 
   return (
     <CryptoContext.Provider

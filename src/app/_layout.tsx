@@ -8,8 +8,10 @@ import * as SplashScreen from "expo-splash-screen";
 import { SQLiteDatabase, SQLiteProvider } from "expo-sqlite";
 import { StatusBar } from "expo-status-bar";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { KeyboardProvider } from "react-native-keyboard-controller";
 import { Toaster } from "sonner-native";
 import "../global.css";
+
 SplashScreen.preventAutoHideAsync();
 
 const Layout = () => {
@@ -72,10 +74,12 @@ const DatabaseProvider = () => {
 
 export default function RootLayout() {
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <CryptoProvider>
-        <DatabaseProvider />
-      </CryptoProvider>
-    </GestureHandlerRootView>
+    <KeyboardProvider>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <CryptoProvider>
+          <DatabaseProvider />
+        </CryptoProvider>
+      </GestureHandlerRootView>
+    </KeyboardProvider>
   );
 }
