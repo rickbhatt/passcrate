@@ -104,6 +104,11 @@
 @utility screen-x-padding {
   padding-inline: 1rem;
 }
+
+@utility header-mt {
+  margin-top: 1rem;
+}
+
 @layer components {
   .main {
     @apply flex-1 bg-background screen-x-padding pt-safe;
@@ -119,5 +124,29 @@
 
   .btn-label {
     @apply text-base font-sans-semibold text-white;
+  }
+
+  .form-group {
+    @apply flex-col gap-y-3;
+  }
+
+  .form-label {
+    @apply text-base text-text-primary font-sans-semibold;
+  }
+
+  .h2-bold {
+    @apply text-2xl font-bold;
+  }
+
+  .h3-bold {
+    @apply text-xl font-bold;
+  }
+
+  .base-bold {
+    @apply text-base font-bold;
+  }
+
+  .base-paragraph {
+    @apply text-base text-text-primary;
   }
 }

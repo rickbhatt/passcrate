@@ -17,14 +17,15 @@ const AddPassword = () => {
 
   const db = useDb();
 
-  const onChange = () => {};
-  const handleSubmit = () => {};
+  const handleSubmit = () => {
+    console.log("formData", formData);
+  };
 
   return (
     <View className="flex-1 bg-background">
       <PasswordForm
         value={formData}
-        onChange={onChange}
+        onChange={setFormData}
         onSubmit={handleSubmit}
       />
     </View>

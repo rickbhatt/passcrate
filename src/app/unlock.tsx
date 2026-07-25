@@ -50,7 +50,7 @@ const UnlockScreen = () => {
 
   const biometricAuth = async () => {
     const result = await LocalAuthentication.authenticateAsync({
-      promptMessage: "Confirm your identity",
+      promptMessage: "Verify it's you",
       fallbackLabel: "Use master password", // shows if biometric fails
       cancelLabel: "Cancel",
       disableDeviceFallback: true,

@@ -8,7 +8,7 @@ function Input({
   return (
     <TextInput
       className={cn(
-        "border-input bg-background font-sans text-text-primary flex min-w-0 flex-row items-center rounded-md border px-3 py-1 text-base leading-5 shadow-sm shadow-black/5 sm:h-9",
+        "border-gray-700 bg-background font-sans h-10 text-text-primary flex min-w-0 flex-row items-center rounded-md border p-2 text-base leading-none placeholder:text-neutral-700",
         props.editable === false &&
           cn(
             "opacity-50",
@@ -22,7 +22,7 @@ function Input({
             "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
             "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
           ),
-          native: "placeholder:text-muted-foreground/50",
+          native: "placeholder:text-text-primary/50",
         }),
         className,
       )}

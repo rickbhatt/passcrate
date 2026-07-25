@@ -1,56 +1,130 @@
+import FolderBottomSheet from "@/components/bottomsheets/folders/folder-bottomsheet";
 import FormInput from "@/components/form-input";
+import { Button } from "@/components/ui/button";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { styled } from "nativewind";
-import { View } from "react-native";
+import { useRef } from "react";
+import { Text, View } from "react-native";
 import {
+  KeyboardStickyView,
   KeyboardAwareScrollView as RNKeyboardAwareScrollView,
   useKeyboardState,
 } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { PasswordFormProps } from "types";
+import { FieldName, PasswordFormProps, PasswordInsertType } from "types";
 
 const KeyboardAwareScrollView = styled(
   RNKeyboardAwareScrollView as React.ComponentType<any>,
 );
 
+const STICKY_FOOTER_OFFSET = 72;
+
 const PasswordForm = ({ value, onChange, onSubmit }: PasswordFormProps) => {
   const insets = useSafeAreaInsets();
   const keyboard = useKeyboardState();
 
+  const folderBottomSheetRef = useRef<BottomSheetModal | null>(null);
+
+  const handleFormInputOnChange = (field: FieldName, rawValue: string) => {
+    onChange((prev: Partial<PasswordInsertType>) => ({
+      ...prev,
+      [field]: rawValue,
+    }));
+  };
+  const triggerFolderBottomSheet = () => {
+    folderBottomSheetRef.current?.present();
+  };
+
   return (
-    <View className="flex-1 bg-background">
-      <KeyboardAwareScrollView
-        bottomOffset={insets.bottom}
-        className="screen-x-padding"
-        contentContainerClassName="flex-1 gap-5"
-        keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{
-          paddingBottom: keyboard.isVisible ? 0 : insets.bottom,
-        }}
-      >
-        <FormInput
-          label="Title"
-          inputType="text"
-          inputName="title"
-          value={value.title}
-          onChange={onChange}
-        />
-        <FormInput
-          label="Username"
-          inputType="text"
-          inputName="username"
-          value={value.username}
-          onChange={onChange}
-        />
-        <FormInput
-          label="Password"
-          inputType="text"
-          inputName="password"
-          value={value.password}
-          onChange={onChange}
-        />
-      </KeyboardAwareScrollView>
-    </View>
+    <>
+      <View className="flex-1 bg-background header-mt">
+        <KeyboardAwareScrollView
+          bottomOffset={0}
+          extraKeyboardSpace={0}
+          className="screen-x-padding"
+          contentContainerClassName="flex-col gap-5"
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+          mode="layout"
+        >
+          <FormInput
+            key={"title"}
+            label="Title"
+            inputType="text"
+            inputName="title"
+            value={value.title}
+            onChange={handleFormInputOnChange}
+            placeholder="office gmail account..."
+            autoCapitalize="words"
+            autoFocus={false}
+          />
+          <FormInput
+            key={"username"}
+            label="Username"
+            inputType="text"
+            inputName="username"
+            value={value.username}
+            onChange={handleFormInputOnChange}
+            placeholder="username@gmail.com"
+          />
+          <FormInput
+            key={"password"}
+            label="Password"
+            inputType="text"
+            inputName="password"
+            value={value.password}
+            onChange={handleFormInputOnChange}
+            placeholder="**********"
+          />
+          <FormInput
+            key={"url"}
+            label="URL"
+            inputType="text"
+            inputName="url"
+            value={value.url}
+            onChange={handleFormInputOnChange}
+            placeholder="https://github.com"
+          />
+          <View className="form-group bg-background">
+            <Text className="form-label">Folder</Text>
+            <Button
+              onPress={triggerFolderBottomSheet}
+              variant="outline"
+              className="h-14 p-2 items-center justify-start border border-gray-700"
+            >
+              <Text className="base-paragraph">
+                {value.folder ?? "Select a Folder"}
+              </Text>
+            </Button>
+          </View>
+          <View className="form-group">
+            <Text>Tags</Text>
+            <View className="bg-background rounded-md p-2 border border-gray-700">
+              <Button className="border-0 bg-green-500 items-center justify-start">
+                <Text>Add Tag +</Text>
+              </Button>
+            </View>
+          </View>
+          <FormInput
+            key={"notes"}
+            label="Notes"
+            inputType="text"
+            inputName="notes"
+            value={value.notes}
+            onChange={handleFormInputOnChange}
+          />
+        </KeyboardAwareScrollView>
+        <KeyboardStickyView
+          className="py-2.5 bg-background flex-row items-center screen-x-padding"
+          offset={{ closed: -insets.bottom, opened: 0 }}
+        >
+          <Button className="py-3 w-full" onPress={() => onSubmit(value)}>
+            <Text className="btn-label">Save</Text>
+          </Button>
+        </KeyboardStickyView>
+      </View>
+      <FolderBottomSheet ref={folderBottomSheetRef} />
+    </>
   );
 };
 

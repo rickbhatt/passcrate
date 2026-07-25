@@ -1,10 +1,16 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  type Dispatch,
+  type SetStateAction,
+} from "react";
 
 type AppState = "loading" | "setup" | "unlock" | "unlocked";
 
 interface CryptoContextType {
   appState: AppState;
-  setAppState: (state: AppState) => void;
+  setAppState: Dispatch<SetStateAction<AppState>>;
   derivedKey: string | null;
   setDerivedKey: (key: string) => void;
   clearDerivedKey: () => void;
@@ -20,18 +26,6 @@ export const CryptoProvider = ({ children }: { children: React.ReactNode }) => {
     setDerivedKey(null);
     setAppState("unlock");
   };
-
-  useEffect(() => {
-    console.log("CryptoProvider mounted");
-
-    return () => {
-      console.log("CryptoProvider unmounted");
-    };
-  }, []);
-
-  useEffect(() => {
-    console.log("appState =", appState);
-  }, [appState]);
 
   return (
     <CryptoContext.Provider

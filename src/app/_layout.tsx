@@ -2,6 +2,7 @@ import { COLORS } from "@/constants/theme";
 import { CryptoProvider, useCrypto } from "@/contexts/CryptoContext";
 import { getDrizzleInstance, initialiseDb } from "@/db/client";
 import { useDrizzleStudioDev } from "@/db/hooks/useDrizzleStudioDev";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { PortalHost } from "@rn-primitives/portal";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
@@ -57,7 +58,10 @@ const DatabaseProvider = () => {
     const drizzle = getDrizzleInstance();
     const config = await drizzle.query.appConfig.findFirst();
 
-    setAppState(config ? "unlock" : "setup");
+    setAppState((current) => {
+      if (current !== "loading") return current;
+      return config ? "unlock" : "setup";
+    });
     await SplashScreen.hideAsync();
   };
 
@@ -77,7 +81,9 @@ export default function RootLayout() {
     <KeyboardProvider>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <CryptoProvider>
-          <DatabaseProvider />
+          <BottomSheetModalProvider>
+            <DatabaseProvider />
+          </BottomSheetModalProvider>
         </CryptoProvider>
       </GestureHandlerRootView>
     </KeyboardProvider>
