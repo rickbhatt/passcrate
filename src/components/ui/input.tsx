@@ -1,3 +1,13 @@
+/**
+ * NOTE: `insideBottomSheet` swaps TextInput -> BottomSheetTextInput.
+ *
+ * Required whenever this Input renders inside a @gorhom/bottom-sheet
+ * BottomSheetModal. A plain TextInput inside a sheet doesn't coordinate
+ * focus/blur with the sheet's keyboard-avoidance logic, which causes
+ * keyboard/focus state to get stuck or "leak" to whatever input the OS
+ * lands on next (see FolderBottomSheet for the full picture).
+ */
+
 import { cn } from "@/lib/utils";
 import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
 import { Platform, TextInput } from "react-native";

@@ -1,14 +1,29 @@
+/**
+ * isFolderSheetOpen + enabled={!isFolderSheetOpen} on KeyboardStickyView:
+ *
+ * KeyboardStickyView reacts to the GLOBAL native keyboard state, not
+ * "is MY input focused." So while FolderBottomSheet's own input has the
+ * keyboard, this screen's sticky Save button would otherwise still raise/
+ * lower in sync with it, causing visible jerks. Disabling it while the
+ * sheet is open freezes it at rest; onFullyClosed (passed to the sheet)
+ * re-enables it only once the sheet's keyboard has actually finished
+ * closing.
+ *
+ * triggerFolderBottomSheet also waits for this screen's own keyboard to
+ * finish hiding (keyboardDidHide) before presenting the sheet, so the two
+ * keyboards never overlap/race when opening from a focused parent input.
+ */
+
 import FolderBottomSheet from "@/components/bottomsheets/folders/folder-bottomsheet";
 import FormInput from "@/components/form-input";
 import { Button } from "@/components/ui/button";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { styled } from "nativewind";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Keyboard, Text, View } from "react-native";
 import {
   KeyboardStickyView,
   KeyboardAwareScrollView as RNKeyboardAwareScrollView,
-  useKeyboardState,
 } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { FieldName, PasswordFormProps, PasswordInsertType } from "types";
@@ -19,9 +34,9 @@ const KeyboardAwareScrollView = styled(
 
 const PasswordForm = ({ value, onChange, onSubmit }: PasswordFormProps) => {
   const insets = useSafeAreaInsets();
-  const keyboard = useKeyboardState();
 
   const folderBottomSheetRef = useRef<BottomSheetModal | null>(null);
+  const [isFolderSheetOpen, setIsFolderSheetOpen] = useState(false);
 
   const handleFormInputOnChange = (field: FieldName, rawValue: string) => {
     onChange((prev: Partial<PasswordInsertType>) => ({
@@ -30,6 +45,7 @@ const PasswordForm = ({ value, onChange, onSubmit }: PasswordFormProps) => {
     }));
   };
   const triggerFolderBottomSheet = () => {
+    setIsFolderSheetOpen(true);
     if (Keyboard.isVisible?.()) {
       const sub = Keyboard.addListener("keyboardDidHide", () => {
         sub.remove();
@@ -39,6 +55,9 @@ const PasswordForm = ({ value, onChange, onSubmit }: PasswordFormProps) => {
     } else {
       folderBottomSheetRef.current?.present();
     }
+  };
+  const handleFolderSheetFullyClosed = () => {
+    setIsFolderSheetOpen(false);
   };
 
   return (
@@ -123,13 +142,17 @@ const PasswordForm = ({ value, onChange, onSubmit }: PasswordFormProps) => {
         <KeyboardStickyView
           className="py-2.5 bg-background flex-row items-center screen-x-padding"
           offset={{ closed: -insets.bottom, opened: 0 }}
+          enabled={!isFolderSheetOpen}
         >
           <Button className="py-3 w-full" onPress={() => onSubmit(value)}>
             <Text className="btn-label">Save</Text>
           </Button>
         </KeyboardStickyView>
       </View>
-      <FolderBottomSheet ref={folderBottomSheetRef} />
+      <FolderBottomSheet
+        ref={folderBottomSheetRef}
+        onFullyClosed={handleFolderSheetFullyClosed}
+      />
     </>
   );
 };
