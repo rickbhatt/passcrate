@@ -1,14 +1,35 @@
+/**
+ * NOTE: `insideBottomSheet` swaps TextInput -> BottomSheetTextInput.
+ *
+ * Required whenever this Input renders inside a @gorhom/bottom-sheet
+ * BottomSheetModal. A plain TextInput inside a sheet doesn't coordinate
+ * focus/blur with the sheet's keyboard-avoidance logic, which causes
+ * keyboard/focus state to get stuck or "leak" to whatever input the OS
+ * lands on next (see FolderBottomSheet for the full picture).
+ */
+
 import { cn } from "@/lib/utils";
+import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
 import { Platform, TextInput } from "react-native";
 
 function Input({
   className,
+  insideBottomSheet = false,
+  ref,
   ...props
-}: React.ComponentProps<typeof TextInput> & React.RefAttributes<TextInput>) {
+}: React.ComponentProps<typeof TextInput> & {
+  insideBottomSheet?: boolean;
+  ref?: React.Ref<TextInput>;
+}) {
+  const Comp = (
+    insideBottomSheet ? BottomSheetTextInput : TextInput
+  ) as React.ComponentType<any>;
+
   return (
-    <TextInput
+    <Comp
+      ref={ref}
       className={cn(
-        "border-input bg-background font-sans text-text-primary flex min-w-0 flex-row items-center rounded-md border px-3 py-1 text-base leading-5 shadow-sm shadow-black/5 sm:h-9",
+        "border-gray-700 bg-background font-sans h-10 text-text-primary flex min-w-0 flex-row items-center rounded-md border p-2 text-base leading-none placeholder:text-neutral-700",
         props.editable === false &&
           cn(
             "opacity-50",
@@ -22,7 +43,7 @@ function Input({
             "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
             "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
           ),
-          native: "placeholder:text-muted-foreground/50",
+          native: "placeholder:text-text-primary/50",
         }),
         className,
       )}

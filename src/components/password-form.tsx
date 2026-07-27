@@ -1,0 +1,168 @@
+/**
+ * isFolderSheetOpen + enabled={!isFolderSheetOpen} on KeyboardStickyView:
+ *
+ * KeyboardStickyView reacts to the GLOBAL native keyboard state, not
+ * "is MY input focused." So while FolderBottomSheet's own input has the
+ * keyboard, this screen's sticky Save button would otherwise still raise/
+ * lower in sync with it, causing visible jerks. Disabling it while the
+ * sheet is open freezes it at rest; onFullyClosed (passed to the sheet)
+ * re-enables it only once the sheet's keyboard has actually finished
+ * closing.
+ *
+ * triggerFolderBottomSheet also waits for this screen's own keyboard to
+ * finish hiding (keyboardDidHide) before presenting the sheet, so the two
+ * keyboards never overlap/race when opening from a focused parent input.
+ */
+
+import FolderBottomSheet from "@/components/bottomsheets/folders/folder-bottomsheet";
+import FormInput from "@/components/form-input";
+import { Button } from "@/components/ui/button";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { styled } from "nativewind";
+import { useRef, useState } from "react";
+import { Keyboard, Text, View } from "react-native";
+import {
+  KeyboardStickyView,
+  KeyboardAwareScrollView as RNKeyboardAwareScrollView,
+} from "react-native-keyboard-controller";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { FieldName, PasswordFormProps, PasswordInsertType } from "types";
+
+const KeyboardAwareScrollView = styled(
+  RNKeyboardAwareScrollView as React.ComponentType<any>,
+);
+
+const PasswordForm = ({ value, onChange, onSubmit }: PasswordFormProps) => {
+  const insets = useSafeAreaInsets();
+
+  const folderBottomSheetRef = useRef<BottomSheetModal | null>(null);
+  const [isFolderSheetOpen, setIsFolderSheetOpen] = useState(false);
+
+  const handleFormInputOnChange = (field: FieldName, rawValue: string) => {
+    onChange((prev: Partial<PasswordInsertType>) => ({
+      ...prev,
+      [field]: rawValue,
+    }));
+  };
+  const triggerFolderBottomSheet = () => {
+    setIsFolderSheetOpen(true);
+    if (Keyboard.isVisible?.()) {
+      const sub = Keyboard.addListener("keyboardDidHide", () => {
+        sub.remove();
+        folderBottomSheetRef.current?.present();
+      });
+      Keyboard.dismiss();
+    } else {
+      folderBottomSheetRef.current?.present();
+    }
+  };
+  const handleFolderSheetFullyClosed = () => {
+    setIsFolderSheetOpen(false);
+  };
+  const handleFolderCreated = (folder: { id: string; name: string }) => {
+    onChange((prev: Partial<PasswordInsertType>) => ({
+      ...prev,
+      folderId: folder.id,
+      folderName: folder.name.trim(),
+    }));
+  };
+
+  return (
+    <>
+      <View className="flex-1 bg-background header-mt">
+        <KeyboardAwareScrollView
+          bottomOffset={0}
+          extraKeyboardSpace={0}
+          className="screen-x-padding"
+          contentContainerClassName="flex-col gap-5"
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+          mode="layout"
+        >
+          <FormInput
+            key={"title"}
+            label="Title"
+            inputType="text"
+            inputName="title"
+            value={value.title}
+            onChange={handleFormInputOnChange}
+            placeholder="office gmail account..."
+            autoCapitalize="words"
+            autoFocus={false}
+          />
+          <FormInput
+            key={"username"}
+            label="Username"
+            inputType="text"
+            inputName="username"
+            value={value.username}
+            onChange={handleFormInputOnChange}
+            placeholder="username@gmail.com"
+          />
+          <FormInput
+            key={"password"}
+            label="Password"
+            inputType="text"
+            inputName="password"
+            value={value.password}
+            onChange={handleFormInputOnChange}
+            placeholder="**********"
+          />
+          <FormInput
+            key={"url"}
+            label="URL"
+            inputType="text"
+            inputName="url"
+            value={value.url}
+            onChange={handleFormInputOnChange}
+            placeholder="https://github.com"
+          />
+          <View className="form-group bg-background">
+            <Text className="form-label">Folder</Text>
+            <Button
+              onPress={triggerFolderBottomSheet}
+              variant="outline"
+              className="h-14 p-2 items-center justify-start border border-gray-700"
+            >
+              <Text className="base-paragraph">
+                {value.folderName || "Select a Folder"}
+              </Text>
+            </Button>
+          </View>
+          <View className="form-group">
+            <Text>Tags</Text>
+            <View className="bg-background rounded-md p-2 border border-gray-700">
+              <Button className="border-0 bg-green-500 items-center justify-start">
+                <Text>Add Tag +</Text>
+              </Button>
+            </View>
+          </View>
+          <FormInput
+            key={"notes"}
+            label="Notes"
+            inputType="text"
+            inputName="notes"
+            value={value.notes}
+            onChange={handleFormInputOnChange}
+          />
+        </KeyboardAwareScrollView>
+        <KeyboardStickyView
+          className="py-2.5 bg-background flex-row items-center screen-x-padding"
+          offset={{ closed: -insets.bottom, opened: 0 }}
+          enabled={!isFolderSheetOpen}
+        >
+          <Button className="py-3 w-full" onPress={() => onSubmit(value)}>
+            <Text className="btn-label">Save</Text>
+          </Button>
+        </KeyboardStickyView>
+      </View>
+      <FolderBottomSheet
+        ref={folderBottomSheetRef}
+        onFullyClosed={handleFolderSheetFullyClosed}
+        onFolderCreated={handleFolderCreated}
+      />
+    </>
+  );
+};
+
+export default PasswordForm;

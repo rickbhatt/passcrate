@@ -18,7 +18,7 @@ const ScreenHeader = ({
         {showBackButton && router.canGoBack() && (
           <Button
             onPress={() => router.back()}
-            className="h-16 w-16 mr-4 rounded-full border border-border bg-transparent"
+            className="h-16 w-16 mr-4 rounded-full border border-gray-400 bg-transparent"
           >
             <DynamicIcon family="FontAwesome6" name="angle-left" />
           </Button>

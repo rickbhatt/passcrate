@@ -2,14 +2,17 @@ import { COLORS } from "@/constants/theme";
 import { CryptoProvider, useCrypto } from "@/contexts/CryptoContext";
 import { getDrizzleInstance, initialiseDb } from "@/db/client";
 import { useDrizzleStudioDev } from "@/db/hooks/useDrizzleStudioDev";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { PortalHost } from "@rn-primitives/portal";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { SQLiteDatabase, SQLiteProvider } from "expo-sqlite";
 import { StatusBar } from "expo-status-bar";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { KeyboardProvider } from "react-native-keyboard-controller";
 import { Toaster } from "sonner-native";
 import "../global.css";
+
 SplashScreen.preventAutoHideAsync();
 
 const Layout = () => {
@@ -55,7 +58,10 @@ const DatabaseProvider = () => {
     const drizzle = getDrizzleInstance();
     const config = await drizzle.query.appConfig.findFirst();
 
-    setAppState(config ? "unlock" : "setup");
+    setAppState((current) => {
+      if (current !== "loading") return current;
+      return config ? "unlock" : "setup";
+    });
     await SplashScreen.hideAsync();
   };
 
@@ -72,10 +78,14 @@ const DatabaseProvider = () => {
 
 export default function RootLayout() {
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <CryptoProvider>
-        <DatabaseProvider />
-      </CryptoProvider>
-    </GestureHandlerRootView>
+    <KeyboardProvider>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <CryptoProvider>
+          <BottomSheetModalProvider>
+            <DatabaseProvider />
+          </BottomSheetModalProvider>
+        </CryptoProvider>
+      </GestureHandlerRootView>
+    </KeyboardProvider>
   );
 }

@@ -1,10 +1,16 @@
-import { createContext, useContext, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  type Dispatch,
+  type SetStateAction,
+} from "react";
 
 type AppState = "loading" | "setup" | "unlock" | "unlocked";
 
 interface CryptoContextType {
   appState: AppState;
-  setAppState: (state: AppState) => void;
+  setAppState: Dispatch<SetStateAction<AppState>>;
   derivedKey: string | null;
   setDerivedKey: (key: string) => void;
   clearDerivedKey: () => void;
