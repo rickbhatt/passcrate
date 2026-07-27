@@ -1,6 +1,6 @@
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { Text, View } from "react-native";
+import { Text, TextInput, View } from "react-native";
 import { FieldName } from "types";
 
 interface FormInputProps<TExtraFields extends Record<string, unknown> = {}> {
@@ -16,6 +16,8 @@ interface FormInputProps<TExtraFields extends Record<string, unknown> = {}> {
   autoFocus?: boolean;
   maxLength?: number;
   editable?: boolean;
+  insideBottomSheet?: boolean;
+  ref?: React.Ref<TextInput>;
 }
 
 const FormInput = ({
@@ -30,7 +32,9 @@ const FormInput = ({
   autoFocus = false,
   maxLength = undefined,
   editable = true,
+  insideBottomSheet = false,
   onChange,
+  ref,
 }: FormInputProps) => {
   const handleOnChange = (field: FieldName, rawValue: string) => {
     onChange(field, rawValue);
@@ -42,6 +46,7 @@ const FormInput = ({
         <View className="form-group">
           <Text className="form-label">{label}</Text>
           <Input
+            ref={ref}
             value={value}
             onChangeText={(text) => handleOnChange(inputName, text)}
             secureTextEntry={secureTextEntry}
@@ -53,6 +58,7 @@ const FormInput = ({
             multiline={false}
             maxLength={maxLength}
             editable={editable}
+            insideBottomSheet={insideBottomSheet}
           />
         </View>
       );

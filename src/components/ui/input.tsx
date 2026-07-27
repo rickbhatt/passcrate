@@ -1,12 +1,23 @@
 import { cn } from "@/lib/utils";
+import { BottomSheetTextInput } from "@gorhom/bottom-sheet";
 import { Platform, TextInput } from "react-native";
 
 function Input({
   className,
+  insideBottomSheet = false,
+  ref,
   ...props
-}: React.ComponentProps<typeof TextInput> & React.RefAttributes<TextInput>) {
+}: React.ComponentProps<typeof TextInput> & {
+  insideBottomSheet?: boolean;
+  ref?: React.Ref<TextInput>;
+}) {
+  const Comp = (
+    insideBottomSheet ? BottomSheetTextInput : TextInput
+  ) as React.ComponentType<any>;
+
   return (
-    <TextInput
+    <Comp
+      ref={ref}
       className={cn(
         "border-gray-700 bg-background font-sans h-10 text-text-primary flex min-w-0 flex-row items-center rounded-md border p-2 text-base leading-none placeholder:text-neutral-700",
         props.editable === false &&

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { styled } from "nativewind";
 import { useRef } from "react";
-import { Text, View } from "react-native";
+import { Keyboard, Text, View } from "react-native";
 import {
   KeyboardStickyView,
   KeyboardAwareScrollView as RNKeyboardAwareScrollView,
@@ -16,8 +16,6 @@ import { FieldName, PasswordFormProps, PasswordInsertType } from "types";
 const KeyboardAwareScrollView = styled(
   RNKeyboardAwareScrollView as React.ComponentType<any>,
 );
-
-const STICKY_FOOTER_OFFSET = 72;
 
 const PasswordForm = ({ value, onChange, onSubmit }: PasswordFormProps) => {
   const insets = useSafeAreaInsets();
@@ -32,7 +30,15 @@ const PasswordForm = ({ value, onChange, onSubmit }: PasswordFormProps) => {
     }));
   };
   const triggerFolderBottomSheet = () => {
-    folderBottomSheetRef.current?.present();
+    if (Keyboard.isVisible?.()) {
+      const sub = Keyboard.addListener("keyboardDidHide", () => {
+        sub.remove();
+        folderBottomSheetRef.current?.present();
+      });
+      Keyboard.dismiss();
+    } else {
+      folderBottomSheetRef.current?.present();
+    }
   };
 
   return (
