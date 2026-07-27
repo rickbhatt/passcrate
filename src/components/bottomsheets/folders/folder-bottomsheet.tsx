@@ -34,6 +34,8 @@
 
 import FormInput from "@/components/form-input";
 import { Button } from "@/components/ui/button";
+import { useDb } from "@/db/hooks/useDb";
+import { addFolder } from "@/db/mutations/folders.mutations";
 import {
   BottomSheetBackdrop,
   BottomSheetModal,
@@ -57,9 +59,11 @@ const renderBackdrop = (props: any) => (
 const FolderBottomSheet = ({
   ref,
   onFullyClosed,
+  onFolderCreated,
 }: {
   ref: RefObject<BottomSheetModal | null>;
   onFullyClosed?: () => void;
+  onFolderCreated: (folder: { id: string; name: string }) => void;
 }) => {
   const insets = useSafeAreaInsets();
   const nameInputRef = useRef<TextInput>(null);
@@ -67,6 +71,8 @@ const FolderBottomSheet = ({
   const [formData, setFormData] = useState<Partial<FolderInserType>>({
     name: "",
   });
+
+  const db = useDb();
 
   const handleOnChange = (fieldName: string, rawValue: string) => {
     setFormData((prev: Partial<FolderInserType>) => ({
@@ -89,14 +95,22 @@ const FolderBottomSheet = ({
   };
 
   const handleOnSubmit = async () => {
-    if (formData.name.length < 2) {
-      toast.info("Folders name must be at least 2 characters long.");
+    const folderName = formData.name?.trim() ?? "";
+
+    if (folderName.length < 2) {
+      toast.info("Folder name must be at least 2 characters long.");
       return;
     }
-    nameInputRef.current?.blur();
-    Keyboard.dismiss();
-    ref.current?.dismiss();
-    console.log("formData", formData);
+
+    try {
+      const resp = await addFolder({ db, name: folderName });
+      onFolderCreated?.({ id: resp.id, name: resp.name });
+      nameInputRef.current?.blur();
+      Keyboard.dismiss();
+      ref.current?.dismiss();
+    } catch (error) {
+      toast.error("Could not create folder. Please try again.");
+    }
   };
 
   return (
@@ -138,7 +152,7 @@ const FolderBottomSheet = ({
               autoCapitalize="words"
               insideBottomSheet
             />
-            <Button disabled={!formData.name} onPress={handleOnSubmit}>
+            <Button disabled={!formData.name?.trim()} onPress={handleOnSubmit}>
               <Text className="btn-label">Create</Text>
             </Button>
           </View>

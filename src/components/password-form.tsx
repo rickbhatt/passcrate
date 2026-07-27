@@ -59,6 +59,13 @@ const PasswordForm = ({ value, onChange, onSubmit }: PasswordFormProps) => {
   const handleFolderSheetFullyClosed = () => {
     setIsFolderSheetOpen(false);
   };
+  const handleFolderCreated = (folder: { id: string; name: string }) => {
+    onChange((prev: Partial<PasswordInsertType>) => ({
+      ...prev,
+      folderId: folder.id,
+      folderName: folder.name.trim(),
+    }));
+  };
 
   return (
     <>
@@ -118,7 +125,7 @@ const PasswordForm = ({ value, onChange, onSubmit }: PasswordFormProps) => {
               className="h-14 p-2 items-center justify-start border border-gray-700"
             >
               <Text className="base-paragraph">
-                {value.folder ?? "Select a Folder"}
+                {value.folderName || "Select a Folder"}
               </Text>
             </Button>
           </View>
@@ -152,6 +159,7 @@ const PasswordForm = ({ value, onChange, onSubmit }: PasswordFormProps) => {
       <FolderBottomSheet
         ref={folderBottomSheetRef}
         onFullyClosed={handleFolderSheetFullyClosed}
+        onFolderCreated={handleFolderCreated}
       />
     </>
   );

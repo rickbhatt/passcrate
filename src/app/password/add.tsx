@@ -12,6 +12,7 @@ const AddPassword = () => {
     url: "",
     notes: "",
     folderId: "",
+    folderName: "",
     tags: [],
   });
 
