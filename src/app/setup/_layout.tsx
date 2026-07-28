@@ -8,7 +8,7 @@ const SetupLayout = () => {
       }}
     >
       <Stack.Screen name="master-password" />
-      <Stack.Screen name="biometric" />
+      <Stack.Screen name="biometric" options={{ gestureEnabled: false }} />
     </Stack>
   );
 };

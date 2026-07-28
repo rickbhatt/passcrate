@@ -5,7 +5,6 @@ import { useCrypto } from "@/contexts/CryptoContext";
 import { useDb } from "@/db/hooks/useDb";
 import { storeSalt } from "@/db/mutations/appConfig.mutation";
 import { encrypt, getDerivedKey } from "@/lib/crypto";
-import { setSecureItem } from "@/lib/secure-storage";
 import { checkBiometricSupport, cn } from "@/lib/utils";
 import { ZxcvbnFactory } from "@zxcvbn-ts/core";
 import * as zxcvbnEnPackage from "@zxcvbn-ts/language-en";
@@ -45,7 +44,7 @@ const SetupMasterPassword = () => {
 
   const db = useDb();
 
-  const { setDerivedKey, setAppState } = useCrypto();
+  const { setDerivedKey, setAppState, setPendingMasterPassword } = useCrypto();
 
   const router = useRouter();
 
@@ -84,7 +83,7 @@ const SetupMasterPassword = () => {
       let isBiometric = await checkBiometricSupport();
 
       if (isBiometric) {
-        await setSecureItem(SECURE_KEYS.MASTER_PASSWORD, masterPassword);
+        setPendingMasterPassword(masterPassword);
         router.replace("/setup/biometric");
       } else {
         setAppState("unlocked");

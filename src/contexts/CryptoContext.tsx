@@ -14,6 +14,8 @@ interface CryptoContextType {
   derivedKey: string | null;
   setDerivedKey: (key: string) => void;
   clearDerivedKey: () => void;
+  pendingMasterPassword: string | null;
+  setPendingMasterPassword: (p: string | null) => void;
 }
 
 export const CryptoContext = createContext<CryptoContextType | null>(null);
@@ -21,7 +23,9 @@ export const CryptoContext = createContext<CryptoContextType | null>(null);
 export const CryptoProvider = ({ children }: { children: React.ReactNode }) => {
   const [appState, setAppState] = useState<AppState>("loading");
   const [derivedKey, setDerivedKey] = useState<string | null>(null);
-
+  const [pendingMasterPassword, setPendingMasterPassword] = useState<
+    string | null
+  >(null);
   const clearDerivedKey = () => {
     setDerivedKey(null);
     setAppState("unlock");
@@ -35,6 +39,8 @@ export const CryptoProvider = ({ children }: { children: React.ReactNode }) => {
         derivedKey,
         setDerivedKey,
         clearDerivedKey,
+        pendingMasterPassword,
+        setPendingMasterPassword,
       }}
     >
       {children}

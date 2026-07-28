@@ -4,55 +4,77 @@ import { SECURE_KEYS } from "@/constants/secure-keys";
 import { useCrypto } from "@/contexts/CryptoContext";
 import { useDb } from "@/db/hooks/useDb";
 import { updateBiometric } from "@/db/mutations/appConfig.mutation";
-import { deleteSecureItem } from "@/lib/secure-storage";
+import { setSecureItem } from "@/lib/secure-storage";
 import * as LocalAuthentication from "expo-local-authentication";
-import { Image, Text, View } from "react-native";
+import { useRouter } from "expo-router";
+import { useEffect } from "react";
+import { BackHandler, Image, Platform, Text, View } from "react-native";
 import { toast } from "sonner-native";
 
 const SetupBiometric = () => {
-  const { setAppState } = useCrypto();
+  const { setAppState, pendingMasterPassword, setPendingMasterPassword } =
+    useCrypto();
 
   const db = useDb();
 
+  const router = useRouter();
+
   const handleSkip = async () => {
-    await deleteSecureItem(SECURE_KEYS.MASTER_PASSWORD);
+    toast.info("You can enable it later in settings");
+    setPendingMasterPassword(null);
     setAppState("unlocked");
   };
 
   const handleEnable = async () => {
-    const result = await LocalAuthentication.authenticateAsync({
-      promptMessage: "Confirm your identity",
-      fallbackLabel: "Use master password", // shows if biometric fails
-      cancelLabel: "Cancel",
-      disableDeviceFallback: true, // I do not want device pin as fallback
-    });
+    if (Platform.OS === "ios") {
+      const result = await LocalAuthentication.authenticateAsync({
+        promptMessage: "Confirm your identity",
+        fallbackLabel: "Use master password",
+        cancelLabel: "Cancel",
+        disableDeviceFallback: true,
+      });
 
-    if (result.success) {
+      if (!result.success) {
+        if (result.error === "lockout") {
+          setPendingMasterPassword(null);
+          setAppState("unlocked");
+        }
+        return;
+      }
+    }
+    try {
+      if (!pendingMasterPassword) {
+        toast.error(
+          "Something went wrong. Please set up your master password again.",
+        );
+        router.replace("/setup/master-password");
+        return;
+      }
+
+      await setSecureItem(SECURE_KEYS.MASTER_PASSWORD, pendingMasterPassword, {
+        requireAuthentication: true,
+        authenticationPrompt: "Verify it's you",
+      });
+
+      setPendingMasterPassword(null);
       await updateBiometric(db);
       toast.success("Biometric enabled successfully");
       setAppState("unlocked");
-    } else {
-      switch (result.error) {
-        case "user_cancel":
-        case "system_cancel":
-          // user dismissed the prompt — do nothing, let them try again or skip
-          break;
-
-        case "lockout":
-          // too many failed attempts, device locked biometric
-          // treat as skip, inform user
-          await deleteSecureItem(SECURE_KEYS.MASTER_PASSWORD);
-          setAppState("unlocked");
-          toast.info("Biometric locked, you can enable it later in settings");
-          break;
-
-        default:
-          // any other failure — let them retry or skip
-          break;
-      }
+    } catch (error) {
+      toast.error("Something went wrong. Please try again.");
     }
   };
 
+  useEffect(() => {
+    const subscription = BackHandler.addEventListener(
+      "hardwareBackPress",
+      () => {
+        handleSkip();
+        return true; // prevents the default "exit app" behavior
+      },
+    );
+    return () => subscription.remove();
+  }, []);
   return (
     <View className="flex-1 flex-col items-center bg-background screen-x-padding pt-safe gap-y-3">
       <View className="flex-col items-center mt-10 gap-y-1">

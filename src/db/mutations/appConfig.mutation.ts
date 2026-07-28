@@ -1,7 +1,8 @@
 import { appConfig } from "@/db/schema";
 import { Db } from "@/db/types";
-import { generateUUID } from "@/lib/utils";
 import { eq } from "drizzle-orm";
+
+const APP_CONFIG_ID = "app-config";
 
 const storeSalt = async ({
   db,
@@ -12,12 +13,18 @@ const storeSalt = async ({
   salt: string;
   verifier: string;
 }) => {
-  await db.insert(appConfig).values({
-    id: generateUUID(),
-    salt: salt,
-    passwordVerifier: verifier,
-    createdAt: new Date(),
-  });
+  await db
+    .insert(appConfig)
+    .values({
+      id: APP_CONFIG_ID,
+      salt,
+      passwordVerifier: verifier,
+      createdAt: new Date(),
+    })
+    .onConflictDoUpdate({
+      target: appConfig.id,
+      set: { salt, passwordVerifier: verifier, createdAt: new Date() },
+    });
 };
 
 const updateBiometric = async (db: Db) => {

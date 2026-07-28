@@ -27,7 +27,7 @@ const MasterPasswordForm = ({
 
   return (
     <View className="flex-col gap-y-3 self-stretch">
-      <View className="flex-row rounded-md border border-black h-14 overflow-hidden">
+      <View className="flex-row items-center rounded-md border border-black h-14 overflow-hidden">
         <Input
           value={value}
           onChangeText={onChange}
