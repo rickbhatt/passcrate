@@ -5,7 +5,16 @@
       "Bash(python -c ' *)",
       "Bash(magick identify *)",
       "Bash(pip install *)",
-      "Bash(git show *)"
+      "Bash(git show *)",
+      "Bash(xxd .watchmanconfig)",
+      "Bash(xargs grep -ln \"SQLiteProvider\\\\|onInit\")",
+      "Bash(node -e \"console.log\\(JSON.stringify\\(__dirname\\)\\); console.log\\(JSON.stringify\\(require\\('path'\\).resolve\\('.'\\)\\)\\)\")",
+      "Bash(node -e \"const bl=require\\('./metro.config.js'\\).resolver.blockList; bl.forEach\\(r=>console.log\\(r.source\\)\\); console.log\\('---'\\); const s='D:\\\\\\\\\\\\\\\\Projects\\\\\\\\\\\\\\\\RN\\\\\\\\\\\\\\\\passcrate\\\\\\\\\\\\\\\\android\\\\\\\\\\\\\\\\app\\\\\\\\\\\\\\\\build.gradle'; console.log\\(s\\); console.log\\(bl.map\\(r=>r.test\\(s\\)\\)\\);\")",
+      "Bash(node \"C:\\\\Users\\\\ritankar\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\d--Projects-RN-passcrate\\\\9447851c-6d99-4e95-bd9c-5da4286dd5e9\\\\scratchpad\\\\rxtest.js\")",
+      "Bash(\"C:\\\\Users\\\\ritankar\\\\AppData\\\\Local\\\\Microsoft\\\\WinGet\\\\Packages\\\\facebook.watchman_Microsoft.Winget.Source_8wekyb3d8bbwe\\\\watchman-v2025.02.24.00-windows\\\\bin\\\\watchman.exe\" --version)",
+      "Bash(winget list *)",
+      "Bash('C:\\\\Users\\\\ritankar\\\\AppData\\\\Local\\\\Microsoft\\\\WinGet\\\\Packages\\\\facebook.watchman_Microsoft.Winget.Source_8wekyb3d8bbwe\\\\watchman-v2025.02.24.00-windows\\\\bin\\\\watchman.exe' version *)",
+      "Bash('C:\\\\Users\\\\ritankar\\\\AppData\\\\Local\\\\Microsoft\\\\WinGet\\\\Packages\\\\facebook.watchman_Microsoft.Winget.Source_8wekyb3d8bbwe\\\\watchman-v2025.02.24.00-windows\\\\bin\\\\watchman.exe' get-sockname *)"
     ]
   }
 }

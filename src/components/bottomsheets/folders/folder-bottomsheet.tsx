@@ -72,6 +72,8 @@ const FolderBottomSheet = ({
     name: "",
   });
 
+  const [sheetType, setSheetType] = useState<"list" | "create">("list");
+
   const db = useDb();
 
   const handleOnChange = (fieldName: string, rawValue: string) => {
@@ -109,7 +111,7 @@ const FolderBottomSheet = ({
       Keyboard.dismiss();
       ref.current?.dismiss();
     } catch (error) {
-      toast.error("Could not create folder. Please try again.");
+      toast.error("Could not create folder. Please try again");
     }
   };
 

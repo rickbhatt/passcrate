@@ -6,8 +6,9 @@ import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { PortalHost } from "@rn-primitives/portal";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import { SQLiteDatabase, SQLiteProvider } from "expo-sqlite";
+import { SQLiteProvider, useSQLiteContext } from "expo-sqlite";
 import { StatusBar } from "expo-status-bar";
+import { useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { Toaster } from "sonner-native";
@@ -15,9 +16,48 @@ import "../global.css";
 
 SplashScreen.preventAutoHideAsync();
 
+// A string literal — the ONLY kind of prop safe to pass to SQLiteProvider.
+// Any function prop (`onInit`, `onError`) defined in this file gets a new
+// identity every time Fast Refresh re-evaluates the module; SQLiteProvider keys
+// its setup effect on `onInit`, and that effect's cleanup calls `closeAsync()`.
+// The result: every edit closes the live DB (-> "Access to closed resource")
+// and remounts the whole navigator. Static props => the handle is untouched.
+const DB_NAME = process.env.EXPO_PUBLIC_DB_NAME ?? "passcrate.db";
+
 const Layout = () => {
   useDrizzleStudioDev();
-  const { appState } = useCrypto();
+  const db = useSQLiteContext();
+  const { appState, setAppState } = useCrypto();
+
+  // Run migrations and resolve the initial app state here, in a child of
+  // SQLiteProvider. Screens stay unmounted while `appState === "loading"`, so
+  // nothing queries the DB until this finishes.
+  useEffect(() => {
+    let cancelled = false;
+
+    (async () => {
+      try {
+        await initialiseDb(db);
+        if (cancelled) return;
+
+        const config = await getDrizzleInstance().query.appConfig.findFirst();
+        if (cancelled) return;
+
+        setAppState((current) => {
+          if (current !== "loading") return current;
+          return config ? "unlock" : "setup";
+        });
+      } catch (error) {
+        console.error("bootstrap: FAILED", error);
+      } finally {
+        if (!cancelled) await SplashScreen.hideAsync();
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [db, setAppState]);
 
   return (
     <>
@@ -50,39 +90,15 @@ const Layout = () => {
   );
 };
 
-const DatabaseProvider = () => {
-  const { setAppState } = useCrypto();
-
-  const handleInit = async (db: SQLiteDatabase) => {
-    await initialiseDb(db);
-    const drizzle = getDrizzleInstance();
-    const config = await drizzle.query.appConfig.findFirst();
-
-    setAppState((current) => {
-      if (current !== "loading") return current;
-      return config ? "unlock" : "setup";
-    });
-    await SplashScreen.hideAsync();
-  };
-
-  return (
-    <SQLiteProvider
-      databaseName={process.env.EXPO_PUBLIC_DB_NAME ?? "passcrate.db"}
-      onInit={handleInit}
-      onError={(error) => console.error("SQLiteProvider: FAILED", error?.cause)}
-    >
-      <Layout />
-    </SQLiteProvider>
-  );
-};
-
 export default function RootLayout() {
   return (
     <KeyboardProvider>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <CryptoProvider>
           <BottomSheetModalProvider>
-            <DatabaseProvider />
+            <SQLiteProvider databaseName={DB_NAME}>
+              <Layout />
+            </SQLiteProvider>
           </BottomSheetModalProvider>
         </CryptoProvider>
       </GestureHandlerRootView>
