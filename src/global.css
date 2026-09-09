@@ -135,18 +135,18 @@
   }
 
   .h2-bold {
-    @apply text-2xl font-bold;
+    @apply text-2xl font-sans-bold;
   }
 
   .h3-bold {
-    @apply text-xl font-bold;
+    @apply text-xl font-sans-bold;
   }
 
   .base-bold {
-    @apply text-base font-bold;
+    @apply text-base font-sans-bold;
   }
 
   .base-paragraph {
-    @apply text-base text-text-primary;
+    @apply text-base text-text-primary font-sans;
   }
 }

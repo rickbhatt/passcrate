@@ -7,7 +7,7 @@ import { updateBiometric } from "@/db/mutations/appConfig.mutation";
 import { setSecureItem } from "@/lib/secure-storage";
 import * as LocalAuthentication from "expo-local-authentication";
 import { useRouter } from "expo-router";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BackHandler, Image, Platform, Text, View } from "react-native";
 import { toast } from "sonner-native";
 
@@ -19,6 +19,9 @@ const SetupBiometric = () => {
 
   const router = useRouter();
 
+  const [isBusy, setIsBusy] = useState(false);
+  const isAuthenticating = useRef(false);
+
   const handleSkip = async () => {
     toast.info("You can enable it later in settings");
     setPendingMasterPassword(null);
@@ -26,42 +29,55 @@ const SetupBiometric = () => {
   };
 
   const handleEnable = async () => {
-    if (Platform.OS === "ios") {
-      const result = await LocalAuthentication.authenticateAsync({
-        promptMessage: "Confirm your identity",
-        fallbackLabel: "Use master password",
-        cancelLabel: "Cancel",
-        disableDeviceFallback: true,
-      });
+    if (isAuthenticating.current) return;
+    isAuthenticating.current = true;
+    setIsBusy(true);
 
-      if (!result.success) {
-        if (result.error === "lockout") {
-          setPendingMasterPassword(null);
-          setAppState("unlocked");
-        }
-        return;
-      }
-    }
     try {
-      if (!pendingMasterPassword) {
-        toast.error(
-          "Something went wrong. Please set up your master password again.",
-        );
-        router.replace("/setup/master-password");
-        return;
+      if (Platform.OS === "ios") {
+        const result = await LocalAuthentication.authenticateAsync({
+          promptMessage: "Confirm your identity",
+          fallbackLabel: "Use master password",
+          cancelLabel: "Cancel",
+          disableDeviceFallback: true,
+        });
+
+        if (!result.success) {
+          if (result.error === "lockout") {
+            setPendingMasterPassword(null);
+            setAppState("unlocked");
+          }
+          return;
+        }
       }
+      try {
+        if (!pendingMasterPassword) {
+          toast.error(
+            "Something went wrong. Please set up your master password again.",
+          );
+          router.replace("/setup/master-password");
+          return;
+        }
 
-      await setSecureItem(SECURE_KEYS.MASTER_PASSWORD, pendingMasterPassword, {
-        requireAuthentication: true,
-        authenticationPrompt: "Verify it's you",
-      });
+        await setSecureItem(
+          SECURE_KEYS.MASTER_PASSWORD,
+          pendingMasterPassword,
+          {
+            requireAuthentication: true,
+            authenticationPrompt: "Verify it's you",
+          },
+        );
 
-      setPendingMasterPassword(null);
-      await updateBiometric(db);
-      toast.success("Biometric enabled successfully");
-      setAppState("unlocked");
-    } catch (error) {
-      toast.error("Something went wrong. Please try again.");
+        setPendingMasterPassword(null);
+        await updateBiometric(db);
+        toast.success("Biometric enabled successfully");
+        setAppState("unlocked");
+      } catch (error) {
+        toast.error("Something went wrong. Please try again.");
+      }
+    } finally {
+      isAuthenticating.current = false;
+      setIsBusy(false);
     }
   };
 
@@ -91,13 +107,18 @@ const SetupBiometric = () => {
           <Button
             onPress={handleSkip}
             variant={"outline"}
+            disabled={isBusy}
             className="flex-1 basis-0 p-4"
           >
             <Text className="text-base font-sans-semibold text-text-primary">
               Skip
             </Text>
           </Button>
-          <Button onPress={handleEnable} className="flex-1 basis-0 p-4">
+          <Button
+            onPress={handleEnable}
+            disabled={isBusy}
+            className="flex-1 basis-0 p-4"
+          >
             <Text className="btn-label">Enable</Text>
           </Button>
         </View>
