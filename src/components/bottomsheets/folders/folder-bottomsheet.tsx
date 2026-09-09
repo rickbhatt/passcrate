@@ -35,6 +35,7 @@
 import FormInput from "@/components/form-input";
 import { Button } from "@/components/ui/button";
 import { useDb } from "@/db/hooks/useDb";
+import { useBottomSheetBackHandler } from "@/hooks/useBottomSheetBackHandler";
 import { addFolder } from "@/db/mutations/folders.mutations";
 import {
   BottomSheetBackdrop,
@@ -73,6 +74,9 @@ const FolderBottomSheet = ({
   });
 
   const [sheetType, setSheetType] = useState<"list" | "create">("list");
+  const [isOpen, setIsOpen] = useState(false);
+
+  useBottomSheetBackHandler(isOpen, ref);
 
   const db = useDb();
 
@@ -133,6 +137,7 @@ const FolderBottomSheet = ({
         }
       }}
       onChange={(index) => {
+        setIsOpen(index >= 0);
         if (index === 0) {
           nameInputRef.current?.focus();
         }
