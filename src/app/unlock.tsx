@@ -149,10 +149,10 @@ const UnlockScreen = () => {
   return (
     <View className="main flex-col items-center justify-center screen-x-padding">
       <View className="flex-row justify-center">
-        <Image source={image.logo} className="size-56 border border-black" />
+        <Image source={image.logo} className="size-48" />
       </View>
       {isBiometricEnabled === true && (
-        <View className="flex-col gap-y-4 items-center w-full mt-10">
+        <View className="flex-col gap-y-4 items-center w-full mt-5">
           <Text className="h2-bold">PassCrate Locked</Text>
           <Button
             variant="outline"

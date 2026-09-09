@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(file assets/images/*.png)",
+      "Bash(python -c ' *)",
+      "Bash(magick identify *)",
+      "Bash(pip install *)",
+      "Bash(git show *)"
+    ]
+  }
+}
