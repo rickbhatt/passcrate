@@ -48,6 +48,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   },
   plugins: [
     "expo-router",
+    "expo-image",
+    "expo-web-browser",
     [
       "expo-splash-screen",
       {

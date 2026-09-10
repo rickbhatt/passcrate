@@ -35,15 +35,18 @@
 import FormInput from "@/components/form-input";
 import { Button } from "@/components/ui/button";
 import { useDb } from "@/db/hooks/useDb";
-import { useBottomSheetBackHandler } from "@/hooks/useBottomSheetBackHandler";
 import { addFolder } from "@/db/mutations/folders.mutations";
+import { foldersQuery } from "@/db/queries/folders.queries";
+import { useBottomSheetBackHandler } from "@/hooks/useBottomSheetBackHandler";
+import { cn } from "@/lib/utils";
 import {
   BottomSheetBackdrop,
   BottomSheetModal,
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
+import { useLiveQuery } from "drizzle-orm/expo-sqlite";
 import { RefObject, useRef, useState } from "react";
-import { Keyboard, Text, TextInput, View } from "react-native";
+import { Keyboard, Pressable, Text, TextInput, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { toast } from "sonner-native";
 import { FolderInserType } from "types";
@@ -66,6 +69,20 @@ const FolderBottomSheet = ({
   onFullyClosed?: () => void;
   onFolderCreated: (folder: { id: string; name: string }) => void;
 }) => {
+  const TABS = [
+    { type: "list", label: "Folders" },
+    { type: "create", label: "Create" },
+  ] as const;
+
+  const handleTabPress = (type: "list" | "create") => {
+    if (type === "list") {
+      nameInputRef.current?.blur();
+      setFormData({ name: "" });
+      Keyboard.dismiss();
+    }
+    setSheetType(type);
+  };
+
   const insets = useSafeAreaInsets();
   const nameInputRef = useRef<TextInput>(null);
 
@@ -80,6 +97,8 @@ const FolderBottomSheet = ({
 
   const db = useDb();
 
+  const { data: folders } = useLiveQuery(foldersQuery(db));
+
   const handleOnChange = (fieldName: string, rawValue: string) => {
     setFormData((prev: Partial<FolderInserType>) => ({
       ...prev,
@@ -89,7 +108,7 @@ const FolderBottomSheet = ({
 
   const handleOnDismiss = () => {
     setFormData({ name: "" });
-
+    setSheetType("list");
     if (Keyboard.isVisible?.()) {
       const sub = Keyboard.addListener("keyboardDidHide", () => {
         sub.remove();
@@ -111,6 +130,7 @@ const FolderBottomSheet = ({
     try {
       const resp = await addFolder({ db, name: folderName });
       onFolderCreated?.({ id: resp.id, name: resp.name });
+      setFormData({ name: "" });
       nameInputRef.current?.blur();
       Keyboard.dismiss();
       ref.current?.dismiss();
@@ -146,23 +166,60 @@ const FolderBottomSheet = ({
     >
       <BottomSheetView className="main">
         <View className="flex-col gap-y-5">
-          <Text className="h3-bold text-center">Create Folder</Text>
-          <View className="form-group">
-            <FormInput
-              ref={nameInputRef}
-              label="Folder Name"
-              value={formData.name}
-              onChange={handleOnChange}
-              inputName="name"
-              inputType="text"
-              placeholder="Work, Office,..."
-              autoCapitalize="words"
-              insideBottomSheet
-            />
-            <Button disabled={!formData.name?.trim()} onPress={handleOnSubmit}>
-              <Text className="btn-label">Create</Text>
-            </Button>
+          <View className="-mx-4 flex-row border-b border-border px-4">
+            {TABS.map(({ type, label }) => {
+              const isActive = sheetType === type;
+              return (
+                <Pressable
+                  key={type}
+                  onPress={() => handleTabPress(type)}
+                  className="flex-1 items-center pb-3 pt-1"
+                >
+                  <Text
+                    className={cn(
+                      "text-base",
+                      isActive
+                        ? "font-sans-semibold text-text-primary"
+                        : "font-sans text-[#5c5c6b]",
+                    )}
+                  >
+                    {label}
+                  </Text>
+                  {isActive && (
+                    <View className="absolute -bottom-px h-0.5 w-full rounded-full bg-primary" />
+                  )}
+                </Pressable>
+              );
+            })}
           </View>
+
+          {sheetType === "list" ? (
+            <View>
+              {folders?.map((folder, index) => (
+                <Text key={index}>{folder.name}</Text>
+              ))}
+            </View>
+          ) : (
+            <View className="form-group">
+              <FormInput
+                ref={nameInputRef}
+                label="Folder Name"
+                value={formData.name}
+                onChange={handleOnChange}
+                inputName="name"
+                inputType="text"
+                placeholder="Work, Office,..."
+                autoCapitalize="words"
+                insideBottomSheet
+              />
+              <Button
+                disabled={!formData.name?.trim()}
+                onPress={handleOnSubmit}
+              >
+                <Text className="btn-label">Create</Text>
+              </Button>
+            </View>
+          )}
         </View>
       </BottomSheetView>
     </BottomSheetModal>

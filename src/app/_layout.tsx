@@ -96,7 +96,10 @@ export default function RootLayout() {
       <GestureHandlerRootView style={{ flex: 1 }}>
         <CryptoProvider>
           <BottomSheetModalProvider>
-            <SQLiteProvider databaseName={DB_NAME}>
+            <SQLiteProvider
+              databaseName={DB_NAME}
+              options={{ enableChangeListener: true }}
+            >
               <Layout />
             </SQLiteProvider>
           </BottomSheetModalProvider>
