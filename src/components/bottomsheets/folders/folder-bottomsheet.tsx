@@ -63,11 +63,13 @@ const renderBackdrop = (props: any) => (
 const FolderBottomSheet = ({
   ref,
   onFullyClosed,
-  onFolderCreated,
+  onFolderSelect,
+  selectedFolderId,
 }: {
   ref: RefObject<BottomSheetModal | null>;
   onFullyClosed?: () => void;
-  onFolderCreated: (folder: { id: string; name: string }) => void;
+  onFolderSelect: (folder: { id: string; name: string }) => void;
+  selectedFolderId?: string;
 }) => {
   const TABS = [
     { type: "list", label: "Folders" },
@@ -129,7 +131,7 @@ const FolderBottomSheet = ({
 
     try {
       const resp = await addFolder({ db, name: folderName });
-      onFolderCreated?.({ id: resp.id, name: resp.name });
+      onFolderSelect?.({ id: resp.id, name: resp.name });
       setFormData({ name: "" });
       nameInputRef.current?.blur();
       Keyboard.dismiss();
@@ -194,10 +196,34 @@ const FolderBottomSheet = ({
           </View>
 
           {sheetType === "list" ? (
-            <View>
-              {folders?.map((folder, index) => (
-                <Text key={index}>{folder.name}</Text>
-              ))}
+            <View className="flex-row flex-wrap gap-2">
+              {folders?.map((folder) => {
+                const isSelected = folder.id === selectedFolderId;
+                return (
+                  <Pressable
+                    key={folder.id}
+                    onPress={() => {
+                      onFolderSelect({ id: folder.id, name: folder.name });
+                      ref.current?.dismiss();
+                    }}
+                    className={cn(
+                      "rounded-full border px-4 py-2",
+                      isSelected
+                        ? "border-[#e0ac1f] bg-secondary"
+                        : "border-dark bg-secondary-light",
+                    )}
+                  >
+                    <Text
+                      className={cn(
+                        "text-sm text-text-primary",
+                        isSelected ? "font-sans-semibold" : "font-sans",
+                      )}
+                    >
+                      {folder.name}
+                    </Text>
+                  </Pressable>
+                );
+              })}
             </View>
           ) : (
             <View className="form-group">

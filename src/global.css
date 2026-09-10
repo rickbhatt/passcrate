@@ -48,7 +48,9 @@
   --color-background: #ffffff;
   --color-surface: #f7f7fb;
 
-  --color-text-primary: #16151c;
+  --color-dark: #16151c;
+
+  --color-text-primary: var(--color-dark);
   --color-text-secondary: #8c8c9c;
 
   --color-border: #ececf4;

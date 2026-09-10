@@ -18,9 +18,10 @@ import FolderBottomSheet from "@/components/bottomsheets/folders/folder-bottomsh
 import FormInput from "@/components/form-input";
 import { Button } from "@/components/ui/button";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import * as Haptics from "expo-haptics";
 import { styled } from "nativewind";
 import { useRef, useState } from "react";
-import { Keyboard, Text, View } from "react-native";
+import { Keyboard, Pressable, Text, View } from "react-native";
 import {
   KeyboardStickyView,
   KeyboardAwareScrollView as RNKeyboardAwareScrollView,
@@ -59,12 +60,21 @@ const PasswordForm = ({ value, onChange, onSubmit }: PasswordFormProps) => {
   const handleFolderSheetFullyClosed = () => {
     setIsFolderSheetOpen(false);
   };
-  const handleFolderCreated = (folder: { id: string; name: string }) => {
+  const onFolderSelect = (folder: { id: string; name: string }) => {
     onChange((prev: Partial<PasswordInsertType>) => ({
       ...prev,
       folderId: folder.id,
       folderName: folder.name.trim(),
     }));
+  };
+
+  const handleFolderPress = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    triggerFolderBottomSheet();
+  };
+
+  const handleAddTagPress = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   };
 
   return (
@@ -119,22 +129,24 @@ const PasswordForm = ({ value, onChange, onSubmit }: PasswordFormProps) => {
           />
           <View className="form-group bg-background">
             <Text className="form-label">Folder</Text>
-            <Button
-              onPress={triggerFolderBottomSheet}
-              variant="outline"
-              className="h-14 p-2 items-center justify-start border border-gray-700"
+            <Pressable
+              onPress={handleFolderPress}
+              className="h-14 flex-row items-center justify-start rounded-md border border-gray-700 p-2"
             >
               <Text className="base-paragraph">
                 {value.folderName || "Select a Folder"}
               </Text>
-            </Button>
+            </Pressable>
           </View>
           <View className="form-group">
             <Text>Tags</Text>
             <View className="bg-background rounded-md p-2 border border-gray-700">
-              <Button className="border-0 bg-green-500 items-center justify-start">
+              <Pressable
+                onPress={handleAddTagPress}
+                className="flex-row items-center justify-start rounded-md bg-green-500 p-2"
+              >
                 <Text>Add Tag +</Text>
-              </Button>
+              </Pressable>
             </View>
           </View>
           <FormInput
@@ -159,7 +171,8 @@ const PasswordForm = ({ value, onChange, onSubmit }: PasswordFormProps) => {
       <FolderBottomSheet
         ref={folderBottomSheetRef}
         onFullyClosed={handleFolderSheetFullyClosed}
-        onFolderCreated={handleFolderCreated}
+        onFolderSelect={onFolderSelect}
+        selectedFolderId={value.folderId}
       />
     </>
   );
