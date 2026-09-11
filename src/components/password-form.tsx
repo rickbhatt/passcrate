@@ -93,7 +93,7 @@ const PasswordForm = ({ value, onChange, onSubmit }: PasswordFormProps) => {
           bottomOffset={0}
           extraKeyboardSpace={0}
           className="screen-x-padding"
-          contentContainerClassName="flex-col gap-5"
+          contentContainerClassName="flex-col gap-5 pb-28"
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
           mode="layout"
@@ -101,6 +101,7 @@ const PasswordForm = ({ value, onChange, onSubmit }: PasswordFormProps) => {
           <FormInput
             key={"title"}
             label="Title"
+            isRequired
             inputType="text"
             inputName="title"
             value={value.title}
@@ -121,6 +122,7 @@ const PasswordForm = ({ value, onChange, onSubmit }: PasswordFormProps) => {
           <FormInput
             key={"password"}
             label="Password"
+            isRequired
             inputType="text"
             inputName="password"
             value={value.password}
@@ -137,7 +139,10 @@ const PasswordForm = ({ value, onChange, onSubmit }: PasswordFormProps) => {
             placeholder="https://github.com"
           />
           <View className="form-group bg-background">
-            <Text className="form-label">Folder</Text>
+            <Text className="form-label">
+              Folder<Text className="text-red-500"> *</Text>
+            </Text>
+
             <Pressable
               onPress={handleFolderPress}
               className="h-14 flex-row items-center justify-start rounded-md border border-gray-700 p-2"
@@ -148,7 +153,9 @@ const PasswordForm = ({ value, onChange, onSubmit }: PasswordFormProps) => {
             </Pressable>
           </View>
           <View className="form-group">
-            <Text className="form-label">Tags</Text>
+            <Text className="form-label">
+              Tags<Text className="text-red-500"> *</Text>
+            </Text>
             <TagsInput value={value.tags ?? []} onChange={handleTagsChange} />
           </View>
           <FormInput

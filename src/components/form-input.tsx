@@ -15,6 +15,7 @@ import { FieldName } from "types";
 interface FormInputProps<TExtraFields extends Record<string, unknown> = {}> {
   inputType: "text" | "date" | "checkbox" | "textarea" | "select";
   label?: string;
+  isRequired?: boolean;
   inputName: string;
   onChange: (field: FieldName<TExtraFields>, rawValue: string) => void;
   value: string | null | undefined;
@@ -34,6 +35,7 @@ const FormInput = ({
   value,
   inputType,
   label,
+  isRequired = false,
   inputName,
   secureTextEntry = false,
   placeholder = "",
@@ -47,15 +49,18 @@ const FormInput = ({
   onChange,
   ref,
 }: FormInputProps) => {
-  const handleOnChange = (field: FieldName, rawValue: string) => {
-    onChange(field, rawValue);
+  const handleOnChange = (field: string, rawValue: string) => {
+    onChange(field as FieldName, rawValue);
   };
 
   switch (inputType) {
     case "text":
       return (
         <View className="form-group">
-          <Text className="form-label">{label}</Text>
+          <Text className="form-label">
+            {label}
+            {isRequired && <Text className="text-red-500"> *</Text>}
+          </Text>
           <Input
             ref={ref}
             value={value ?? ""}
