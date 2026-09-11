@@ -14,7 +14,15 @@
       "Bash(\"C:\\\\Users\\\\ritankar\\\\AppData\\\\Local\\\\Microsoft\\\\WinGet\\\\Packages\\\\facebook.watchman_Microsoft.Winget.Source_8wekyb3d8bbwe\\\\watchman-v2025.02.24.00-windows\\\\bin\\\\watchman.exe\" --version)",
       "Bash(winget list *)",
       "Bash('C:\\\\Users\\\\ritankar\\\\AppData\\\\Local\\\\Microsoft\\\\WinGet\\\\Packages\\\\facebook.watchman_Microsoft.Winget.Source_8wekyb3d8bbwe\\\\watchman-v2025.02.24.00-windows\\\\bin\\\\watchman.exe' version *)",
-      "Bash('C:\\\\Users\\\\ritankar\\\\AppData\\\\Local\\\\Microsoft\\\\WinGet\\\\Packages\\\\facebook.watchman_Microsoft.Winget.Source_8wekyb3d8bbwe\\\\watchman-v2025.02.24.00-windows\\\\bin\\\\watchman.exe' get-sockname *)"
+      "Bash('C:\\\\Users\\\\ritankar\\\\AppData\\\\Local\\\\Microsoft\\\\WinGet\\\\Packages\\\\facebook.watchman_Microsoft.Winget.Source_8wekyb3d8bbwe\\\\watchman-v2025.02.24.00-windows\\\\bin\\\\watchman.exe' get-sockname *)",
+      "Bash(git config *)",
+      "Bash(git credential-manager *)",
+      "Bash(gh --version)",
+      "Bash(echo \"exit=$?\")",
+      "Bash(bunx @react-native-reusables/cli@latest add badge)",
+      "Bash(bunx tsc *)",
+      "Bash(bun run *)",
+      "Bash(npx tsc *)"
     ]
   }
 }

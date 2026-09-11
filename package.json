@@ -7,6 +7,7 @@
     "@expo/vector-icons": "^15.0.2",
     "@gorhom/bottom-sheet": "^5",
     "@react-native-google-signin/google-signin": "^16.1.2",
+    "@rn-primitives/dialog": "^1.5.2",
     "@rn-primitives/portal": "^1.5.2",
     "@rn-primitives/slot": "^1.5.2",
     "@zxcvbn-ts/core": "^4.1.2",

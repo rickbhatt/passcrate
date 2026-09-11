@@ -69,7 +69,7 @@ const FolderBottomSheet = ({
   ref: RefObject<BottomSheetModal | null>;
   onFullyClosed?: () => void;
   onFolderSelect: (folder: { id: string; name: string }) => void;
-  selectedFolderId?: string;
+  selectedFolderId?: string | null;
 }) => {
   const TABS = [
     { type: "list", label: "Folders" },

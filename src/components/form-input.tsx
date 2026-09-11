@@ -17,7 +17,7 @@ interface FormInputProps<TExtraFields extends Record<string, unknown> = {}> {
   label?: string;
   inputName: string;
   onChange: (field: FieldName<TExtraFields>, rawValue: string) => void;
-  value: string;
+  value: string | null | undefined;
   secureTextEntry?: boolean;
   placeholder?: string;
   className?: string;
@@ -26,6 +26,7 @@ interface FormInputProps<TExtraFields extends Record<string, unknown> = {}> {
   maxLength?: number;
   editable?: boolean;
   insideBottomSheet?: boolean;
+  keyboardType?: "default" | "numeric";
   ref?: React.Ref<TextInput>;
 }
 
@@ -42,6 +43,7 @@ const FormInput = ({
   maxLength = undefined,
   editable = true,
   insideBottomSheet = false,
+  keyboardType = "default",
   onChange,
   ref,
 }: FormInputProps) => {
@@ -56,7 +58,7 @@ const FormInput = ({
           <Text className="form-label">{label}</Text>
           <Input
             ref={ref}
-            value={value}
+            value={value ?? ""}
             onChangeText={(text) => handleOnChange(inputName, text)}
             secureTextEntry={secureTextEntry}
             placeholder={placeholder}
@@ -68,6 +70,7 @@ const FormInput = ({
             maxLength={maxLength}
             editable={editable}
             insideBottomSheet={insideBottomSheet}
+            keyboardType={keyboardType}
           />
         </View>
       );

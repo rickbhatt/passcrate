@@ -16,6 +16,7 @@
 
 import FolderBottomSheet from "@/components/bottomsheets/folders/folder-bottomsheet";
 import FormInput from "@/components/form-input";
+import TagsInput from "@/components/tags/tags-input";
 import { Button } from "@/components/ui/button";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import * as Haptics from "expo-haptics";
@@ -27,7 +28,12 @@ import {
   KeyboardAwareScrollView as RNKeyboardAwareScrollView,
 } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { FieldName, PasswordFormProps, PasswordInsertType } from "types";
+import {
+  FieldName,
+  PasswordFormProps,
+  PasswordFormValue,
+  TagType,
+} from "types";
 
 const KeyboardAwareScrollView = styled(
   RNKeyboardAwareScrollView as React.ComponentType<any>,
@@ -40,7 +46,7 @@ const PasswordForm = ({ value, onChange, onSubmit }: PasswordFormProps) => {
   const [isFolderSheetOpen, setIsFolderSheetOpen] = useState(false);
 
   const handleFormInputOnChange = (field: FieldName, rawValue: string) => {
-    onChange((prev: Partial<PasswordInsertType>) => ({
+    onChange((prev: PasswordFormValue) => ({
       ...prev,
       [field]: rawValue,
     }));
@@ -61,20 +67,23 @@ const PasswordForm = ({ value, onChange, onSubmit }: PasswordFormProps) => {
     setIsFolderSheetOpen(false);
   };
   const onFolderSelect = (folder: { id: string; name: string }) => {
-    onChange((prev: Partial<PasswordInsertType>) => ({
+    onChange((prev: PasswordFormValue) => ({
       ...prev,
       folderId: folder.id,
       folderName: folder.name.trim(),
     }));
   };
 
+  const handleTagsChange = (tags: TagType[]) => {
+    onChange((prev: PasswordFormValue) => ({
+      ...prev,
+      tags,
+    }));
+  };
+
   const handleFolderPress = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     triggerFolderBottomSheet();
-  };
-
-  const handleAddTagPress = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   };
 
   return (
@@ -139,19 +148,24 @@ const PasswordForm = ({ value, onChange, onSubmit }: PasswordFormProps) => {
             </Pressable>
           </View>
           <View className="form-group">
-            <Text>Tags</Text>
-            <View className="bg-background rounded-md p-2 border border-gray-700">
-              <Pressable
-                onPress={handleAddTagPress}
-                className="flex-row items-center justify-start rounded-md bg-green-500 p-2"
-              >
-                <Text>Add Tag +</Text>
-              </Pressable>
-            </View>
+            <Text className="form-label">Tags</Text>
+            <TagsInput value={value.tags ?? []} onChange={handleTagsChange} />
           </View>
+          <FormInput
+            key={"expiryDays"}
+            label="Expires in (days)"
+            inputType="text"
+            inputName="expiryDays"
+            value={value.expiryDays}
+            onChange={handleFormInputOnChange}
+            placeholder="e.g. 90"
+            keyboardType="numeric"
+            maxLength={3}
+          />
           <FormInput
             key={"notes"}
             label="Notes"
+            placeholder="Some notes..."
             inputType="text"
             inputName="notes"
             value={value.notes}

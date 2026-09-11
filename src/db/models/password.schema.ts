@@ -26,6 +26,8 @@ export const passwords = sqliteTable("passwords", {
   folderId: text("folder_id").references(() => folders.id, {
     onDelete: "set null",
   }),
+  expiryDays: integer("expiry_days"),
+  expiresAt: integer("expires_at", { mode: "timestamp" }),
   createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
   updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
 });
