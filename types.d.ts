@@ -1,4 +1,8 @@
 import { folders, passwords } from "@/db/schema";
+import { PasswordFormErrors } from "@/lib/validation/password";
+
+export type { PasswordFormErrors };
+
 interface TabBarIconProps {
   focused: boolean;
   label?: string;
@@ -23,6 +27,7 @@ export interface PasswordFormProps {
     data: PasswordFormValue | ((prev: PasswordFormValue) => PasswordFormValue),
   ) => void;
   onSubmit: (value: PasswordFormValue) => void;
+  errors?: PasswordFormErrors;
 }
 
 type FieldNameForm<T> = Extract<keyof T, string>;

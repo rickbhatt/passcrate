@@ -19,6 +19,7 @@ interface FormInputProps<TExtraFields extends Record<string, unknown> = {}> {
   inputName: string;
   onChange: (field: FieldName<TExtraFields>, rawValue: string) => void;
   value: string | null | undefined;
+  error?: string;
   secureTextEntry?: boolean;
   placeholder?: string;
   className?: string;
@@ -37,6 +38,7 @@ const FormInput = ({
   label,
   isRequired = false,
   inputName,
+  error,
   secureTextEntry = false,
   placeholder = "",
   className,
@@ -67,7 +69,11 @@ const FormInput = ({
             onChangeText={(text) => handleOnChange(inputName, text)}
             secureTextEntry={secureTextEntry}
             placeholder={placeholder}
-            className={cn("h-14 text-base bg-background", className)}
+            className={cn(
+              "h-14 text-base bg-background",
+              error && "border-red-500",
+              className,
+            )}
             autoCapitalize={autoCapitalize}
             autoFocus={autoFocus}
             numberOfLines={1}
@@ -77,6 +83,9 @@ const FormInput = ({
             insideBottomSheet={insideBottomSheet}
             keyboardType={keyboardType}
           />
+          {error && (
+            <Text className="text-red-500 text-sm mt-1">{error}</Text>
+          )}
         </View>
       );
   }

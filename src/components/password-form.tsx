@@ -18,6 +18,7 @@ import FolderBottomSheet from "@/components/bottomsheets/folders/folder-bottomsh
 import FormInput from "@/components/form-input";
 import TagsInput from "@/components/tags/tags-input";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import * as Haptics from "expo-haptics";
 import { styled } from "nativewind";
@@ -39,7 +40,12 @@ const KeyboardAwareScrollView = styled(
   RNKeyboardAwareScrollView as React.ComponentType<any>,
 );
 
-const PasswordForm = ({ value, onChange, onSubmit }: PasswordFormProps) => {
+const PasswordForm = ({
+  value,
+  onChange,
+  onSubmit,
+  errors = {},
+}: PasswordFormProps) => {
   const insets = useSafeAreaInsets();
 
   const folderBottomSheetRef = useRef<BottomSheetModal | null>(null);
@@ -105,6 +111,7 @@ const PasswordForm = ({ value, onChange, onSubmit }: PasswordFormProps) => {
             inputType="text"
             inputName="title"
             value={value.title}
+            error={errors.title}
             onChange={handleFormInputOnChange}
             placeholder="office gmail account..."
             autoCapitalize="words"
@@ -126,6 +133,7 @@ const PasswordForm = ({ value, onChange, onSubmit }: PasswordFormProps) => {
             inputType="text"
             inputName="password"
             value={value.password}
+            error={errors.password}
             onChange={handleFormInputOnChange}
             placeholder="**********"
           />
@@ -145,18 +153,31 @@ const PasswordForm = ({ value, onChange, onSubmit }: PasswordFormProps) => {
 
             <Pressable
               onPress={handleFolderPress}
-              className="h-14 flex-row items-center justify-start rounded-md border border-gray-700 p-2"
+              className={cn(
+                "h-14 flex-row items-center justify-start rounded-md border border-gray-700 p-2",
+                errors.folderId && "border-red-500",
+              )}
             >
               <Text className="base-paragraph">
                 {value.folderName || "Select a Folder"}
               </Text>
             </Pressable>
+            {errors.folderId && (
+              <Text className="text-red-500 text-sm mt-1">
+                {errors.folderId}
+              </Text>
+            )}
           </View>
           <View className="form-group">
             <Text className="form-label">
               Tags<Text className="text-red-500"> *</Text>
             </Text>
             <TagsInput value={value.tags ?? []} onChange={handleTagsChange} />
+            {errors.tags && (
+              <Text className="text-red-500 text-sm mt-1">
+                {errors.tags}
+              </Text>
+            )}
           </View>
           <FormInput
             key={"expiryDays"}
@@ -164,6 +185,7 @@ const PasswordForm = ({ value, onChange, onSubmit }: PasswordFormProps) => {
             inputType="text"
             inputName="expiryDays"
             value={value.expiryDays}
+            error={errors.expiryDays}
             onChange={handleFormInputOnChange}
             placeholder="e.g. 90"
             keyboardType="numeric"

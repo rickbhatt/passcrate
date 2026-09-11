@@ -22,7 +22,8 @@
       "Bash(bunx @react-native-reusables/cli@latest add badge)",
       "Bash(bunx tsc *)",
       "Bash(bun run *)",
-      "Bash(npx tsc *)"
+      "Bash(npx tsc *)",
+      "Bash(bun add *)"
     ]
   }
 }
