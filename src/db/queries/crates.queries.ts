@@ -6,14 +6,8 @@ const cratesQuery = (db: Db) => {
   return db.select().from(crates).orderBy(asc(crates.name));
 };
 
-const crateById = async ({ db, id }: { db: Db; id: string }) => {
-  const [crate] = await db
-    .select()
-    .from(crates)
-    .where(eq(crates.id, id))
-    .limit(1);
-
-  return crate;
+const crateById = ({ db, id }: { db: Db; id: string }) => {
+  return db.select().from(crates).where(eq(crates.id, id)).limit(1);
 };
 
 export { crateById, cratesQuery };

@@ -35,7 +35,8 @@
       "Bash(xargs -I{} echo {})",
       "Bash(./node_modules/.bin/tsc --noEmit)",
       "Bash(xargs grep -l \"FlatList\")",
-      "Bash(xargs grep -ln \"react-native\\\\\"\")"
+      "Bash(xargs grep -ln \"react-native\\\\\"\")",
+      "Bash(./node_modules/.bin/tsc.exe --noEmit -p .)"
     ]
   }
 }

@@ -16,7 +16,7 @@
 
 import CrateBottomSheet from "@/components/bottomsheets/crates/crate-bottomsheet";
 import FormInput from "@/components/form-input";
-import TagsInput from "@/components/tags/tags-input";
+import TagsInput from "@/components/tags-input";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
@@ -174,9 +174,7 @@ const PasswordForm = ({
             </Text>
             <TagsInput value={value.tags ?? []} onChange={handleTagsChange} />
             {errors.tags && (
-              <Text className="text-red-500 text-sm mt-1">
-                {errors.tags}
-              </Text>
+              <Text className="text-red-500 text-sm mt-1">{errors.tags}</Text>
             )}
           </View>
           <FormInput
