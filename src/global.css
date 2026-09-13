@@ -113,7 +113,7 @@
 
 @layer components {
   .main {
-    @apply flex-1 bg-background screen-x-padding pt-safe;
+    @apply flex-1 bg-background screen-x-padding;
   }
 
   .base-para {

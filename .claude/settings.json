@@ -31,7 +31,11 @@
       "Bash(mv \"src/app/folder/[id].tsx\" \"src/app/crate/[id].tsx\")",
       "Bash(identify assets/images/crates.png)",
       "Bash(bunx --version)",
-      "Bash(bunx drizzle-kit *)"
+      "Bash(bunx drizzle-kit *)",
+      "Bash(xargs -I{} echo {})",
+      "Bash(./node_modules/.bin/tsc --noEmit)",
+      "Bash(xargs grep -l \"FlatList\")",
+      "Bash(xargs grep -ln \"react-native\\\\\"\")"
     ]
   }
 }
