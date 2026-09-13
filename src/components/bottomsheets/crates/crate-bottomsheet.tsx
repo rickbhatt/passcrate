@@ -35,8 +35,8 @@
 import FormInput from "@/components/form-input";
 import { Button } from "@/components/ui/button";
 import { useDb } from "@/db/hooks/useDb";
-import { addFolder } from "@/db/mutations/folders.mutations";
-import { foldersQuery } from "@/db/queries/folders.queries";
+import { addCrate } from "@/db/mutations/crates.mutations";
+import { cratesQuery } from "@/db/queries/crates.queries";
 import { useBottomSheetBackHandler } from "@/hooks/useBottomSheetBackHandler";
 import { cn } from "@/lib/utils";
 import {
@@ -49,7 +49,7 @@ import { RefObject, useRef, useState } from "react";
 import { Keyboard, Pressable, Text, TextInput, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { toast } from "sonner-native";
-import { FolderInserType } from "types";
+import { CrateInsertType } from "types";
 
 const renderBackdrop = (props: any) => (
   <BottomSheetBackdrop
@@ -60,19 +60,19 @@ const renderBackdrop = (props: any) => (
   />
 );
 
-const FolderBottomSheet = ({
+const CrateBottomSheet = ({
   ref,
   onFullyClosed,
-  onFolderSelect,
-  selectedFolderId,
+  onCrateSelect,
+  selectedCrateId,
 }: {
   ref: RefObject<BottomSheetModal | null>;
   onFullyClosed?: () => void;
-  onFolderSelect: (folder: { id: string; name: string }) => void;
-  selectedFolderId?: string | null;
+  onCrateSelect: (crate: { id: string; name: string }) => void;
+  selectedCrateId?: string | null;
 }) => {
   const TABS = [
-    { type: "list", label: "Folders" },
+    { type: "list", label: "Crates" },
     { type: "create", label: "Create" },
   ] as const;
 
@@ -88,7 +88,7 @@ const FolderBottomSheet = ({
   const insets = useSafeAreaInsets();
   const nameInputRef = useRef<TextInput>(null);
 
-  const [formData, setFormData] = useState<Partial<FolderInserType>>({
+  const [formData, setFormData] = useState<Partial<CrateInsertType>>({
     name: "",
   });
 
@@ -99,10 +99,10 @@ const FolderBottomSheet = ({
 
   const db = useDb();
 
-  const { data: folders } = useLiveQuery(foldersQuery(db));
+  const { data: crates } = useLiveQuery(cratesQuery(db));
 
   const handleOnChange = (fieldName: string, rawValue: string) => {
-    setFormData((prev: Partial<FolderInserType>) => ({
+    setFormData((prev: Partial<CrateInsertType>) => ({
       ...prev,
       [fieldName]: rawValue,
     }));
@@ -122,22 +122,22 @@ const FolderBottomSheet = ({
   };
 
   const handleOnSubmit = async () => {
-    const folderName = formData.name?.trim() ?? "";
+    const crateName = formData.name?.trim() ?? "";
 
-    if (folderName.length < 2) {
-      toast.info("Folder name must be at least 2 characters long.");
+    if (crateName.length < 2) {
+      toast.info("Crate name must be at least 2 characters long.");
       return;
     }
 
     try {
-      const resp = await addFolder({ db, name: folderName });
-      onFolderSelect?.({ id: resp.id, name: resp.name });
+      const resp = await addCrate({ db, name: crateName });
+      onCrateSelect?.({ id: resp.id, name: resp.name });
       setFormData({ name: "" });
       nameInputRef.current?.blur();
       Keyboard.dismiss();
       ref.current?.dismiss();
     } catch (error) {
-      toast.error("Could not create folder. Please try again");
+      toast.error("Could not create crate. Please try again");
     }
   };
 
@@ -197,13 +197,13 @@ const FolderBottomSheet = ({
 
           {sheetType === "list" ? (
             <View className="flex-row flex-wrap gap-2">
-              {folders?.map((folder) => {
-                const isSelected = folder.id === selectedFolderId;
+              {crates?.map((crate) => {
+                const isSelected = crate.id === selectedCrateId;
                 return (
                   <Pressable
-                    key={folder.id}
+                    key={crate.id}
                     onPress={() => {
-                      onFolderSelect({ id: folder.id, name: folder.name });
+                      onCrateSelect({ id: crate.id, name: crate.name });
                       ref.current?.dismiss();
                     }}
                     className={cn(
@@ -219,7 +219,7 @@ const FolderBottomSheet = ({
                         isSelected ? "font-sans-semibold" : "font-sans",
                       )}
                     >
-                      {folder.name}
+                      {crate.name}
                     </Text>
                   </Pressable>
                 );
@@ -229,7 +229,7 @@ const FolderBottomSheet = ({
             <View className="form-group">
               <FormInput
                 ref={nameInputRef}
-                label="Folder Name"
+                label="Crate Name"
                 value={formData.name}
                 onChange={handleOnChange}
                 inputName="name"
@@ -252,4 +252,4 @@ const FolderBottomSheet = ({
   );
 };
 
-export default FolderBottomSheet;
+export default CrateBottomSheet;

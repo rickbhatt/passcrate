@@ -1,7 +1,7 @@
 /**
  * `ref` and `insideBottomSheet` are forwarded straight through to Input.
  * The ref is required for manual .focus()/.blur() control from parents
- * like FolderBottomSheet - autoFocus is intentionally NOT relied on for
+ * like CrateBottomSheet - autoFocus is intentionally NOT relied on for
  * inputs inside a bottom sheet (see gorhom/react-native-bottom-sheet
  * issue #2661 - autoFocus races the sheet's open animation and can leave
  * the keyboard/focus state stuck).

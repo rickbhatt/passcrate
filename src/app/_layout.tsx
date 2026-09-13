@@ -82,6 +82,7 @@ const Layout = () => {
         <Stack.Protected guard={appState === "unlocked"}>
           <Stack.Screen name="(tabs)" />
           <Stack.Screen name="password" />
+          <Stack.Screen name="crate/[id]" />
         </Stack.Protected>
       </Stack>
       <Toaster position="top-center" richColors />

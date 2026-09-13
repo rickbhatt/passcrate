@@ -6,7 +6,11 @@ import { validatePasswordForm } from "@/lib/validation/password";
 import { useState } from "react";
 import { View } from "react-native";
 import { toast } from "sonner-native";
-import { PasswordFormErrors, PasswordFormProps, PasswordFormValue } from "types";
+import {
+  PasswordFormErrors,
+  PasswordFormProps,
+  PasswordFormValue,
+} from "types";
 
 const initialFormData: PasswordFormValue = {
   title: "",
@@ -14,8 +18,8 @@ const initialFormData: PasswordFormValue = {
   password: "",
   url: "",
   notes: "",
-  folderId: "",
-  folderName: "",
+  crateId: "",
+  crateName: "",
   tags: [],
   expiryDays: "",
 };
@@ -28,8 +32,10 @@ const AddPassword = () => {
   const { derivedKey } = useCrypto();
 
   const handleChange: PasswordFormProps["onChange"] = (data) => {
+    console.log("🚀 ~ handleChange ~ data:", data);
     setFormData((prev) => {
       const next = typeof data === "function" ? data(prev) : data;
+      console.log("🚀 ~ handleChange ~ next:", next);
 
       const changedKeys = (
         Object.keys(next) as (keyof PasswordFormValue)[]

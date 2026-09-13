@@ -1,4 +1,4 @@
-import { folders, passwords } from "@/db/schema";
+import { crates, passwords } from "@/db/schema";
 import { PasswordFormErrors } from "@/lib/validation/password";
 
 export type { PasswordFormErrors };
@@ -16,7 +16,7 @@ export type PasswordFormValue = Omit<
   "expiryDays"
 > & {
   password?: string;
-  folderName?: string;
+  crateName?: string;
   tags?: TagType[];
   expiryDays?: string;
 };
@@ -36,4 +36,4 @@ export type FieldName<TExtraFields extends Record<string, unknown> = {}> =
   FieldNameForm<PasswordFormValue>;
 
 export type PasswordInsertType = typeof passwords.$inferInsert;
-export type FolderInserType = typeof folders.$inferInsert;
+export type CrateInsertType = typeof crates.$inferInsert;

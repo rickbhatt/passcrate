@@ -1,20 +1,20 @@
 /**
- * isFolderSheetOpen + enabled={!isFolderSheetOpen} on KeyboardStickyView:
+ * isCrateSheetOpen + enabled={!isCrateSheetOpen} on KeyboardStickyView:
  *
  * KeyboardStickyView reacts to the GLOBAL native keyboard state, not
- * "is MY input focused." So while FolderBottomSheet's own input has the
+ * "is MY input focused." So while CrateBottomSheet's own input has the
  * keyboard, this screen's sticky Save button would otherwise still raise/
  * lower in sync with it, causing visible jerks. Disabling it while the
  * sheet is open freezes it at rest; onFullyClosed (passed to the sheet)
  * re-enables it only once the sheet's keyboard has actually finished
  * closing.
  *
- * triggerFolderBottomSheet also waits for this screen's own keyboard to
+ * triggerCrateBottomSheet also waits for this screen's own keyboard to
  * finish hiding (keyboardDidHide) before presenting the sheet, so the two
  * keyboards never overlap/race when opening from a focused parent input.
  */
 
-import FolderBottomSheet from "@/components/bottomsheets/folders/folder-bottomsheet";
+import CrateBottomSheet from "@/components/bottomsheets/crates/crate-bottomsheet";
 import FormInput from "@/components/form-input";
 import TagsInput from "@/components/tags/tags-input";
 import { Button } from "@/components/ui/button";
@@ -48,8 +48,8 @@ const PasswordForm = ({
 }: PasswordFormProps) => {
   const insets = useSafeAreaInsets();
 
-  const folderBottomSheetRef = useRef<BottomSheetModal | null>(null);
-  const [isFolderSheetOpen, setIsFolderSheetOpen] = useState(false);
+  const crateBottomSheetRef = useRef<BottomSheetModal | null>(null);
+  const [isCrateSheetOpen, setIsCrateSheetOpen] = useState(false);
 
   const handleFormInputOnChange = (field: FieldName, rawValue: string) => {
     onChange((prev: PasswordFormValue) => ({
@@ -57,26 +57,26 @@ const PasswordForm = ({
       [field]: rawValue,
     }));
   };
-  const triggerFolderBottomSheet = () => {
-    setIsFolderSheetOpen(true);
+  const triggerCrateBottomSheet = () => {
+    setIsCrateSheetOpen(true);
     if (Keyboard.isVisible?.()) {
       const sub = Keyboard.addListener("keyboardDidHide", () => {
         sub.remove();
-        folderBottomSheetRef.current?.present();
+        crateBottomSheetRef.current?.present();
       });
       Keyboard.dismiss();
     } else {
-      folderBottomSheetRef.current?.present();
+      crateBottomSheetRef.current?.present();
     }
   };
-  const handleFolderSheetFullyClosed = () => {
-    setIsFolderSheetOpen(false);
+  const handleCrateSheetFullyClosed = () => {
+    setIsCrateSheetOpen(false);
   };
-  const onFolderSelect = (folder: { id: string; name: string }) => {
+  const onCrateSelect = (crate: { id: string; name: string }) => {
     onChange((prev: PasswordFormValue) => ({
       ...prev,
-      folderId: folder.id,
-      folderName: folder.name.trim(),
+      crateId: crate.id,
+      crateName: crate.name.trim(),
     }));
   };
 
@@ -87,9 +87,9 @@ const PasswordForm = ({
     }));
   };
 
-  const handleFolderPress = () => {
+  const handleCratePress = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    triggerFolderBottomSheet();
+    triggerCrateBottomSheet();
   };
 
   return (
@@ -148,23 +148,23 @@ const PasswordForm = ({
           />
           <View className="form-group bg-background">
             <Text className="form-label">
-              Folder<Text className="text-red-500"> *</Text>
+              Crate<Text className="text-red-500"> *</Text>
             </Text>
 
             <Pressable
-              onPress={handleFolderPress}
+              onPress={handleCratePress}
               className={cn(
                 "h-14 flex-row items-center justify-start rounded-md border border-gray-700 p-2",
-                errors.folderId && "border-red-500",
+                errors.crateId && "border-red-500",
               )}
             >
               <Text className="base-paragraph">
-                {value.folderName || "Select a Folder"}
+                {value.crateName || "Select a Crate"}
               </Text>
             </Pressable>
-            {errors.folderId && (
+            {errors.crateId && (
               <Text className="text-red-500 text-sm mt-1">
-                {errors.folderId}
+                {errors.crateId}
               </Text>
             )}
           </View>
@@ -204,18 +204,18 @@ const PasswordForm = ({
         <KeyboardStickyView
           className="py-2.5 bg-background flex-row items-center screen-x-padding"
           offset={{ closed: -insets.bottom, opened: 0 }}
-          enabled={!isFolderSheetOpen}
+          enabled={!isCrateSheetOpen}
         >
           <Button className="py-3 w-full" onPress={() => onSubmit(value)}>
             <Text className="btn-label">Save</Text>
           </Button>
         </KeyboardStickyView>
       </View>
-      <FolderBottomSheet
-        ref={folderBottomSheetRef}
-        onFullyClosed={handleFolderSheetFullyClosed}
-        onFolderSelect={onFolderSelect}
-        selectedFolderId={value.folderId}
+      <CrateBottomSheet
+        ref={crateBottomSheetRef}
+        onFullyClosed={handleCrateSheetFullyClosed}
+        onCrateSelect={onCrateSelect}
+        selectedCrateId={value.crateId}
       />
     </>
   );

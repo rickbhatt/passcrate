@@ -23,7 +23,15 @@
       "Bash(bunx tsc *)",
       "Bash(bun run *)",
       "Bash(npx tsc *)",
-      "Bash(bun add *)"
+      "Bash(bun add *)",
+      "Bash(code --list-extensions --show-versions)",
+      "Bash(code --uninstall-extension typescriptteam.native-preview)",
+      "Bash(code --uninstall-extension ms-vscode.vscode-typescript-next)",
+      "Bash(git mv *)",
+      "Bash(mv \"src/app/folder/[id].tsx\" \"src/app/crate/[id].tsx\")",
+      "Bash(identify assets/images/crates.png)",
+      "Bash(bunx --version)",
+      "Bash(bunx drizzle-kit *)"
     ]
   }
 }

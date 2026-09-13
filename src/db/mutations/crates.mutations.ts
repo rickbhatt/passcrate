@@ -1,23 +1,23 @@
-import { folders } from "@/db/schema";
+import { crates } from "@/db/schema";
 import { Db } from "@/db/types";
 import { generateUUID } from "@/lib/utils";
 import { eq } from "drizzle-orm";
 
-const addFolder = async ({ db, name }: { db: Db; name: string }) => {
+const addCrate = async ({ db, name }: { db: Db; name: string }) => {
   const normalizedName = name.trim();
   const nameKey = normalizedName.toLowerCase();
-  const [existingFolder] = await db
+  const [existingCrate] = await db
     .select()
-    .from(folders)
-    .where(eq(folders.nameKey, nameKey))
+    .from(crates)
+    .where(eq(crates.nameKey, nameKey))
     .limit(1);
 
-  if (existingFolder) {
-    return existingFolder;
+  if (existingCrate) {
+    return existingCrate;
   }
 
-  const [folder] = await db
-    .insert(folders)
+  const [crate] = await db
+    .insert(crates)
     .values({
       id: generateUUID(),
       name: normalizedName,
@@ -26,10 +26,10 @@ const addFolder = async ({ db, name }: { db: Db; name: string }) => {
     })
     .returning();
 
-  return folder;
+  return crate;
 };
 
-const updateFolder = async ({
+const updateCrate = async ({
   db,
   id,
   name,
@@ -40,20 +40,20 @@ const updateFolder = async ({
 }) => {
   const normalizedName = name.trim();
   const nameKey = normalizedName.toLowerCase();
-  const [folder] = await db
-    .update(folders)
+  const [crate] = await db
+    .update(crates)
     .set({
       name: normalizedName,
       nameKey,
     })
-    .where(eq(folders.id, id))
+    .where(eq(crates.id, id))
     .returning();
 
-  return folder;
+  return crate;
 };
 
-const deleteFolder = async ({ db, id }: { db: Db; id: string }) => {
-  await db.delete(folders).where(eq(folders.id, id));
+const deleteCrate = async ({ db, id }: { db: Db; id: string }) => {
+  await db.delete(crates).where(eq(crates.id, id));
 };
 
-export { addFolder, deleteFolder, updateFolder };
+export { addCrate, deleteCrate, updateCrate };

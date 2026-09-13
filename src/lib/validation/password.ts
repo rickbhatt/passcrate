@@ -9,14 +9,14 @@ export const passwordFormSchema = z.object({
   password: z
     .string()
     .refine((value) => value.trim().length > 0, "Password is required"),
-  folderId: z.string().min(1, "Please select a folder"),
+  crateId: z.string().min(1, "Please select a crate"),
   tags: z
     .array(z.object({ id: z.string().nullable(), name: z.string() }))
     .min(1, "Add at least one tag"),
   username: z.string().optional(),
   url: z.string().optional(),
   notes: z.string().optional(),
-  folderName: z.string().optional(),
+  crateName: z.string().optional(),
   expiryDays: z
     .string()
     .optional()
