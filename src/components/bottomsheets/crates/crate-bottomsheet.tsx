@@ -242,7 +242,7 @@ const CrateBottomSheet = ({
                 disabled={!formData.name?.trim()}
                 onPress={handleOnSubmit}
               >
-                <Text className="btn-label">Create</Text>
+                <Text className="btn-label-white">Create</Text>
               </Button>
             </View>
           )}

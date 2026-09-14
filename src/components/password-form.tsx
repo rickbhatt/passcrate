@@ -205,7 +205,7 @@ const PasswordForm = ({
           enabled={!isCrateSheetOpen}
         >
           <Button className="py-3 w-full" onPress={() => onSubmit(value)}>
-            <Text className="btn-label">Save</Text>
+            <Text className="btn-label-white">Save</Text>
           </Button>
         </KeyboardStickyView>
       </View>

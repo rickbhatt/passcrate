@@ -119,7 +119,7 @@ const SetupBiometric = () => {
             disabled={isBusy}
             className="flex-1 basis-0 p-4"
           >
-            <Text className="btn-label">Enable</Text>
+            <Text className="btn-label-white">Enable</Text>
           </Button>
         </View>
       </View>

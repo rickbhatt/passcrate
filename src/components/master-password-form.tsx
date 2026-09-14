@@ -56,7 +56,7 @@ const MasterPasswordForm = ({
         </Button>
       </View>
       <Button onPress={onSubmit} className="py-3 w-full" disabled={disabled}>
-        <Text className="btn-label">{buttonLabel}</Text>
+        <Text className="btn-label-white">{buttonLabel}</Text>
       </Button>
     </View>
   );

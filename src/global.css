@@ -57,7 +57,7 @@
 
   --color-success: #2fd3a6;
   --color-warning: #ffc93c;
-  --color-danger: #ff6584;
+  --color-danger: #dc3545;
 }
 :root {
   --background: 0 0% 100%;
@@ -113,7 +113,7 @@
 
 @layer components {
   .main {
-    @apply flex-1 bg-background screen-x-padding;
+    @apply flex-1 bg-background screen-x-padding pt-3;
   }
 
   .base-para {
@@ -124,12 +124,20 @@
     @apply active:scale-[0.95];
   }
 
-  .btn-label {
+  .btn-label-white {
     @apply text-base font-sans-semibold text-white;
+  }
+
+  .btn-label-dark {
+    @apply text-base font-sans-semibold text-text-primary;
   }
 
   .form-group {
     @apply flex-col gap-y-3;
+  }
+
+  .detail-group {
+    @apply flex-col gap-y-1;
   }
 
   .form-label {
