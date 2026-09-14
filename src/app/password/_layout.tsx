@@ -16,7 +16,12 @@ const PasswordLayout = () => {
           title: "Add Password",
         }}
       />
-      <Stack.Screen name="edit/[id]" />
+      <Stack.Screen
+        name="edit/[id]"
+        options={{
+          title: "Edit Password",
+        }}
+      />
       <Stack.Screen name="detail/[id]" />
     </Stack>
   );

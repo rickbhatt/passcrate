@@ -35,7 +35,6 @@ const AddPassword = () => {
     console.log("🚀 ~ handleChange ~ data:", data);
     setFormData((prev) => {
       const next = typeof data === "function" ? data(prev) : data;
-      console.log("🚀 ~ handleChange ~ next:", next);
 
       const changedKeys = (
         Object.keys(next) as (keyof PasswordFormValue)[]
