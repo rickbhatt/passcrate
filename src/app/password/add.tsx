@@ -32,7 +32,6 @@ const AddPassword = () => {
   const { derivedKey } = useCrypto();
 
   const handleChange: PasswordFormProps["onChange"] = (data) => {
-    console.log("🚀 ~ handleChange ~ data:", data);
     setFormData((prev) => {
       const next = typeof data === "function" ? data(prev) : data;
 

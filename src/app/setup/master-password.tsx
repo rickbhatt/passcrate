@@ -1,68 +1,29 @@
 import MasterPasswordForm from "@/components/master-password-form";
+import PasswordStrengthMeter from "@/components/password-strength-meter";
 import image from "@/constants/images";
 import { SECURE_KEYS } from "@/constants/secure-keys";
 import { useCrypto } from "@/contexts/CryptoContext";
 import { useDb } from "@/db/hooks/useDb";
 import { storeSalt } from "@/db/mutations/appConfig.mutation";
+import { usePasswordStrength } from "@/hooks/usePasswordStrength";
 import { encrypt, getDerivedKey } from "@/lib/crypto";
-import { checkBiometricSupport, cn } from "@/lib/utils";
-import { ZxcvbnFactory } from "@zxcvbn-ts/core";
-import * as zxcvbnEnPackage from "@zxcvbn-ts/language-en";
+import { checkBiometricSupport } from "@/lib/utils";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Image, Text, View } from "react-native";
 import QuickCrypto from "react-native-quick-crypto";
-import Animated, {
-  FadeInDown,
-  FadeOutUp,
-  useAnimatedStyle,
-  useSharedValue,
-  withTiming,
-} from "react-native-reanimated";
 import { toast } from "sonner-native";
 
-const PASSWORD_STRENGTH_INDICATOR = [
-  { label: "Very Weak", color: "bg-red-500" },
-  { label: "Weak", color: "bg-orange-500" },
-  { label: "Fair", color: "bg-yellow-500" },
-  { label: "Good", color: "bg-sky-500" },
-  { label: "Strong", color: "bg-green-500" },
-];
-const options = {
-  dictionary: {
-    ...zxcvbnEnPackage.dictionary,
-  },
-
-  translations: zxcvbnEnPackage.translations,
-};
-const zxcvbn = new ZxcvbnFactory(options);
 const SetupMasterPassword = () => {
   const [masterPassword, setMasterPassword] = useState("");
 
-  const [passwordStrengthScore, setPasswordStrengthScore] = useState(0);
-  const [isTypingPassword, setIsTypingPassword] = useState(false);
+  const { score: passwordStrengthScore } = usePasswordStrength(masterPassword);
 
   const db = useDb();
 
   const { setDerivedKey, setAppState, setPendingMasterPassword } = useCrypto();
 
   const router = useRouter();
-
-  const progress = useSharedValue(0);
-
-  const handleTextChange = (password: string) => {
-    setIsTypingPassword(password.length > 0);
-    setMasterPassword(password);
-    let result = zxcvbn.check(password);
-    progress.value = withTiming((result.score + 1) / 5, {
-      duration: 250,
-    });
-    setPasswordStrengthScore(result.score);
-  };
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    width: `${progress.value * 100}%`,
-  }));
 
   const handleCreatePassword = async () => {
     const saltBytes = QuickCrypto.randomBytes(16);
@@ -102,35 +63,13 @@ const SetupMasterPassword = () => {
       </View>
 
       <View className="flex-col mt-5 w-full gap-y-3">
-        {/* password strength indicator section */}
-        {isTypingPassword && (
-          <Animated.View
-            className="flex-col gap-y-3"
-            entering={FadeInDown.duration(250)}
-            exiting={FadeOutUp.duration(150)}
-          >
-            {/* progress bar */}
-            <View className="h-3 rounded-full bg-gray-200 w-full">
-              <Animated.View
-                className={cn(
-                  "h-3 rounded-full",
-                  PASSWORD_STRENGTH_INDICATOR[passwordStrengthScore].color,
-                )}
-                style={animatedStyle}
-              />
-            </View>
-            <Text className="font-sans-semibold text-sm">
-              {PASSWORD_STRENGTH_INDICATOR[passwordStrengthScore].label}
-            </Text>
-
-            <Text className="font-sans-semibold text-sm">
-              Recommended strength: Good or higher.
-            </Text>
-          </Animated.View>
-        )}
+        <PasswordStrengthMeter
+          password={masterPassword}
+          hintText="Recommended strength: Good or higher."
+        />
         <MasterPasswordForm
           value={masterPassword}
-          onChange={handleTextChange}
+          onChange={setMasterPassword}
           onSubmit={handleCreatePassword}
           buttonLabel="Create password"
           disabled={passwordStrengthScore < 3}

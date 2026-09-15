@@ -15,9 +15,14 @@
  */
 
 import CrateBottomSheet from "@/components/bottomsheets/crates/crate-bottomsheet";
+import DynamicIcon from "@/components/dynamic-icon";
 import FormInput from "@/components/form-input";
+import PasswordStrengthMeter from "@/components/password-strength-meter";
 import TagsInput from "@/components/tags-input";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { COLORS } from "@/constants/theme";
+import { generatePassword } from "@/lib/password-generator";
 import { cn } from "@/lib/utils";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import * as Haptics from "expo-haptics";
@@ -50,6 +55,7 @@ const PasswordForm = ({
 
   const crateBottomSheetRef = useRef<BottomSheetModal | null>(null);
   const [isCrateSheetOpen, setIsCrateSheetOpen] = useState(false);
+  const [secureTextEntry, setSecureTextEntry] = useState(true);
 
   const handleFormInputOnChange = (field: FieldName, rawValue: string) => {
     onChange((prev: PasswordFormValue) => ({
@@ -92,6 +98,15 @@ const PasswordForm = ({
     triggerCrateBottomSheet();
   };
 
+  const toggleSecureText = () => {
+    setSecureTextEntry((prev) => !prev);
+  };
+
+  const handleGeneratePassword = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    handleFormInputOnChange("password", generatePassword());
+  };
+
   return (
     <>
       <View className="flex-1 bg-background header-mt">
@@ -126,17 +141,67 @@ const PasswordForm = ({
             onChange={handleFormInputOnChange}
             placeholder="username@gmail.com"
           />
-          <FormInput
-            key={"password"}
-            label="Password"
-            isRequired
-            inputType="text"
-            inputName="password"
-            value={value.password}
-            error={errors.password}
-            onChange={handleFormInputOnChange}
-            placeholder="**********"
-          />
+          <View className="form-group">
+            <Text className="form-label">
+              Password<Text className="text-red-500"> *</Text>
+            </Text>
+
+            <View
+              className={cn(
+                "flex-row items-center rounded-md border border-gray-700 bg-background overflow-hidden",
+                errors.password && "border-red-500",
+              )}
+            >
+              <Input
+                value={value.password ?? ""}
+                onChangeText={(text) =>
+                  handleFormInputOnChange("password", text)
+                }
+                secureTextEntry={secureTextEntry}
+                placeholder="**********"
+                className="flex-1 h-14 rounded-none border-0 text-base bg-background"
+                autoCapitalize="none"
+                autoCorrect={false}
+                spellCheck={false}
+                textContentType="newPassword"
+              />
+              <Button
+                className="bg-background border-0 rounded-none h-14"
+                variant="ghost"
+                onPress={toggleSecureText}
+              >
+                <DynamicIcon
+                  family="Entypo"
+                  name={secureTextEntry ? "eye" : "eye-with-line"}
+                  size={22}
+                  color={COLORS.textPrimary}
+                />
+              </Button>
+              <Button
+                className="bg-background border-0 rounded-none h-14"
+                variant="ghost"
+                onPress={handleGeneratePassword}
+              >
+                <DynamicIcon
+                  family="Feather"
+                  name="refresh-cw"
+                  size={22}
+                  color={COLORS.textPrimary}
+                />
+              </Button>
+            </View>
+
+            {errors.password && (
+              <Text className="text-red-500 text-sm mt-1">
+                {errors.password}
+              </Text>
+            )}
+
+            <PasswordStrengthMeter
+              password={value.password ?? ""}
+              hintText="Recommended strength: Good or higher."
+            />
+          </View>
           <FormInput
             key={"url"}
             label="URL"

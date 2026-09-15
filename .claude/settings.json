@@ -37,7 +37,8 @@
       "Bash(xargs grep -l \"FlatList\")",
       "Bash(xargs grep -ln \"react-native\\\\\"\")",
       "Bash(./node_modules/.bin/tsc.exe --noEmit -p .)",
-      "Bash(adb devices *)"
+      "Bash(adb devices *)",
+      "Bash(echo \"EXIT CODE: $?\")"
     ]
   }
 }
