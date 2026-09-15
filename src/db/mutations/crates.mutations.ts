@@ -1,7 +1,7 @@
 import { crates } from "@/db/schema";
 import { Db } from "@/db/types";
 import { generateUUID } from "@/lib/utils";
-import { eq } from "drizzle-orm";
+import { eq, inArray } from "drizzle-orm";
 
 const addCrate = async ({ db, name }: { db: Db; name: string }) => {
   const normalizedName = name.trim();
@@ -56,4 +56,8 @@ const deleteCrate = async ({ db, id }: { db: Db; id: string }) => {
   await db.delete(crates).where(eq(crates.id, id));
 };
 
-export { addCrate, deleteCrate, updateCrate };
+const deleteCrates = async ({ db, ids }: { db: Db; ids: string[] }) => {
+  await db.delete(crates).where(inArray(crates.id, ids));
+};
+
+export { addCrate, deleteCrate, deleteCrates, updateCrate };

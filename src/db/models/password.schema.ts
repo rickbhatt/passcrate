@@ -24,7 +24,7 @@ export const passwords = sqliteTable("passwords", {
   url: text("url"),
   notes: text("notes"),
   crateId: text("crate_id").references(() => crates.id, {
-    onDelete: "set null",
+    onDelete: "cascade",
   }),
   expiryDays: integer("expiry_days"),
   expiresAt: integer("expires_at", { mode: "timestamp" }),
