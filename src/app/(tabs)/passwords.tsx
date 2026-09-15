@@ -1,5 +1,6 @@
 import ConfirmDialog from "@/components/confirm-dialog";
 import DynamicIcon from "@/components/dynamic-icon";
+import EmptyState from "@/components/empty-state";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import image from "@/constants/images";
@@ -154,7 +155,7 @@ const Passwords = () => {
         numColumns={2}
         className="main"
         columnWrapperStyle={{ gap: 16 }}
-        contentContainerClassName="gap-y-4 pb-safe-offset-32"
+        contentContainerClassName="flex-grow gap-y-4 pb-safe-offset-32"
         ListHeaderComponent={
           <PasswordsHeader
             value={search}
@@ -164,6 +165,17 @@ const Passwords = () => {
             onCancelSelection={handleCancelSelection}
             onDeletePress={() => setIsDeleteDialogOpen(true)}
           />
+        }
+        ListEmptyComponent={
+          crates?.length === 0 ? (
+            <EmptyState
+              text="No crates yet"
+              buttonText="Add Password"
+              onButtonPress={() => router.push("/password/add")}
+            />
+          ) : (
+            <EmptyState text="No crates found" />
+          )
         }
         renderItem={({ item: crate }) => {
           if ("isFiller" in crate) return <View className="flex-1" />;
