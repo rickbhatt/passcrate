@@ -1,11 +1,15 @@
 import ScreenHeader from "@/components/screen-header";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Text as UiText } from "@/components/ui/text";
 import { useDb } from "@/db/hooks/useDb";
 import { crateById } from "@/db/queries/crates.queries";
 import { passwordsByCrateId } from "@/db/queries/passwords.queries";
+import { tagsByCrateId } from "@/db/queries/tags.queries";
 import { useLiveQuery } from "drizzle-orm/expo-sqlite";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
-import { FlatList, Text } from "react-native";
+import { useMemo } from "react";
+import { FlatList, Text, View } from "react-native";
 
 const CrateById = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -27,6 +31,24 @@ const CrateById = () => {
     [id],
   );
 
+  const { data: passwordTags } = useLiveQuery(
+    tagsByCrateId({
+      db,
+      crateId: id,
+    }),
+    [id],
+  );
+
+  const tagsByPasswordId = useMemo(() => {
+    const map = new Map<string, { id: string; name: string }[]>();
+    passwordTags?.forEach((tag) => {
+      const list = map.get(tag.passwordId) ?? [];
+      list.push({ id: tag.id, name: tag.name });
+      map.set(tag.passwordId, list);
+    });
+    return map;
+  }, [passwordTags]);
+
   return (
     <>
       <Stack.Screen
@@ -40,20 +62,35 @@ const CrateById = () => {
         keyExtractor={(password) => password.id}
         className="main"
         contentContainerClassName="gap-y-4 pb-4"
-        renderItem={({ item: password }) => (
-          <Button
-            variant="ghost"
-            onPress={() => router.push(`/password/detail/${password.id}`)}
-            className="h-auto flex-1 flex-row items-start justify-start rounded-xl border border-primary-dark bg-primary-light p-4"
-          >
-            <Text
-              className="text-base font-sans-semibold text-text-primary"
-              numberOfLines={1}
+        renderItem={({ item: password }) => {
+          const tags = tagsByPasswordId.get(password.id) ?? [];
+
+          return (
+            <Button
+              variant="ghost"
+              onPress={() => router.push(`/password/detail/${password.id}`)}
+              className="h-auto flex-1 flex-col items-start justify-start gap-y-2 rounded-xl border border-primary-dark bg-primary-light p-4"
             >
-              {password.title}
-            </Text>
-          </Button>
-        )}
+              <Text
+                className="text-base font-sans-semibold text-text-primary"
+                numberOfLines={1}
+              >
+                {password.title}
+              </Text>
+              {tags.length > 0 ? (
+                <View className="flex-row flex-wrap gap-1.5">
+                  {tags.map((tag) => (
+                    <Badge key={tag.id} className="bg-white border-primary">
+                      <UiText className="text-xs text-text-primary">
+                        {tag.name}
+                      </UiText>
+                    </Badge>
+                  ))}
+                </View>
+              ) : null}
+            </Button>
+          );
+        }}
       />
     </>
   );

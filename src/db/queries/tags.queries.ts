@@ -1,4 +1,4 @@
-import { passwordTags, tags } from "@/db/schema";
+import { passwordTags, passwords, tags } from "@/db/schema";
 import { Db } from "@/db/types";
 import { asc, eq } from "drizzle-orm";
 
@@ -21,4 +21,18 @@ const tagsByPasswordId = ({
     .orderBy(asc(tags.name));
 };
 
-export { tagsByPasswordId, tagsQuery };
+const tagsByCrateId = ({ db, crateId }: { db: Db; crateId: string }) => {
+  return db
+    .select({
+      passwordId: passwordTags.passwordId,
+      id: tags.id,
+      name: tags.name,
+    })
+    .from(passwordTags)
+    .innerJoin(tags, eq(passwordTags.tagId, tags.id))
+    .innerJoin(passwords, eq(passwordTags.passwordId, passwords.id))
+    .where(eq(passwords.crateId, crateId))
+    .orderBy(asc(tags.name));
+};
+
+export { tagsByCrateId, tagsByPasswordId, tagsQuery };

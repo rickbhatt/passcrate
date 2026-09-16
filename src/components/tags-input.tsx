@@ -139,6 +139,9 @@ const TagsInput = ({
           autoCorrect={false}
         />
       </View>
+      <UiText variant="muted" className="mt-1">
+        Press space to add a tag
+      </UiText>
     </View>
   );
 };
