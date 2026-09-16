@@ -60,7 +60,12 @@ const PasswordsHeader = ({
           onPress={onDeletePress}
           className="h-10 w-10 min-h-0 rounded-full"
         >
-          <DynamicIcon family="FontAwesome6" name="trash" size={16} color="white" />
+          <DynamicIcon
+            family="FontAwesome6"
+            name="trash"
+            size={16}
+            color="white"
+          />
         </Button>
       </>
     ) : (
@@ -169,12 +174,13 @@ const Passwords = () => {
         ListEmptyComponent={
           crates?.length === 0 ? (
             <EmptyState
-              text="No crates yet"
+              description="No passwords yet"
               buttonText="Add Password"
+              isCentered
               onButtonPress={() => router.push("/password/add")}
             />
           ) : (
-            <EmptyState text="No crates found" />
+            <EmptyState description="No crates found" />
           )
         }
         renderItem={({ item: crate }) => {
@@ -205,7 +211,12 @@ const Passwords = () => {
                     )}
                   >
                     {isSelected ? (
-                      <DynamicIcon family="Feather" name="check" size={14} color="white" />
+                      <DynamicIcon
+                        family="Feather"
+                        name="check"
+                        size={14}
+                        color="white"
+                      />
                     ) : null}
                   </View>
                 ) : null}

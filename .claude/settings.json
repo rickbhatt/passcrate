@@ -38,7 +38,11 @@
       "Bash(xargs grep -ln \"react-native\\\\\"\")",
       "Bash(./node_modules/.bin/tsc.exe --noEmit -p .)",
       "Bash(adb devices *)",
-      "Bash(echo \"EXIT CODE: $?\")"
+      "Bash(echo \"EXIT CODE: $?\")",
+      "Bash(xargs grep -ln \"^export\")",
+      "Bash(xargs grep -ln \"nativewind\")",
+      "Bash(xargs -0 grep -ln \"nativewind\")",
+      "Bash(xargs -I{} sh -c 'grep -l \"babel-plugin\\\\|jsxImportSource\\\\|babelPlugins\" \"{}\"')"
     ]
   }
 }

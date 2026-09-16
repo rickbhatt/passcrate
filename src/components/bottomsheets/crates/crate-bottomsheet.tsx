@@ -32,6 +32,7 @@
  * the keyboard appears.
  */
 
+import EmptyState from "@/components/empty-state";
 import FormInput from "@/components/form-input";
 import { Button } from "@/components/ui/button";
 import { useDb } from "@/db/hooks/useDb";
@@ -166,8 +167,8 @@ const CrateBottomSheet = ({
       }}
       onDismiss={handleOnDismiss}
     >
-      <BottomSheetView className="main">
-        <View className="flex-col gap-y-5">
+      <BottomSheetView className="main" style={{ bottom: 0 }}>
+        <View className="flex-1 flex-col gap-y-5">
           <View className="-mx-4 flex-row border-b border-border px-4">
             {TABS.map(({ type, label }) => {
               const isActive = sheetType === type;
@@ -196,35 +197,44 @@ const CrateBottomSheet = ({
           </View>
 
           {sheetType === "list" ? (
-            <View className="flex-row flex-wrap gap-2">
-              {crates?.map((crate) => {
-                const isSelected = crate.id === selectedCrateId;
-                return (
-                  <Pressable
-                    key={crate.id}
-                    onPress={() => {
-                      onCrateSelect({ id: crate.id, name: crate.name });
-                      ref.current?.dismiss();
-                    }}
-                    className={cn(
-                      "rounded-full border px-4 py-2",
-                      isSelected
-                        ? "border-[#e0ac1f] bg-secondary"
-                        : "border-dark bg-secondary-light",
-                    )}
-                  >
-                    <Text
+            crates?.length < 1 ? (
+              <EmptyState
+                description="No crates found"
+                buttonText="Create a crate"
+                className="mt-5"
+                onButtonPress={() => handleTabPress("create")}
+              />
+            ) : (
+              <View className="flex-row flex-wrap gap-2">
+                {crates.map((crate) => {
+                  const isSelected = crate.id === selectedCrateId;
+                  return (
+                    <Pressable
+                      key={crate.id}
+                      onPress={() => {
+                        onCrateSelect({ id: crate.id, name: crate.name });
+                        ref.current?.dismiss();
+                      }}
                       className={cn(
-                        "text-sm text-text-primary",
-                        isSelected ? "font-sans-semibold" : "font-sans",
+                        "rounded-full border px-4 py-2",
+                        isSelected
+                          ? "border-[#e0ac1f] bg-secondary"
+                          : "border-dark bg-secondary-light",
                       )}
                     >
-                      {crate.name}
-                    </Text>
-                  </Pressable>
-                );
-              })}
-            </View>
+                      <Text
+                        className={cn(
+                          "text-sm text-text-primary",
+                          isSelected ? "font-sans-semibold" : "font-sans",
+                        )}
+                      >
+                        {crate.name}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
+              </View>
+            )
           ) : (
             <View className="form-group">
               <FormInput
