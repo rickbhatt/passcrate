@@ -1,6 +1,6 @@
-import { crates, passwords } from "@/db/schema";
+import { crates, passwordTags, passwords, tags } from "@/db/schema";
 import { Db } from "@/db/types";
-import { asc, eq } from "drizzle-orm";
+import { asc, eq, like, or } from "drizzle-orm";
 
 const passwordsByCrateId = ({ db, crateId }: { db: Db; crateId: string }) => {
   return db
@@ -36,4 +36,30 @@ const passwordWithCrateById = ({ db, id }: { db: Db; id: string }) => {
     .limit(1);
 };
 
-export { passwordById, passwordsByCrateId, passwordWithCrateById };
+const passwordsBySearch = ({ db, query }: { db: Db; query: string }) => {
+  const term = `%${query}%`;
+  return db
+    .selectDistinct({
+      id: passwords.id,
+      title: passwords.title,
+      username: passwords.username,
+    })
+    .from(passwords)
+    .leftJoin(passwordTags, eq(passwordTags.passwordId, passwords.id))
+    .leftJoin(tags, eq(passwordTags.tagId, tags.id))
+    .where(
+      or(
+        like(passwords.title, term),
+        like(passwords.username, term),
+        like(tags.name, term),
+      ),
+    )
+    .orderBy(asc(passwords.title));
+};
+
+export {
+  passwordById,
+  passwordsByCrateId,
+  passwordsBySearch,
+  passwordWithCrateById,
+};

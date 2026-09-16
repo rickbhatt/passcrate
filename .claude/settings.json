@@ -42,7 +42,8 @@
       "Bash(xargs grep -ln \"^export\")",
       "Bash(xargs grep -ln \"nativewind\")",
       "Bash(xargs -0 grep -ln \"nativewind\")",
-      "Bash(xargs -I{} sh -c 'grep -l \"babel-plugin\\\\|jsxImportSource\\\\|babelPlugins\" \"{}\"')"
+      "Bash(xargs -I{} sh -c 'grep -l \"babel-plugin\\\\|jsxImportSource\\\\|babelPlugins\" \"{}\"')",
+      "Bash(git diff *)"
     ]
   }
 }

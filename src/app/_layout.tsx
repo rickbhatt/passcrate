@@ -83,6 +83,7 @@ const Layout = () => {
           <Stack.Screen name="(tabs)" />
           <Stack.Screen name="password" />
           <Stack.Screen name="crate/[id]" />
+          <Stack.Screen name="search" />
         </Stack.Protected>
       </Stack>
       <Toaster position="top-center" richColors />

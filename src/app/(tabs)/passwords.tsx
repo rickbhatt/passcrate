@@ -1,8 +1,8 @@
 import ConfirmDialog from "@/components/confirm-dialog";
 import DynamicIcon from "@/components/dynamic-icon";
 import EmptyState from "@/components/empty-state";
+import SearchInput from "@/components/search-input";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import image from "@/constants/images";
 import { COLORS } from "@/constants/theme";
 import { useDb } from "@/db/hooks/useDb";
@@ -69,20 +69,12 @@ const PasswordsHeader = ({
         </Button>
       </>
     ) : (
-      <>
-        <DynamicIcon
-          family="Feather"
-          name="search"
-          size={18}
-          color={COLORS.textSecondary}
-        />
-        <Input
-          value={value}
-          onChangeText={onChangeText}
-          placeholder="Search crates..."
-          className="flex-1 border-0 bg-transparent px-0"
-        />
-      </>
+      <SearchInput
+        value={value}
+        onChangeText={onChangeText}
+        placeholder="Search crates..."
+        className="flex-1"
+      />
     )}
   </View>
 );
