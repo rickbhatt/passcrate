@@ -22,6 +22,27 @@
       "when": 1785184546407,
       "tag": "0002_wide_loki",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1789123304704,
+      "tag": "0003_puzzling_ezekiel_stane",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1789314165881,
+      "tag": "0004_rename_folders_to_crates",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1789475304133,
+      "tag": "0005_lonely_major_mapleleaf",
+      "breakpoints": true
     }
   ]
 }

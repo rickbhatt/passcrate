@@ -27,7 +27,7 @@ const MasterPasswordForm = ({
 
   return (
     <View className="flex-col gap-y-3 self-stretch">
-      <View className="flex-row rounded-md border border-black h-14 overflow-hidden">
+      <View className="flex-row items-center rounded-md border border-black h-14 overflow-hidden">
         <Input
           value={value}
           onChangeText={onChange}
@@ -56,7 +56,7 @@ const MasterPasswordForm = ({
         </Button>
       </View>
       <Button onPress={onSubmit} className="py-3 w-full" disabled={disabled}>
-        <Text className="btn-label">{buttonLabel}</Text>
+        <Text className="btn-label-white">{buttonLabel}</Text>
       </Button>
     </View>
   );

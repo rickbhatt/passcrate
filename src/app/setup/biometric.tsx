@@ -4,55 +4,93 @@ import { SECURE_KEYS } from "@/constants/secure-keys";
 import { useCrypto } from "@/contexts/CryptoContext";
 import { useDb } from "@/db/hooks/useDb";
 import { updateBiometric } from "@/db/mutations/appConfig.mutation";
-import { deleteSecureItem } from "@/lib/secure-storage";
+import { setSecureItem } from "@/lib/secure-storage";
 import * as LocalAuthentication from "expo-local-authentication";
-import { Image, Text, View } from "react-native";
+import { useRouter } from "expo-router";
+import { useEffect, useRef, useState } from "react";
+import { BackHandler, Image, Platform, Text, View } from "react-native";
 import { toast } from "sonner-native";
 
 const SetupBiometric = () => {
-  const { setAppState } = useCrypto();
+  const { setAppState, pendingMasterPassword, setPendingMasterPassword } =
+    useCrypto();
 
   const db = useDb();
 
+  const router = useRouter();
+
+  const [isBusy, setIsBusy] = useState(false);
+  const isAuthenticating = useRef(false);
+
   const handleSkip = async () => {
-    await deleteSecureItem(SECURE_KEYS.MASTER_PASSWORD);
+    toast.info("You can enable it later in settings");
+    setPendingMasterPassword(null);
     setAppState("unlocked");
   };
 
   const handleEnable = async () => {
-    const result = await LocalAuthentication.authenticateAsync({
-      promptMessage: "Confirm your identity",
-      fallbackLabel: "Use master password", // shows if biometric fails
-      cancelLabel: "Cancel",
-      disableDeviceFallback: true, // I do not want device pin as fallback
-    });
+    if (isAuthenticating.current) return;
+    isAuthenticating.current = true;
+    setIsBusy(true);
 
-    if (result.success) {
-      await updateBiometric(db);
-      toast.success("Biometric enabled successfully");
-      setAppState("unlocked");
-    } else {
-      switch (result.error) {
-        case "user_cancel":
-        case "system_cancel":
-          // user dismissed the prompt — do nothing, let them try again or skip
-          break;
+    try {
+      if (Platform.OS === "ios") {
+        const result = await LocalAuthentication.authenticateAsync({
+          promptMessage: "Confirm your identity",
+          fallbackLabel: "Use master password",
+          cancelLabel: "Cancel",
+          disableDeviceFallback: true,
+        });
 
-        case "lockout":
-          // too many failed attempts, device locked biometric
-          // treat as skip, inform user
-          await deleteSecureItem(SECURE_KEYS.MASTER_PASSWORD);
-          setAppState("unlocked");
-          toast.info("Biometric locked, you can enable it later in settings");
-          break;
-
-        default:
-          // any other failure — let them retry or skip
-          break;
+        if (!result.success) {
+          if (result.error === "lockout") {
+            setPendingMasterPassword(null);
+            setAppState("unlocked");
+          }
+          return;
+        }
       }
+      try {
+        if (!pendingMasterPassword) {
+          toast.error(
+            "Something went wrong. Please set up your master password again.",
+          );
+          router.replace("/setup/master-password");
+          return;
+        }
+
+        await setSecureItem(
+          SECURE_KEYS.MASTER_PASSWORD,
+          pendingMasterPassword,
+          {
+            requireAuthentication: true,
+            authenticationPrompt: "Verify it's you",
+          },
+        );
+
+        setPendingMasterPassword(null);
+        await updateBiometric(db);
+        toast.success("Biometric enabled successfully");
+        setAppState("unlocked");
+      } catch (error) {
+        toast.error("Something went wrong. Please try again.");
+      }
+    } finally {
+      isAuthenticating.current = false;
+      setIsBusy(false);
     }
   };
 
+  useEffect(() => {
+    const subscription = BackHandler.addEventListener(
+      "hardwareBackPress",
+      () => {
+        handleSkip();
+        return true; // prevents the default "exit app" behavior
+      },
+    );
+    return () => subscription.remove();
+  }, []);
   return (
     <View className="flex-1 flex-col items-center bg-background screen-x-padding pt-safe gap-y-3">
       <View className="flex-col items-center mt-10 gap-y-1">
@@ -69,14 +107,19 @@ const SetupBiometric = () => {
           <Button
             onPress={handleSkip}
             variant={"outline"}
+            disabled={isBusy}
             className="flex-1 basis-0 p-4"
           >
             <Text className="text-base font-sans-semibold text-text-primary">
               Skip
             </Text>
           </Button>
-          <Button onPress={handleEnable} className="flex-1 basis-0 p-4">
-            <Text className="btn-label">Enable</Text>
+          <Button
+            onPress={handleEnable}
+            disabled={isBusy}
+            className="flex-1 basis-0 p-4"
+          >
+            <Text className="btn-label-white">Enable</Text>
           </Button>
         </View>
       </View>

@@ -1,70 +1,110 @@
 /**
- * isFolderSheetOpen + enabled={!isFolderSheetOpen} on KeyboardStickyView:
+ * isCrateSheetOpen + enabled={!isCrateSheetOpen} on KeyboardStickyView:
  *
  * KeyboardStickyView reacts to the GLOBAL native keyboard state, not
- * "is MY input focused." So while FolderBottomSheet's own input has the
+ * "is MY input focused." So while CrateBottomSheet's own input has the
  * keyboard, this screen's sticky Save button would otherwise still raise/
  * lower in sync with it, causing visible jerks. Disabling it while the
  * sheet is open freezes it at rest; onFullyClosed (passed to the sheet)
  * re-enables it only once the sheet's keyboard has actually finished
  * closing.
  *
- * triggerFolderBottomSheet also waits for this screen's own keyboard to
+ * triggerCrateBottomSheet also waits for this screen's own keyboard to
  * finish hiding (keyboardDidHide) before presenting the sheet, so the two
  * keyboards never overlap/race when opening from a focused parent input.
  */
 
-import FolderBottomSheet from "@/components/bottomsheets/folders/folder-bottomsheet";
+import CrateBottomSheet from "@/components/bottomsheets/crates/crate-bottomsheet";
+import DynamicIcon from "@/components/dynamic-icon";
 import FormInput from "@/components/form-input";
+import PasswordStrengthMeter from "@/components/password-strength-meter";
+import TagsInput from "@/components/tags-input";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { COLORS } from "@/constants/theme";
+import { generatePassword } from "@/lib/password-generator";
+import { cn } from "@/lib/utils";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import * as Haptics from "expo-haptics";
 import { styled } from "nativewind";
 import { useRef, useState } from "react";
-import { Keyboard, Text, View } from "react-native";
+import { Keyboard, Pressable, Text, View } from "react-native";
 import {
   KeyboardStickyView,
   KeyboardAwareScrollView as RNKeyboardAwareScrollView,
 } from "react-native-keyboard-controller";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { FieldName, PasswordFormProps, PasswordInsertType } from "types";
+import {
+  FieldName,
+  PasswordFormProps,
+  PasswordFormValue,
+  TagType,
+} from "types";
 
 const KeyboardAwareScrollView = styled(
   RNKeyboardAwareScrollView as React.ComponentType<any>,
 );
 
-const PasswordForm = ({ value, onChange, onSubmit }: PasswordFormProps) => {
+const PasswordForm = ({
+  value,
+  onChange,
+  onSubmit,
+  errors = {},
+}: PasswordFormProps) => {
   const insets = useSafeAreaInsets();
 
-  const folderBottomSheetRef = useRef<BottomSheetModal | null>(null);
-  const [isFolderSheetOpen, setIsFolderSheetOpen] = useState(false);
+  const crateBottomSheetRef = useRef<BottomSheetModal | null>(null);
+  const [isCrateSheetOpen, setIsCrateSheetOpen] = useState(false);
+  const [secureTextEntry, setSecureTextEntry] = useState(true);
 
   const handleFormInputOnChange = (field: FieldName, rawValue: string) => {
-    onChange((prev: Partial<PasswordInsertType>) => ({
+    onChange((prev: PasswordFormValue) => ({
       ...prev,
       [field]: rawValue,
     }));
   };
-  const triggerFolderBottomSheet = () => {
-    setIsFolderSheetOpen(true);
+  const triggerCrateBottomSheet = () => {
+    setIsCrateSheetOpen(true);
     if (Keyboard.isVisible?.()) {
       const sub = Keyboard.addListener("keyboardDidHide", () => {
         sub.remove();
-        folderBottomSheetRef.current?.present();
+        crateBottomSheetRef.current?.present();
       });
       Keyboard.dismiss();
     } else {
-      folderBottomSheetRef.current?.present();
+      crateBottomSheetRef.current?.present();
     }
   };
-  const handleFolderSheetFullyClosed = () => {
-    setIsFolderSheetOpen(false);
+  const handleCrateSheetFullyClosed = () => {
+    setIsCrateSheetOpen(false);
   };
-  const handleFolderCreated = (folder: { id: string; name: string }) => {
-    onChange((prev: Partial<PasswordInsertType>) => ({
+  const onCrateSelect = (crate: { id: string; name: string }) => {
+    onChange((prev: PasswordFormValue) => ({
       ...prev,
-      folderId: folder.id,
-      folderName: folder.name.trim(),
+      crateId: crate.id,
+      crateName: crate.name.trim(),
     }));
+  };
+
+  const handleTagsChange = (tags: TagType[]) => {
+    onChange((prev: PasswordFormValue) => ({
+      ...prev,
+      tags,
+    }));
+  };
+
+  const handleCratePress = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    triggerCrateBottomSheet();
+  };
+
+  const toggleSecureText = () => {
+    setSecureTextEntry((prev) => !prev);
+  };
+
+  const handleGeneratePassword = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    handleFormInputOnChange("password", generatePassword());
   };
 
   return (
@@ -74,7 +114,7 @@ const PasswordForm = ({ value, onChange, onSubmit }: PasswordFormProps) => {
           bottomOffset={0}
           extraKeyboardSpace={0}
           className="screen-x-padding"
-          contentContainerClassName="flex-col gap-5"
+          contentContainerClassName="flex-col gap-5 pb-28"
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
           mode="layout"
@@ -82,9 +122,11 @@ const PasswordForm = ({ value, onChange, onSubmit }: PasswordFormProps) => {
           <FormInput
             key={"title"}
             label="Title"
+            isRequired
             inputType="text"
             inputName="title"
             value={value.title}
+            error={errors.title}
             onChange={handleFormInputOnChange}
             placeholder="office gmail account..."
             autoCapitalize="words"
@@ -99,15 +141,67 @@ const PasswordForm = ({ value, onChange, onSubmit }: PasswordFormProps) => {
             onChange={handleFormInputOnChange}
             placeholder="username@gmail.com"
           />
-          <FormInput
-            key={"password"}
-            label="Password"
-            inputType="text"
-            inputName="password"
-            value={value.password}
-            onChange={handleFormInputOnChange}
-            placeholder="**********"
-          />
+          <View className="form-group">
+            <Text className="form-label">
+              Password<Text className="text-red-500"> *</Text>
+            </Text>
+
+            <View
+              className={cn(
+                "flex-row items-center rounded-md border border-gray-700 bg-background overflow-hidden",
+                errors.password && "border-red-500",
+              )}
+            >
+              <Input
+                value={value.password ?? ""}
+                onChangeText={(text) =>
+                  handleFormInputOnChange("password", text)
+                }
+                secureTextEntry={secureTextEntry}
+                placeholder="**********"
+                className="flex-1 h-14 rounded-none border-0 text-base bg-background"
+                autoCapitalize="none"
+                autoCorrect={false}
+                spellCheck={false}
+                textContentType="newPassword"
+              />
+              <Button
+                className="bg-background border-0 rounded-none h-14"
+                variant="ghost"
+                onPress={toggleSecureText}
+              >
+                <DynamicIcon
+                  family="Entypo"
+                  name={secureTextEntry ? "eye" : "eye-with-line"}
+                  size={22}
+                  color={COLORS.textPrimary}
+                />
+              </Button>
+              <Button
+                className="bg-background border-0 rounded-none h-14"
+                variant="ghost"
+                onPress={handleGeneratePassword}
+              >
+                <DynamicIcon
+                  family="Feather"
+                  name="refresh-cw"
+                  size={22}
+                  color={COLORS.textPrimary}
+                />
+              </Button>
+            </View>
+
+            {errors.password && (
+              <Text className="text-red-500 text-sm mt-1">
+                {errors.password}
+              </Text>
+            )}
+
+            <PasswordStrengthMeter
+              password={value.password ?? ""}
+              hintText="Recommended strength: Good or higher."
+            />
+          </View>
           <FormInput
             key={"url"}
             label="URL"
@@ -118,28 +212,52 @@ const PasswordForm = ({ value, onChange, onSubmit }: PasswordFormProps) => {
             placeholder="https://github.com"
           />
           <View className="form-group bg-background">
-            <Text className="form-label">Folder</Text>
-            <Button
-              onPress={triggerFolderBottomSheet}
-              variant="outline"
-              className="h-14 p-2 items-center justify-start border border-gray-700"
+            <Text className="form-label">
+              Crate<Text className="text-red-500"> *</Text>
+            </Text>
+
+            <Pressable
+              onPress={handleCratePress}
+              className={cn(
+                "h-14 flex-row items-center justify-start rounded-md border border-gray-700 p-2",
+                errors.crateId && "border-red-500",
+              )}
             >
               <Text className="base-paragraph">
-                {value.folderName || "Select a Folder"}
+                {value.crateName || "Select a Crate"}
               </Text>
-            </Button>
+            </Pressable>
+            {errors.crateId && (
+              <Text className="text-red-500 text-sm mt-1">
+                {errors.crateId}
+              </Text>
+            )}
           </View>
           <View className="form-group">
-            <Text>Tags</Text>
-            <View className="bg-background rounded-md p-2 border border-gray-700">
-              <Button className="border-0 bg-green-500 items-center justify-start">
-                <Text>Add Tag +</Text>
-              </Button>
-            </View>
+            <Text className="form-label">
+              Tags<Text className="text-red-500"> *</Text>
+            </Text>
+            <TagsInput value={value.tags ?? []} onChange={handleTagsChange} />
+            {errors.tags && (
+              <Text className="text-red-500 text-sm mt-1">{errors.tags}</Text>
+            )}
           </View>
+          <FormInput
+            key={"expiryDays"}
+            label="Expires in (days)"
+            inputType="text"
+            inputName="expiryDays"
+            value={value.expiryDays}
+            error={errors.expiryDays}
+            onChange={handleFormInputOnChange}
+            placeholder="e.g. 90"
+            keyboardType="numeric"
+            maxLength={3}
+          />
           <FormInput
             key={"notes"}
             label="Notes"
+            placeholder="Some notes..."
             inputType="text"
             inputName="notes"
             value={value.notes}
@@ -149,17 +267,18 @@ const PasswordForm = ({ value, onChange, onSubmit }: PasswordFormProps) => {
         <KeyboardStickyView
           className="py-2.5 bg-background flex-row items-center screen-x-padding"
           offset={{ closed: -insets.bottom, opened: 0 }}
-          enabled={!isFolderSheetOpen}
+          enabled={!isCrateSheetOpen}
         >
           <Button className="py-3 w-full" onPress={() => onSubmit(value)}>
-            <Text className="btn-label">Save</Text>
+            <Text className="btn-label-white">Save</Text>
           </Button>
         </KeyboardStickyView>
       </View>
-      <FolderBottomSheet
-        ref={folderBottomSheetRef}
-        onFullyClosed={handleFolderSheetFullyClosed}
-        onFolderCreated={handleFolderCreated}
+      <CrateBottomSheet
+        ref={crateBottomSheetRef}
+        onFullyClosed={handleCrateSheetFullyClosed}
+        onCrateSelect={onCrateSelect}
+        selectedCrateId={value.crateId}
       />
     </>
   );

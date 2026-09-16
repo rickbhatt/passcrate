@@ -48,14 +48,16 @@
   --color-background: #ffffff;
   --color-surface: #f7f7fb;
 
-  --color-text-primary: #16151c;
+  --color-dark: #16151c;
+
+  --color-text-primary: var(--color-dark);
   --color-text-secondary: #8c8c9c;
 
   --color-border: #ececf4;
 
   --color-success: #2fd3a6;
   --color-warning: #ffc93c;
-  --color-danger: #ff6584;
+  --color-danger: #dc3545;
 }
 :root {
   --background: 0 0% 100%;
@@ -111,7 +113,7 @@
 
 @layer components {
   .main {
-    @apply flex-1 bg-background screen-x-padding pt-safe;
+    @apply flex-1 bg-background screen-x-padding pt-3;
   }
 
   .base-para {
@@ -122,12 +124,20 @@
     @apply active:scale-[0.95];
   }
 
-  .btn-label {
+  .btn-label-white {
     @apply text-base font-sans-semibold text-white;
+  }
+
+  .btn-label-dark {
+    @apply text-base font-sans-semibold text-text-primary;
   }
 
   .form-group {
     @apply flex-col gap-y-3;
+  }
+
+  .detail-group {
+    @apply flex-col gap-y-1;
   }
 
   .form-label {
@@ -135,18 +145,18 @@
   }
 
   .h2-bold {
-    @apply text-2xl font-bold;
+    @apply text-2xl font-sans-bold;
   }
 
   .h3-bold {
-    @apply text-xl font-bold;
+    @apply text-xl font-sans-bold;
   }
 
   .base-bold {
-    @apply text-base font-bold;
+    @apply text-base font-sans-bold;
   }
 
   .base-paragraph {
-    @apply text-base text-text-primary;
+    @apply text-base text-text-primary font-sans;
   }
 }

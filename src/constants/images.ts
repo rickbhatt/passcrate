@@ -1,5 +1,6 @@
+import crate from "@assets/images/crate.png";
 import fingerPrint from "@assets/images/fingerprint.png";
 import key from "@assets/images/key.png";
-import lock from "@assets/images/lock.png";
+import logo from "@assets/images/logo.png";
 
-export default { key, fingerPrint, lock };
+export default { key, fingerPrint, logo, crate };

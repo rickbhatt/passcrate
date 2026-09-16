@@ -5,7 +5,7 @@
  * BottomSheetModal. A plain TextInput inside a sheet doesn't coordinate
  * focus/blur with the sheet's keyboard-avoidance logic, which causes
  * keyboard/focus state to get stuck or "leak" to whatever input the OS
- * lands on next (see FolderBottomSheet for the full picture).
+ * lands on next (see CrateBottomSheet for the full picture).
  */
 
 import { cn } from "@/lib/utils";

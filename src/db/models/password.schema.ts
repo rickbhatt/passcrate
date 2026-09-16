@@ -1,7 +1,7 @@
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
-// FOLDERS
-export const folders = sqliteTable("folders", {
+// CRATES
+export const crates = sqliteTable("crates", {
   id: text("id").primaryKey(),
   name: text("name").notNull().unique(),
   nameKey: text("name_key").notNull().unique(),
@@ -23,9 +23,11 @@ export const passwords = sqliteTable("passwords", {
   encryptedPassword: text("encrypted_password").notNull(),
   url: text("url"),
   notes: text("notes"),
-  folderId: text("folder_id").references(() => folders.id, {
-    onDelete: "set null",
+  crateId: text("crate_id").references(() => crates.id, {
+    onDelete: "cascade",
   }),
+  expiryDays: integer("expiry_days"),
+  expiresAt: integer("expires_at", { mode: "timestamp" }),
   createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
   updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
 });
