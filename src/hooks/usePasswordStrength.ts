@@ -23,6 +23,11 @@ const options = {
 };
 const zxcvbn = new ZxcvbnFactory(options);
 
+export const WEAK_SCORE_THRESHOLD = 1;
+
+export const scorePasswordStrength = (password: string) =>
+  zxcvbn.check(password).score;
+
 export const usePasswordStrength = (password: string) => {
   const [score, setScore] = useState(0);
   const progress = useSharedValue(0);

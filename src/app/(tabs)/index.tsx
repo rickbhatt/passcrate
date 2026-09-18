@@ -1,13 +1,15 @@
+import ExpiringPasswords from "@/components/expiring-passwords";
 import SearchInput from "@/components/search-input";
+import SecurityOverview from "@/components/security-overview";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "expo-router";
-import { View } from "react-native";
+import { ScrollView, View } from "react-native";
 
 const Home = () => {
   const router = useRouter();
 
   return (
-    <View className="main">
+    <ScrollView className="main" contentContainerClassName="gap-y-4 pb-4">
       <Button
         variant="ghost"
         onPress={() => router.push("/search")}
@@ -21,7 +23,10 @@ const Home = () => {
           />
         </View>
       </Button>
-    </View>
+
+      <SecurityOverview />
+      <ExpiringPasswords />
+    </ScrollView>
   );
 };
 

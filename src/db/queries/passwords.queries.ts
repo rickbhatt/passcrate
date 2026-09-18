@@ -1,6 +1,35 @@
 import { crates, passwordTags, passwords, tags } from "@/db/schema";
 import { Db } from "@/db/types";
-import { asc, eq, like, or } from "drizzle-orm";
+import { addDays } from "date-fns";
+import { and, asc, eq, gte, isNotNull, like, lte, or } from "drizzle-orm";
+
+const EXPIRING_PASSWORDS_LIMIT = 5;
+const EXPIRING_WITHIN_DAYS = 30;
+
+const allPasswords = ({ db }: { db: Db }) => {
+  return db.select().from(passwords).orderBy(asc(passwords.title));
+};
+
+const expiringPasswords = ({ db }: { db: Db }) => {
+  const now = new Date();
+
+  return db
+    .select({
+      id: passwords.id,
+      title: passwords.title,
+      expiresAt: passwords.expiresAt,
+    })
+    .from(passwords)
+    .where(
+      and(
+        isNotNull(passwords.expiresAt),
+        gte(passwords.expiresAt, now),
+        lte(passwords.expiresAt, addDays(now, EXPIRING_WITHIN_DAYS)),
+      ),
+    )
+    .orderBy(asc(passwords.expiresAt))
+    .limit(EXPIRING_PASSWORDS_LIMIT);
+};
 
 const passwordsByCrateId = ({ db, crateId }: { db: Db; crateId: string }) => {
   return db
@@ -58,6 +87,8 @@ const passwordsBySearch = ({ db, query }: { db: Db; query: string }) => {
 };
 
 export {
+  allPasswords,
+  expiringPasswords,
   passwordById,
   passwordsByCrateId,
   passwordsBySearch,
