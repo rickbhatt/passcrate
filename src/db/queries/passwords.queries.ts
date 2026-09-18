@@ -31,6 +31,27 @@ const expiringPasswords = ({ db }: { db: Db }) => {
     .limit(EXPIRING_PASSWORDS_LIMIT);
 };
 
+const allExpiringPasswords = ({ db }: { db: Db }) => {
+  const now = new Date();
+
+  return db
+    .select({
+      id: passwords.id,
+      title: passwords.title,
+      username: passwords.username,
+      expiresAt: passwords.expiresAt,
+    })
+    .from(passwords)
+    .where(
+      and(
+        isNotNull(passwords.expiresAt),
+        gte(passwords.expiresAt, now),
+        lte(passwords.expiresAt, addDays(now, EXPIRING_WITHIN_DAYS)),
+      ),
+    )
+    .orderBy(asc(passwords.expiresAt));
+};
+
 const passwordsByCrateId = ({ db, crateId }: { db: Db; crateId: string }) => {
   return db
     .select()
@@ -87,6 +108,7 @@ const passwordsBySearch = ({ db, query }: { db: Db; query: string }) => {
 };
 
 export {
+  allExpiringPasswords,
   allPasswords,
   expiringPasswords,
   passwordById,

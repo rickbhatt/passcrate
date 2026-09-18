@@ -1,25 +1,10 @@
 import DynamicIcon from "@/components/dynamic-icon";
 import { COLORS } from "@/constants/theme";
-import { useCrypto } from "@/contexts/CryptoContext";
-import { useDb } from "@/db/hooks/useDb";
-import { allPasswords } from "@/db/queries/passwords.queries";
-import {
-  scorePasswordStrength,
-  WEAK_SCORE_THRESHOLD,
-} from "@/hooks/usePasswordStrength";
-import { decrypt } from "@/lib/crypto";
-import { isPasswordPwned } from "@/lib/hibp";
+import { useSecurityOverview } from "@/hooks/useSecurityOverview";
 import { cn } from "@/lib/utils";
-import { useLiveQuery } from "drizzle-orm/expo-sqlite";
-import { useEffect, useState } from "react";
+import * as Haptics from "expo-haptics";
+import { useRouter } from "expo-router";
 import { Pressable, Text, View } from "react-native";
-
-const INITIAL_STATS = {
-  weakCount: 0,
-  reusedCount: 0,
-  compromisedCount: 0,
-  safeCount: 0,
-};
 
 const StatCard = ({
   icon,
@@ -62,81 +47,16 @@ const StatCard = ({
   </View>
 );
 
-const SecurityOverview = () => {
-  const db = useDb();
-  const { derivedKey } = useCrypto();
-
-  const { data: passwords } = useLiveQuery(allPasswords({ db }));
-
-  const [stats, setStats] = useState(INITIAL_STATS);
-
-  useEffect(() => {
-    if (!passwords || !derivedKey) {
-      setStats(INITIAL_STATS);
-      return;
-    }
-
-    let isCancelled = false;
-
-    const computeStats = async () => {
-      const decryptedPasswords = passwords.map((password) =>
-        decrypt(password.encryptedPassword, derivedKey),
-      );
-
-      const occurrences = decryptedPasswords.reduce<Map<string, number>>(
-        (map, value) => map.set(value, (map.get(value) ?? 0) + 1),
-        new Map(),
-      );
-
-      const pwnedResults = await Promise.allSettled(
-        decryptedPasswords.map((value) => isPasswordPwned(value)),
-      );
-
-      if (isCancelled) return;
-
-      let weak = 0;
-      let reused = 0;
-      let compromised = 0;
-      let safe = 0;
-
-      decryptedPasswords.forEach((value, index) => {
-        const pwnedResult = pwnedResults[index];
-        if (pwnedResult.status === "rejected") {
-          console.error(
-            "🚀 ~ SecurityOverview ~ isPasswordPwned ~ error",
-            pwnedResult.reason,
-          );
-        }
-
-        const isWeak = scorePasswordStrength(value) <= WEAK_SCORE_THRESHOLD;
-        const isReused = (occurrences.get(value) ?? 0) > 1;
-        const isCompromised =
-          pwnedResult.status === "fulfilled" && pwnedResult.value;
-
-        if (isWeak) weak += 1;
-        if (isReused) reused += 1;
-        if (isCompromised) compromised += 1;
-        if (!isWeak && !isReused && !isCompromised) safe += 1;
-      });
-
-      setStats({
-        weakCount: weak,
-        reusedCount: reused,
-        compromisedCount: compromised,
-        safeCount: safe,
-      });
-    };
-
-    computeStats();
-
-    return () => {
-      isCancelled = true;
-    };
-  }, [passwords, derivedKey]);
-
-  const { weakCount, reusedCount, compromisedCount, safeCount } = stats;
-  const needsAttentionCount = (passwords?.length ?? 0) - safeCount;
-  const isSecure = needsAttentionCount === 0;
+const SecurityOverviewStats = () => {
+  const router = useRouter();
+  const {
+    weakCount,
+    reusedCount,
+    compromisedCount,
+    safeCount,
+    needsAttentionCount,
+    isSecure,
+  } = useSecurityOverview();
 
   return (
     <View className="gap-y-4 rounded-3xl border border-border bg-background p-5 shadow-sm shadow-black/5">
@@ -227,6 +147,10 @@ const SecurityOverview = () => {
       {/* footer */}
       <Pressable
         disabled={isSecure}
+        onPress={() => {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          router.push("/security-overview");
+        }}
         className={cn(
           "flex-row items-center gap-x-3 border-t border-border pt-4",
           !isSecure && "btn-active",
@@ -270,4 +194,4 @@ const SecurityOverview = () => {
   );
 };
 
-export default SecurityOverview;
+export default SecurityOverviewStats;

@@ -6,6 +6,7 @@ import { expiringPasswords } from "@/db/queries/passwords.queries";
 import { cn } from "@/lib/utils";
 import { differenceInCalendarDays } from "date-fns";
 import { useLiveQuery } from "drizzle-orm/expo-sqlite";
+import * as Haptics from "expo-haptics";
 import { useRouter } from "expo-router";
 import { ScrollView, Text, View } from "react-native";
 
@@ -67,6 +68,7 @@ const ExpiringPasswordCard = ({
 };
 
 const ExpiringPasswords = () => {
+  const router = useRouter();
   const db = useDb();
   const { data: passwords } = useLiveQuery(expiringPasswords({ db }));
 
@@ -78,8 +80,8 @@ const ExpiringPasswords = () => {
       <View className="flex-row items-center gap-x-3">
         <View className="h-14 w-14 items-center justify-center rounded-2xl bg-orange-100">
           <DynamicIcon
-            family="Feather"
-            name="clock"
+            family="MaterialCommunityIcons"
+            name="calendar-clock"
             size={24}
             color="#f97316"
           />
@@ -92,7 +94,14 @@ const ExpiringPasswords = () => {
             Passwords that need to be updated
           </Text>
         </View>
-        <View className="flex-row items-center gap-x-1">
+        <Button
+          variant="ghost"
+          onPress={() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            router.push("/expiring-passwords");
+          }}
+          className="h-auto min-h-0 flex-row items-center gap-x-1 rounded-md p-0"
+        >
           <Text className="text-sm font-sans-semibold text-primary">
             View all
           </Text>
@@ -102,7 +111,7 @@ const ExpiringPasswords = () => {
             size={16}
             color={COLORS.primary}
           />
-        </View>
+        </Button>
       </View>
 
       {/* expiring list */}
