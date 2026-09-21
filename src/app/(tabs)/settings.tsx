@@ -3,7 +3,7 @@ import { Text, View } from "react-native";
 const Settings = () => {
   return (
     <View>
-      <Text className="text-text-primary">Settings</Text>
+      <Text className="font-sans text-text-primary">Settings</Text>
     </View>
   );
 };

@@ -94,7 +94,7 @@ const Search = () => {
               {password.title}
             </Text>
             {password.username ? (
-              <Text className="text-sm text-text-secondary" numberOfLines={1}>
+              <Text className="font-sans text-sm text-text-secondary" numberOfLines={1}>
                 {password.username}
               </Text>
             ) : null}
@@ -103,7 +103,7 @@ const Search = () => {
       )}
       ListEmptyComponent={
         trimmedQuery ? (
-          <Text className="mt-4 text-center text-sm text-text-secondary">
+          <Text className="font-sans mt-4 text-center text-sm text-text-secondary">
             No results found
           </Text>
         ) : null

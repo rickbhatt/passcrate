@@ -59,7 +59,8 @@
       "Bash(cd d:/Projects/RN/passcrate/node_modules/react-native-css/dist && grep -rn \"VariableContextProvider\" module/native/*.js module/runtime.js 2>/dev/null | head; ls module/native | head -30; grep -rn \"prefers-color-scheme\" ../../nativewind/dist/module/*.js ../../nativewind/theme.css 2>/dev/null | head -3; ls ../../nativewind | head -20)",
       "Read(//d/Projects/nativewind/dist/**)",
       "Bash(grep -n \"^/\\\\*\\\\|^@media\\\\|^:root\" src/global.css)",
-      "WebFetch(domain:www.nativewind.dev)"
+      "WebFetch(domain:www.nativewind.dev)",
+      "Bash(rg --pcre2 -U -n -o '<\\(Text|UiText|TextInput\\)\\\\b\\(?:\\(?!font-\\)[^>]\\)*>' --glob '*.tsx' .)"
     ]
   }
 }

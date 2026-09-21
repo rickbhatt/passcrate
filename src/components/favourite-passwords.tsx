@@ -41,7 +41,7 @@ const FavouritePasswordRow = ({
           {title}
         </Text>
         {username ? (
-          <Text className="text-sm text-primary" numberOfLines={1}>
+          <Text className="font-sans text-sm text-primary" numberOfLines={1}>
             {username}
           </Text>
         ) : null}

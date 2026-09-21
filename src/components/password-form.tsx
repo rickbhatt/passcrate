@@ -193,7 +193,7 @@ const PasswordForm = ({
             </View>
 
             {errors.password && (
-              <Text className="text-danger text-sm mt-1">
+              <Text className="font-sans text-danger text-sm mt-1">
                 {errors.password}
               </Text>
             )}
@@ -229,7 +229,7 @@ const PasswordForm = ({
               </Text>
             </Pressable>
             {errors.crateId && (
-              <Text className="text-danger text-sm mt-1">
+              <Text className="font-sans text-danger text-sm mt-1">
                 {errors.crateId}
               </Text>
             )}
@@ -240,7 +240,7 @@ const PasswordForm = ({
             </Text>
             <TagsInput value={value.tags ?? []} onChange={handleTagsChange} />
             {errors.tags && (
-              <Text className="text-danger text-sm mt-1">{errors.tags}</Text>
+              <Text className="font-sans text-danger text-sm mt-1">{errors.tags}</Text>
             )}
           </View>
           <FormInput

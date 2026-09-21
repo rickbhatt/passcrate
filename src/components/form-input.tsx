@@ -84,7 +84,7 @@ const FormInput = ({
             keyboardType={keyboardType}
           />
           {error && (
-            <Text className="text-danger text-sm mt-1">{error}</Text>
+            <Text className="font-sans text-danger text-sm mt-1">{error}</Text>
           )}
         </View>
       );

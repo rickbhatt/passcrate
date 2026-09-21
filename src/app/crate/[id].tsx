@@ -92,7 +92,7 @@ const CrateById = () => {
                   <View className="flex-row flex-wrap gap-1.5">
                     {tags.map((tag) => (
                       <Badge key={tag.id} className="bg-card border-primary">
-                        <UiText className="text-xs text-text-primary">
+                        <UiText className="font-sans text-xs text-text-primary">
                           {tag.name}
                         </UiText>
                       </Badge>

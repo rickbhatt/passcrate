@@ -96,7 +96,7 @@ const SecurityOverviewScreen = () => {
               </Text>
               {item.username ? (
                 <Text
-                  className="text-sm text-text-secondary"
+                  className="font-sans text-sm text-text-secondary"
                   numberOfLines={1}
                 >
                   {item.username}
