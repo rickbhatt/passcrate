@@ -151,10 +151,7 @@ const SecurityOverviewStats = () => {
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
           router.push("/security-overview");
         }}
-        className={cn(
-          "flex-row items-center gap-x-3 border-t border-border pt-4",
-          !isSecure && "btn-active",
-        )}
+        className="flex-row items-center gap-x-3 border-t border-border pt-4 btn-active"
       >
         <View
           className={cn(
