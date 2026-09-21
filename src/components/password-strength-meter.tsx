@@ -24,7 +24,7 @@ const PasswordStrengthMeter = ({
       entering={FadeInDown.duration(250)}
       exiting={FadeOutUp.duration(150)}
     >
-      <View className="h-3 rounded-full bg-gray-200 w-full">
+      <View className="h-3 rounded-full bg-elevated w-full">
         <Animated.View
           className={cn("h-3 rounded-full", color)}
           style={animatedStyle}

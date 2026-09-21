@@ -2,7 +2,7 @@ import DynamicIcon from "@/components/dynamic-icon";
 import EmptyState from "@/components/empty-state";
 import ScreenHeader from "@/components/screen-header";
 import { Button } from "@/components/ui/button";
-import { COLORS } from "@/constants/theme";
+import { useThemeColors } from "@/constants/theme";
 import { useDb } from "@/db/hooks/useDb";
 import { allExpiringPasswords } from "@/db/queries/passwords.queries";
 import { cn } from "@/lib/utils";
@@ -14,6 +14,7 @@ import { FlatList, Text, View } from "react-native";
 const URGENT_DAYS_THRESHOLD = 3;
 
 const ExpiringPasswordsScreen = () => {
+  const COLORS = useThemeColors();
   const router = useRouter();
   const db = useDb();
   const { data: passwords } = useLiveQuery(allExpiringPasswords({ db }));
@@ -44,18 +45,18 @@ const ExpiringPasswordsScreen = () => {
             <Button
               variant="ghost"
               onPress={() => router.push(`/password/detail/${item.id}`)}
-              className="h-auto w-full flex-row items-center gap-x-3 rounded-2xl bg-surface p-3"
+              className="h-auto w-full flex-row items-center gap-x-3 rounded-2xl bg-elevated p-3"
             >
               <View
                 className={cn(
                   "h-11 w-11 items-center justify-center rounded-xl",
-                  isUrgent ? "bg-red-100" : "bg-orange-100",
+                  isUrgent ? "bg-danger/10" : "bg-primary/10",
                 )}
               >
                 <Text
                   className={cn(
                     "text-lg font-sans-bold",
-                    isUrgent ? "text-red-600" : "text-orange-600",
+                    isUrgent ? "text-danger" : "text-primary",
                   )}
                 >
                   {item.title.charAt(0).toUpperCase()}
@@ -80,7 +81,7 @@ const ExpiringPasswordsScreen = () => {
               <Text
                 className={cn(
                   "text-sm font-sans-semibold",
-                  isUrgent ? "text-red-600" : "text-orange-600",
+                  isUrgent ? "text-danger" : "text-primary",
                 )}
               >
                 {daysRemaining} {daysRemaining === 1 ? "day" : "days"}

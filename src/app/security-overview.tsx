@@ -2,7 +2,7 @@ import DynamicIcon from "@/components/dynamic-icon";
 import EmptyState from "@/components/empty-state";
 import ScreenHeader from "@/components/screen-header";
 import { Button } from "@/components/ui/button";
-import { COLORS } from "@/constants/theme";
+import { useThemeColors } from "@/constants/theme";
 import {
   useSecurityOverview,
   type SecurityOverviewEntry,
@@ -14,22 +14,23 @@ import { SectionList, Text, View } from "react-native";
 const SECTION_CONFIG = {
   compromised: {
     title: "Compromised",
-    avatarBgClassName: "bg-red-100",
-    avatarTextClassName: "text-red-600",
+    avatarBgClassName: "bg-danger/10",
+    avatarTextClassName: "text-danger",
   },
   weak: {
     title: "Weak",
-    avatarBgClassName: "bg-orange-100",
-    avatarTextClassName: "text-orange-600",
+    avatarBgClassName: "bg-primary/10",
+    avatarTextClassName: "text-primary",
   },
   reused: {
     title: "Reused",
-    avatarBgClassName: "bg-primary-light",
-    avatarTextClassName: "text-primary",
+    avatarBgClassName: "bg-elevated",
+    avatarTextClassName: "text-text-secondary",
   },
 } as const;
 
 const SecurityOverviewScreen = () => {
+  const COLORS = useThemeColors();
   const router = useRouter();
   const { categories } = useSecurityOverview();
 
@@ -69,7 +70,7 @@ const SecurityOverviewScreen = () => {
           <Button
             variant="ghost"
             onPress={() => router.push(`/password/detail/${item.id}`)}
-            className="h-auto w-full flex-row items-center gap-x-3 rounded-2xl bg-surface p-3"
+            className="h-auto w-full flex-row items-center gap-x-3 rounded-2xl bg-elevated p-3"
           >
             <View
               className={cn(

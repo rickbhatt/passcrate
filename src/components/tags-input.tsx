@@ -1,3 +1,4 @@
+import { useThemeColors } from "@/constants/theme";
 import DynamicIcon from "@/components/dynamic-icon";
 import { Badge } from "@/components/ui/badge";
 import { Text as UiText } from "@/components/ui/text";
@@ -8,7 +9,6 @@ import { useMemo, useRef, useState } from "react";
 import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
 import { TagType } from "types";
 
-const CHIP_ICON_COLOR = "#16151c";
 
 const TagsInput = ({
   value,
@@ -17,6 +17,7 @@ const TagsInput = ({
   value: TagType[];
   onChange: (tags: TagType[]) => void;
 }) => {
+  const COLORS = useThemeColors();
   const db = useDb();
   const { data: allTags } = useLiveQuery(tagsQuery(db));
 
@@ -82,7 +83,7 @@ const TagsInput = ({
     <View className="relative">
       {showSuggestions && (
         <View
-          className="absolute bottom-full left-0 right-0 z-50 mb-1 rounded-md border border-gray-700 bg-background"
+          className="absolute bottom-full left-0 right-0 z-50 mb-1 rounded-md border border-border bg-card"
           style={{ elevation: 8 }}
         >
           <ScrollView
@@ -93,7 +94,7 @@ const TagsInput = ({
               <Pressable
                 key={tag.id}
                 onPress={() => handleSuggestionPress(tag)}
-                className="px-3 py-2 active:bg-secondary-light"
+                className="px-3 py-2 active:bg-elevated"
               >
                 <Text className="font-sans text-text-primary text-sm">
                   {tag.name}
@@ -104,7 +105,7 @@ const TagsInput = ({
         </View>
       )}
 
-      <View className="min-h-14 flex-row flex-wrap content-center items-center gap-2 rounded-md border border-gray-700 bg-background p-2">
+      <View className="min-h-14 flex-row flex-wrap content-center items-center gap-2 rounded-md border border-border bg-card p-2">
         {value.map((tag, index) => (
           <Badge
             key={`${tag.id ?? "local"}-${tag.name}`}
@@ -121,7 +122,7 @@ const TagsInput = ({
                 family="Feather"
                 name="x"
                 size={16}
-                color={CHIP_ICON_COLOR}
+                color={COLORS.textPrimary}
               />
             </Pressable>
           </Badge>
@@ -133,7 +134,7 @@ const TagsInput = ({
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
           placeholder={value.length === 0 ? "Add a tag..." : ""}
-          placeholderTextColor="#8c8c9c"
+          placeholderTextColor={COLORS.textSecondary}
           className="min-w-20 flex-1 p-0 font-sans text-base text-text-primary"
           autoCapitalize="none"
           autoCorrect={false}

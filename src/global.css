@@ -12,95 +12,70 @@
   --font-sans-bold: "PlusJakartaSans-Bold";
   --font-sans-extrabold: "PlusJakartaSans-ExtraBold";
 
-  --color-border: hsl(var(--border));
-  --color-input: hsl(var(--input));
-  --color-ring: hsl(var(--ring));
-
-  --color-foreground: hsl(var(--foreground));
-
-  --color-primary-foreground: hsl(var(--primary-foreground));
-  --color-secondary: hsl(var(--secondary));
-  --color-secondary-foreground: hsl(var(--secondary-foreground));
-  --color-destructive: hsl(var(--destructive));
-  --color-destructive-foreground: hsl(var(--destructive-foreground));
-  --color-muted: hsl(var(--muted));
-  --color-muted-foreground: hsl(var(--muted-foreground));
-  --color-accent: hsl(var(--accent));
-  --color-accent-foreground: hsl(var(--accent-foreground));
-  --color-popover: hsl(var(--popover));
-  --color-popover-foreground: hsl(var(--popover-foreground));
-  --color-card: hsl(var(--card));
-  --color-card-foreground: hsl(var(--card-foreground));
-
-  --color-primary: #6c5dd3;
-  --color-primary-dark: #5647b8;
-  --color-primary-light: #e4e1fb;
-
-  --color-secondary: #ffc93c;
-  --color-secondary-light: #fff3d1;
-
-  --color-accent-mint: #2fd3a6;
-  --color-accent-mint-light: #dff9ef;
-
-  --color-accent-coral: #ff6584;
-  --color-accent-coral-light: #ffe3e8;
-
-  --color-background: #ffffff;
-  --color-surface: #f7f7fb;
-
-  --color-dark: #16151c;
-
-  --color-text-primary: var(--color-dark);
-  --color-text-secondary: #8c8c9c;
-
-  --color-border: #ececf4;
-
-  --color-success: #2fd3a6;
-  --color-warning: #ffc93c;
-  --color-danger: #dc3545;
-}
-:root {
-  --background: 0 0% 100%;
-  --foreground: 240 10% 3.9%;
-  --card: 0 0% 100%;
-  --card-foreground: 240 10% 3.9%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 240 10% 3.9%;
-  --primary: 240 5.9% 10%;
-  --primary-foreground: 0 0% 98%;
-  --secondary: 240 4.8% 95.9%;
-  --secondary-foreground: 240 5.9% 10%;
-  --muted: 240 4.8% 95.9%;
-  --muted-foreground: 240 3.8% 46.1%;
-  --accent: 240 4.8% 95.9%;
-  --accent-foreground: 240 5.9% 10%;
-  --destructive: 0 84.2% 60.2%;
-  --destructive-foreground: 0 0% 98%;
-  --border: 240 5.9% 90%;
-  --input: 240 5.9% 90%;
-  --ring: 240 5.9% 10%;
+  --color-background: #faf9f6;
+  --color-foreground: #171717;
+  --color-card: #ffffff;
+  --color-card-foreground: #171717;
+  --color-elevated: #f2f0eb;
+  --color-popover: #ffffff;
+  --color-popover-foreground: #171717;
+  --color-primary: #c87932;
+  --color-primary-pressed: #a96024;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #f2f0eb;
+  --color-secondary-foreground: #171717;
+  --color-accent: #f2f0eb;
+  --color-accent-foreground: #171717;
+  --color-muted: #f2f0eb;
+  --color-muted-foreground: #6f6d68;
+  --color-text-primary: #171717;
+  --color-text-secondary: #6f6d68;
+  --color-border: #e4e1db;
+  --color-input: #e4e1db;
+  --color-ring: #c87932;
+  --color-success: #3e8b63;
+  --color-danger: #c95555;
+  --color-destructive: #c95555;
+  --color-destructive-foreground: #ffffff;
 }
 
-.dark:root {
-  --background: 240 10% 3.9%;
-  --foreground: 0 0% 98%;
-  --card: 240 10% 3.9%;
-  --card-foreground: 0 0% 98%;
-  --popover: 240 10% 3.9%;
-  --popover-foreground: 0 0% 98%;
-  --primary: 0 0% 98%;
-  --primary-foreground: 240 5.9% 10%;
-  --secondary: 240 3.7% 15.9%;
-  --secondary-foreground: 0 0% 98%;
-  --muted: 240 3.7% 15.9%;
-  --muted-foreground: 240 5% 64.9%;
-  --accent: 240 3.7% 15.9%;
-  --accent-foreground: 0 0% 98%;
-  --destructive: 0 62.8% 30.6%;
-  --destructive-foreground: 0 0% 98%;
-  --border: 240 3.7% 15.9%;
-  --input: 240 3.7% 15.9%;
-  --ring: 240 4.9% 83.9%;
+/*
+ * Dark mode. Two rules for react-native-css:
+ * 1. Values must be written directly on the --color-* tokens. Aliasing them to
+ *    other variables (--color-x: var(--x)) makes the compiler bake one value
+ *    into each class at build time, so the class never switches scheme.
+ * 2. This block must stay AFTER the light values in @theme: the compiler
+ *    reverses source order, so this way the dark entry is tested first.
+ * Keep in sync with LIGHT_COLORS / DARK_COLORS in constants/theme.ts.
+ */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-background: #0d0d0f;
+    --color-foreground: #f5f5f2;
+    --color-card: #17171a;
+    --color-card-foreground: #f5f5f2;
+    --color-elevated: #222226;
+    --color-popover: #17171a;
+    --color-popover-foreground: #f5f5f2;
+    --color-primary: #f2a65a;
+    --color-primary-pressed: #d9893d;
+    --color-primary-foreground: #0d0d0f;
+    --color-secondary: #222226;
+    --color-secondary-foreground: #f5f5f2;
+    --color-accent: #222226;
+    --color-accent-foreground: #f5f5f2;
+    --color-muted: #222226;
+    --color-muted-foreground: #a6a6a0;
+    --color-text-primary: #f5f5f2;
+    --color-text-secondary: #a6a6a0;
+    --color-border: #2c2c30;
+    --color-input: #2c2c30;
+    --color-ring: #f2a65a;
+    --color-success: #6fcf97;
+    --color-danger: #e57373;
+    --color-destructive: #e57373;
+    --color-destructive-foreground: #0d0d0f;
+  }
 }
 
 @utility screen-x-padding {
@@ -125,7 +100,7 @@
   }
 
   .btn-label-white {
-    @apply text-base font-sans-semibold text-white;
+    @apply text-base font-sans-semibold text-primary-foreground;
   }
 
   .btn-label-dark {

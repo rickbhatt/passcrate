@@ -8,11 +8,11 @@ import {
 } from "react-native-reanimated";
 
 export const PASSWORD_STRENGTH_INDICATOR = [
-  { label: "Very Weak", color: "bg-red-500" },
-  { label: "Weak", color: "bg-orange-500" },
-  { label: "Fair", color: "bg-yellow-500" },
-  { label: "Good", color: "bg-sky-500" },
-  { label: "Strong", color: "bg-green-500" },
+  { label: "Very Weak", color: "bg-danger" },
+  { label: "Weak", color: "bg-danger/60" },
+  { label: "Fair", color: "bg-primary/60" },
+  { label: "Good", color: "bg-primary" },
+  { label: "Strong", color: "bg-success" },
 ];
 
 const options = {

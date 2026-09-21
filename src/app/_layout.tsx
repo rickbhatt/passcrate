@@ -1,4 +1,4 @@
-import { COLORS } from "@/constants/theme";
+import { useThemeColors } from "@/constants/theme";
 import { CryptoProvider, useCrypto } from "@/contexts/CryptoContext";
 import { getDrizzleInstance, initialiseDb } from "@/db/client";
 import { useDrizzleStudioDev } from "@/db/hooks/useDrizzleStudioDev";
@@ -25,6 +25,7 @@ SplashScreen.preventAutoHideAsync();
 const DB_NAME = process.env.EXPO_PUBLIC_DB_NAME ?? "passcrate.db";
 
 const Layout = () => {
+  const COLORS = useThemeColors();
   useDrizzleStudioDev();
   const db = useSQLiteContext();
   const { appState, setAppState } = useCrypto();

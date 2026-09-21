@@ -1,6 +1,6 @@
 import DynamicIcon from "@/components/dynamic-icon";
 import { Button } from "@/components/ui/button";
-import { COLORS } from "@/constants/theme";
+import { useThemeColors } from "@/constants/theme";
 import { useDb } from "@/db/hooks/useDb";
 import { favouritePasswords } from "@/db/queries/passwords.queries";
 import { useLiveQuery } from "drizzle-orm/expo-sqlite";
@@ -19,16 +19,17 @@ const FavouritePasswordRow = ({
   title: string;
   username: string | null;
 }) => {
+  const COLORS = useThemeColors();
   const router = useRouter();
 
   return (
     <Button
       variant="ghost"
       onPress={() => router.push(`/password/detail/${id}`)}
-      className="h-auto w-full flex-row items-center gap-x-3 rounded-2xl bg-amber-50 p-3"
+      className="h-auto w-full flex-row items-center gap-x-3 rounded-2xl bg-primary/10 p-3"
     >
-      <View className="h-11 w-11 items-center justify-center rounded-xl bg-amber-100">
-        <Text className="text-lg font-sans-bold text-amber-600">
+      <View className="h-11 w-11 items-center justify-center rounded-xl bg-primary/10">
+        <Text className="text-lg font-sans-bold text-primary">
           {title.charAt(0).toUpperCase()}
         </Text>
       </View>
@@ -40,7 +41,7 @@ const FavouritePasswordRow = ({
           {title}
         </Text>
         {username ? (
-          <Text className="text-sm text-amber-600" numberOfLines={1}>
+          <Text className="text-sm text-primary" numberOfLines={1}>
             {username}
           </Text>
         ) : null}
@@ -49,13 +50,14 @@ const FavouritePasswordRow = ({
         family="Feather"
         name="chevron-right"
         size={18}
-        color="#d97706"
+        color={COLORS.primary}
       />
     </Button>
   );
 };
 
 const FavouritePasswords = () => {
+  const COLORS = useThemeColors();
   const router = useRouter();
   const db = useDb();
   const { data: passwords } = useLiveQuery(favouritePasswords({ db }));
@@ -66,15 +68,15 @@ const FavouritePasswords = () => {
   const visiblePasswords = passwords.slice(0, FAVOURITE_DISPLAY_LIMIT);
 
   return (
-    <View className="gap-y-4 rounded-3xl border border-border bg-background p-5 shadow-sm shadow-black/5">
+    <View className="gap-y-4 rounded-3xl border border-border bg-card p-5 shadow-sm shadow-black/5">
       {/* header */}
       <View className="flex-row items-center gap-x-3">
-        <View className="h-14 w-14 items-center justify-center rounded-2xl bg-amber-100">
+        <View className="h-14 w-14 items-center justify-center rounded-2xl bg-primary/10">
           <DynamicIcon
             family="MaterialCommunityIcons"
             name="star"
             size={24}
-            color="#f59e0b"
+            color={COLORS.primary}
           />
         </View>
         <View className="flex-1 gap-y-0.5">

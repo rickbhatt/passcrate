@@ -61,7 +61,7 @@ const FormInput = ({
         <View className="form-group">
           <Text className="form-label">
             {label}
-            {isRequired && <Text className="text-red-500"> *</Text>}
+            {isRequired && <Text className="text-danger"> *</Text>}
           </Text>
           <Input
             ref={ref}
@@ -70,8 +70,8 @@ const FormInput = ({
             secureTextEntry={secureTextEntry}
             placeholder={placeholder}
             className={cn(
-              "h-14 text-base bg-background",
-              error && "border-red-500",
+              "h-14 text-base bg-card",
+              error && "border-danger",
               className,
             )}
             autoCapitalize={autoCapitalize}
@@ -84,7 +84,7 @@ const FormInput = ({
             keyboardType={keyboardType}
           />
           {error && (
-            <Text className="text-red-500 text-sm mt-1">{error}</Text>
+            <Text className="text-danger text-sm mt-1">{error}</Text>
           )}
         </View>
       );

@@ -15,28 +15,28 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default: cn(
-          "bg-primary border border-primary",
-          Platform.select({ web: "hover:bg-primary/90" }),
+          "bg-primary border border-primary active:bg-primary-pressed active:border-primary-pressed",
+          Platform.select({ web: "hover:bg-primary-pressed" }),
         ),
         destructive: cn(
-          "bg-danger active:bg-danger/90 shadow-sm shadow-black/5",
+          "bg-danger active:bg-danger/90",
           Platform.select({
             web: "hover:bg-danger/90 focus-visible:ring-danger/20",
           }),
         ),
         outline: cn(
-          "border border-black bg-transparent",
+          "border border-border bg-transparent active:bg-elevated",
           Platform.select({
             web: "hover:bg-accent",
           }),
         ),
         secondary: cn(
-          "bg-secondary active:bg-secondary/80 shadow-sm shadow-black/5",
+          "bg-secondary border border-border active:bg-secondary/80",
           Platform.select({ web: "hover:bg-secondary/80" }),
         ),
-        mint: cn(
-          "bg-accent-mint active:bg-accent-mint/90 shadow-sm shadow-black/5",
-          Platform.select({ web: "hover:bg-accent-mint/90" }),
+        success: cn(
+          "bg-success active:bg-success/90",
+          Platform.select({ web: "hover:bg-success/90" }),
         ),
         ghost: cn(
           "bg-transparent",
@@ -76,13 +76,13 @@ const buttonTextVariants = cva(
     variants: {
       variant: {
         default: "text-primary-foreground",
-        destructive: "text-white",
+        destructive: "text-destructive-foreground",
         outline: cn(
           "group-active:text-accent-foreground",
           Platform.select({ web: "group-hover:text-accent-foreground" }),
         ),
         secondary: "text-secondary-foreground",
-        mint: "text-white",
+        success: "text-primary-foreground",
         ghost: "group-active:text-accent-foreground",
         link: cn(
           "text-primary group-active:underline",

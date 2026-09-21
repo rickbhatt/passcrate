@@ -80,7 +80,7 @@ const CrateById = () => {
               <Button
                 variant="ghost"
                 onPress={() => router.push(`/password/detail/${password.id}`)}
-                className="h-auto w-full flex-col items-start justify-start gap-y-2 rounded-xl border border-primary-dark bg-primary-light p-4"
+                className="h-auto w-full flex-col items-start justify-start gap-y-2 rounded-xl border border-primary-pressed bg-primary/10 p-4"
               >
                 <Text
                   className="text-base font-sans-semibold text-text-primary"
@@ -91,7 +91,7 @@ const CrateById = () => {
                 {tags.length > 0 ? (
                   <View className="flex-row flex-wrap gap-1.5">
                     {tags.map((tag) => (
-                      <Badge key={tag.id} className="bg-white border-primary">
+                      <Badge key={tag.id} className="bg-card border-primary">
                         <UiText className="text-xs text-text-primary">
                           {tag.name}
                         </UiText>

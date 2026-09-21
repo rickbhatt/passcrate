@@ -2,7 +2,7 @@ import DynamicIcon from "@/components/dynamic-icon";
 import EmptyState from "@/components/empty-state";
 import ScreenHeader from "@/components/screen-header";
 import { Button } from "@/components/ui/button";
-import { COLORS } from "@/constants/theme";
+import { useThemeColors } from "@/constants/theme";
 import { useDb } from "@/db/hooks/useDb";
 import { allFavouritePasswords } from "@/db/queries/passwords.queries";
 import { useLiveQuery } from "drizzle-orm/expo-sqlite";
@@ -10,6 +10,7 @@ import { Stack, useRouter } from "expo-router";
 import { FlatList, Text, View } from "react-native";
 
 const FavouritePasswordsScreen = () => {
+  const COLORS = useThemeColors();
   const router = useRouter();
   const db = useDb();
   const { data: passwords } = useLiveQuery(allFavouritePasswords({ db }));
@@ -31,10 +32,10 @@ const FavouritePasswordsScreen = () => {
           <Button
             variant="ghost"
             onPress={() => router.push(`/password/detail/${item.id}`)}
-            className="h-auto w-full flex-row items-center gap-x-3 rounded-2xl bg-surface p-3"
+            className="h-auto w-full flex-row items-center gap-x-3 rounded-2xl bg-elevated p-3"
           >
-            <View className="h-11 w-11 items-center justify-center rounded-xl bg-amber-100">
-              <Text className="text-lg font-sans-bold text-amber-600">
+            <View className="h-11 w-11 items-center justify-center rounded-xl bg-primary/10">
+              <Text className="text-lg font-sans-bold text-primary">
                 {item.title.charAt(0).toUpperCase()}
               </Text>
             </View>

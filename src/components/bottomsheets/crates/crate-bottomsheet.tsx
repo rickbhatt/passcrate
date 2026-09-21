@@ -183,7 +183,7 @@ const CrateBottomSheet = ({
                       "text-base",
                       isActive
                         ? "font-sans-semibold text-text-primary"
-                        : "font-sans text-[#5c5c6b]",
+                        : "font-sans text-text-secondary",
                     )}
                   >
                     {label}
@@ -218,8 +218,8 @@ const CrateBottomSheet = ({
                       className={cn(
                         "rounded-full border px-4 py-2",
                         isSelected
-                          ? "border-[#e0ac1f] bg-secondary"
-                          : "border-dark bg-secondary-light",
+                          ? "border-primary bg-primary/10"
+                          : "border-border bg-elevated",
                       )}
                     >
                       <Text

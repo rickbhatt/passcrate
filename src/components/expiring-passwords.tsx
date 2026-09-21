@@ -1,6 +1,6 @@
 import DynamicIcon from "@/components/dynamic-icon";
 import { Button } from "@/components/ui/button";
-import { COLORS } from "@/constants/theme";
+import { useThemeColors } from "@/constants/theme";
 import { useDb } from "@/db/hooks/useDb";
 import { expiringPasswords } from "@/db/queries/passwords.queries";
 import { cn } from "@/lib/utils";
@@ -21,6 +21,7 @@ const ExpiringPasswordCard = ({
   title: string;
   daysRemaining: number;
 }) => {
+  const COLORS = useThemeColors();
   const router = useRouter();
   const isUrgent = daysRemaining <= URGENT_DAYS_THRESHOLD;
 
@@ -30,7 +31,7 @@ const ExpiringPasswordCard = ({
       onPress={() => router.push(`/password/detail/${id}`)}
       className={cn(
         "h-auto w-28 flex-col items-start justify-start gap-y-2 rounded-2xl p-3",
-        isUrgent ? "bg-red-50" : "bg-orange-50",
+        isUrgent ? "bg-danger/10" : "bg-primary/10",
       )}
     >
       <View className="w-full flex-row items-center justify-between gap-x-1">
@@ -44,7 +45,7 @@ const ExpiringPasswordCard = ({
           family="Feather"
           name="chevron-right"
           size={14}
-          color={isUrgent ? "#dc2626" : "#ea580c"}
+          color={isUrgent ? COLORS.danger : COLORS.primary}
         />
       </View>
       <View className="flex-row items-center gap-x-1">
@@ -52,12 +53,12 @@ const ExpiringPasswordCard = ({
           family="Feather"
           name="clock"
           size={12}
-          color={isUrgent ? "#dc2626" : "#ea580c"}
+          color={isUrgent ? COLORS.danger : COLORS.primary}
         />
         <Text
           className={cn(
             "text-xs font-sans-semibold",
-            isUrgent ? "text-red-600" : "text-orange-600",
+            isUrgent ? "text-danger" : "text-primary",
           )}
         >
           {daysRemaining} {daysRemaining === 1 ? "day" : "days"}
@@ -68,6 +69,7 @@ const ExpiringPasswordCard = ({
 };
 
 const ExpiringPasswords = () => {
+  const COLORS = useThemeColors();
   const router = useRouter();
   const db = useDb();
   const { data: passwords } = useLiveQuery(expiringPasswords({ db }));
@@ -75,15 +77,15 @@ const ExpiringPasswords = () => {
   if (!passwords || passwords.length === 0) return null;
 
   return (
-    <View className="gap-y-4 rounded-3xl border border-border bg-background p-5 shadow-sm shadow-black/5">
+    <View className="gap-y-4 rounded-3xl border border-border bg-card p-5 shadow-sm shadow-black/5">
       {/* header */}
       <View className="flex-row items-center gap-x-3">
-        <View className="h-14 w-14 items-center justify-center rounded-2xl bg-orange-100">
+        <View className="h-14 w-14 items-center justify-center rounded-2xl bg-primary/10">
           <DynamicIcon
             family="MaterialCommunityIcons"
             name="calendar-clock"
             size={24}
-            color="#f97316"
+            color={COLORS.primary}
           />
         </View>
         <View className="flex-1 gap-y-0.5">

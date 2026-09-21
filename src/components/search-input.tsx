@@ -1,6 +1,6 @@
 import DynamicIcon from "@/components/dynamic-icon";
 import { Input } from "@/components/ui/input";
-import { COLORS } from "@/constants/theme";
+import { useThemeColors } from "@/constants/theme";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { Pressable, View } from "react-native";
@@ -26,6 +26,7 @@ const SearchInput = ({
   className,
   autoFocus = false,
 }: SearchInputProps) => {
+  const COLORS = useThemeColors();
   const [text, setText] = useState(value);
 
   // Keep local text in sync when the parent resets/changes the value externally.

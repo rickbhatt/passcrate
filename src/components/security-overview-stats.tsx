@@ -1,5 +1,5 @@
 import DynamicIcon from "@/components/dynamic-icon";
-import { COLORS } from "@/constants/theme";
+import { useThemeColors } from "@/constants/theme";
 import { useSecurityOverview } from "@/hooks/useSecurityOverview";
 import { cn } from "@/lib/utils";
 import * as Haptics from "expo-haptics";
@@ -48,6 +48,7 @@ const StatCard = ({
 );
 
 const SecurityOverviewStats = () => {
+  const COLORS = useThemeColors();
   const router = useRouter();
   const {
     weakCount,
@@ -59,15 +60,15 @@ const SecurityOverviewStats = () => {
   } = useSecurityOverview();
 
   return (
-    <View className="gap-y-4 rounded-3xl border border-border bg-background p-5 shadow-sm shadow-black/5">
+    <View className="gap-y-4 rounded-3xl border border-border bg-card p-5 shadow-sm shadow-black/5">
       {/* header */}
       <View className="flex-row items-center gap-x-3">
-        <View className="h-14 w-14 items-center justify-center rounded-2xl bg-orange-100">
+        <View className="h-14 w-14 items-center justify-center rounded-2xl bg-primary/10">
           <DynamicIcon
             family="MaterialCommunityIcons"
             name="shield-check-outline"
             size={26}
-            color="#f97316"
+            color={COLORS.primary}
           />
         </View>
         <View className="flex-1 gap-y-0.5">
@@ -88,14 +89,14 @@ const SecurityOverviewStats = () => {
               family="Feather"
               name="alert-triangle"
               size={18}
-              color="#ffffff"
+              color={COLORS.primaryForeground}
             />
           }
           value={compromisedCount}
           label="Compromised"
-          cardClassName="bg-red-50"
-          iconWrapClassName="bg-red-500"
-          valueClassName="text-red-600"
+          cardClassName="bg-danger/10"
+          iconWrapClassName="bg-danger"
+          valueClassName="text-danger"
         />
         <StatCard
           icon={
@@ -103,14 +104,14 @@ const SecurityOverviewStats = () => {
               family="MaterialCommunityIcons"
               name="shield-alert-outline"
               size={20}
-              color="#ffffff"
+              color={COLORS.primaryForeground}
             />
           }
           value={weakCount}
           label="Weak"
-          cardClassName="bg-orange-50"
-          iconWrapClassName="bg-orange-500"
-          valueClassName="text-orange-600"
+          cardClassName="bg-primary/10"
+          iconWrapClassName="bg-primary"
+          valueClassName="text-primary"
         />
         <StatCard
           icon={
@@ -118,14 +119,14 @@ const SecurityOverviewStats = () => {
               family="Feather"
               name="refresh-cw"
               size={18}
-              color="#ffffff"
+              color={COLORS.primaryForeground}
             />
           }
           value={reusedCount}
           label="Reused"
-          cardClassName="bg-primary-light"
-          iconWrapClassName="bg-primary"
-          valueClassName="text-primary"
+          cardClassName="bg-elevated"
+          iconWrapClassName="bg-text-secondary"
+          valueClassName="text-text-secondary"
         />
         <StatCard
           icon={
@@ -133,14 +134,14 @@ const SecurityOverviewStats = () => {
               family="MaterialCommunityIcons"
               name="shield-check-outline"
               size={20}
-              color="#ffffff"
+              color={COLORS.primaryForeground}
             />
           }
           value={safeCount}
           label="Safe"
-          cardClassName="bg-accent-mint-light"
-          iconWrapClassName="bg-green-500"
-          valueClassName="text-green-600"
+          cardClassName="bg-success/10"
+          iconWrapClassName="bg-success"
+          valueClassName="text-success"
         />
       </View>
 
@@ -156,14 +157,14 @@ const SecurityOverviewStats = () => {
         <View
           className={cn(
             "h-11 w-11 items-center justify-center rounded-full",
-            isSecure ? "bg-green-500" : "bg-orange-500",
+            isSecure ? "bg-success" : "bg-primary",
           )}
         >
           <DynamicIcon
             family="Feather"
             name={isSecure ? "check" : "alert-circle"}
             size={18}
-            color="#ffffff"
+            color={COLORS.primaryForeground}
           />
         </View>
         <View className="flex-1 gap-y-0.5">

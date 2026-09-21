@@ -1,3 +1,4 @@
+import { useThemeColors } from "@/constants/theme";
 import ConfirmDialog from "@/components/confirm-dialog";
 import DynamicIcon from "@/components/dynamic-icon";
 import ScreenHeader from "@/components/screen-header";
@@ -56,6 +57,7 @@ const DetailLinkField = ({
 );
 
 const PasswordDetail = () => {
+  const COLORS = useThemeColors();
   const { id } = useLocalSearchParams<{ id: string }>();
 
   const db = useDb();
@@ -136,7 +138,7 @@ const PasswordDetail = () => {
           <View className="flex-row gap-x-3">
             {/* favourite */}
             <Button
-              variant={password?.isFavourite ? "mint" : "secondary"}
+              variant={password?.isFavourite ? "success" : "secondary"}
               size="icon"
               onPress={handleToggleFavourite}
               className="h-14 w-14 rounded-full"
@@ -144,7 +146,7 @@ const PasswordDetail = () => {
               <DynamicIcon
                 family="FontAwesome6"
                 name="star"
-                color={password?.isFavourite ? "white" : "black"}
+                color={password?.isFavourite ? COLORS.primaryForeground : COLORS.textPrimary}
               />
             </Button>
             {/* delete */}
@@ -154,7 +156,7 @@ const PasswordDetail = () => {
               onPress={() => setIsDeleteDialogOpen(true)}
               className="h-14 w-14 rounded-full"
             >
-              <DynamicIcon family="FontAwesome6" name="trash" color="white" />
+              <DynamicIcon family="FontAwesome6" name="trash" color={COLORS.primaryForeground} />
             </Button>
             {/* edit */}
             <Button
@@ -163,7 +165,7 @@ const PasswordDetail = () => {
               onPress={() => router.push(`/password/edit/${id}`)}
               className="h-14 w-14 rounded-full"
             >
-              <DynamicIcon family="FontAwesome6" name="pen" color="black" />
+              <DynamicIcon family="FontAwesome6" name="pen" color={COLORS.textPrimary} />
             </Button>
           </View>
         </View>
@@ -191,12 +193,11 @@ const PasswordDetail = () => {
               <DynamicIcon
                 family="FontAwesome6"
                 name={isPasswordVisible ? "eye-slash" : "eye"}
-                color="black"
                 size={18}
               />
             </Button>
             <Button
-              variant="mint"
+              variant="secondary"
               size="icon"
               onPress={handleCopyPassword}
               className="h-11 w-11 min-h-0 rounded-full"
@@ -204,7 +205,6 @@ const PasswordDetail = () => {
               <DynamicIcon
                 family="FontAwesome6"
                 name="copy"
-                color="white"
                 size={18}
               />
             </Button>

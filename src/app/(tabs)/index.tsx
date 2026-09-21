@@ -17,7 +17,7 @@ const Home = () => {
       <Button
         variant="ghost"
         onPress={() => router.push("/search")}
-        className="h-14 justify-start rounded-md border border-gray-700 bg-background px-3"
+        className="h-14 justify-start rounded-md border border-border bg-card px-3"
       >
         <View className="flex-1" pointerEvents="none">
           <SearchInput
