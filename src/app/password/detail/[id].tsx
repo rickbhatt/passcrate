@@ -4,14 +4,18 @@ import ScreenHeader from "@/components/screen-header";
 import { Button } from "@/components/ui/button";
 import { useCrypto } from "@/contexts/CryptoContext";
 import { useDb } from "@/db/hooks/useDb";
-import { deletePassword } from "@/db/mutations/passwords.mutation";
+import {
+  deletePassword,
+  incrementAccessCount,
+  toggleFavourite,
+} from "@/db/mutations/passwords.mutation";
 import { passwordById } from "@/db/queries/passwords.queries";
 import { decrypt } from "@/lib/crypto";
 import { formatDateTime } from "@/lib/utils";
 import { useLiveQuery } from "drizzle-orm/expo-sqlite";
 import * as Clipboard from "expo-clipboard";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Linking, Pressable, Text, View } from "react-native";
 import { toast } from "sonner-native";
 
@@ -68,9 +72,27 @@ const PasswordDetail = () => {
 
   const password = data?.[0];
 
+  useEffect(() => {
+    if (!id) return;
+    incrementAccessCount({ db, id }).catch((error) => {
+      console.error("🚀 ~ PasswordDetail access increment ~ error", error);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
+
   const getDecryptedPassword = () => {
     if (!password || !derivedKey) return null;
     return decrypt(password.encryptedPassword, derivedKey);
+  };
+
+  const handleToggleFavourite = async () => {
+    if (!password) return;
+    try {
+      await toggleFavourite({ db, id, isFavourite: !password.isFavourite });
+    } catch (error) {
+      console.error("🚀 ~ handleToggleFavourite ~ error", error);
+      toast.error("Failed to update favourite");
+    }
   };
 
   const handleDelete = async () => {
@@ -112,6 +134,19 @@ const PasswordDetail = () => {
         <View className="flex-row justify-end">
           {/* button container */}
           <View className="flex-row gap-x-3">
+            {/* favourite */}
+            <Button
+              variant={password?.isFavourite ? "mint" : "secondary"}
+              size="icon"
+              onPress={handleToggleFavourite}
+              className="h-14 w-14 rounded-full"
+            >
+              <DynamicIcon
+                family="FontAwesome6"
+                name="star"
+                color={password?.isFavourite ? "white" : "black"}
+              />
+            </Button>
             {/* delete */}
             <Button
               variant="destructive"

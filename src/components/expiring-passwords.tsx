@@ -90,9 +90,9 @@ const ExpiringPasswords = () => {
           <Text className="text-xl font-sans-bold text-text-primary">
             Expiring Soon
           </Text>
-          <Text className="text-sm font-sans-semibold text-text-secondary">
+          {/* <Text className="text-sm font-sans-semibold text-text-secondary">
             Passwords that need to be updated
-          </Text>
+          </Text> */}
         </View>
         <Button
           variant="ghost"

@@ -1,10 +1,11 @@
 import { crates, passwordTags, passwords, tags } from "@/db/schema";
 import { Db } from "@/db/types";
 import { addDays } from "date-fns";
-import { and, asc, eq, gte, isNotNull, like, lte, or } from "drizzle-orm";
+import { and, asc, desc, eq, gte, isNotNull, like, lte, or } from "drizzle-orm";
 
 const EXPIRING_PASSWORDS_LIMIT = 5;
 const EXPIRING_WITHIN_DAYS = 30;
+const FAVOURITE_PASSWORDS_LIMIT = 5;
 
 const allPasswords = ({ db }: { db: Db }) => {
   return db.select().from(passwords).orderBy(asc(passwords.title));
@@ -57,7 +58,32 @@ const passwordsByCrateId = ({ db, crateId }: { db: Db; crateId: string }) => {
     .select()
     .from(passwords)
     .where(eq(passwords.crateId, crateId))
-    .orderBy(asc(passwords.title));
+    .orderBy(desc(passwords.accessCount), asc(passwords.title));
+};
+
+const favouritePasswords = ({ db }: { db: Db }) => {
+  return db
+    .select({
+      id: passwords.id,
+      title: passwords.title,
+      username: passwords.username,
+    })
+    .from(passwords)
+    .where(eq(passwords.isFavourite, true))
+    .orderBy(desc(passwords.accessCount), asc(passwords.title))
+    .limit(FAVOURITE_PASSWORDS_LIMIT);
+};
+
+const allFavouritePasswords = ({ db }: { db: Db }) => {
+  return db
+    .select({
+      id: passwords.id,
+      title: passwords.title,
+      username: passwords.username,
+    })
+    .from(passwords)
+    .where(eq(passwords.isFavourite, true))
+    .orderBy(desc(passwords.accessCount), asc(passwords.title));
 };
 
 const passwordById = ({ db, id }: { db: Db; id: string }) => {
@@ -109,8 +135,10 @@ const passwordsBySearch = ({ db, query }: { db: Db; query: string }) => {
 
 export {
   allExpiringPasswords,
+  allFavouritePasswords,
   allPasswords,
   expiringPasswords,
+  favouritePasswords,
   passwordById,
   passwordsByCrateId,
   passwordsBySearch,

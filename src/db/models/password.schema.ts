@@ -28,6 +28,10 @@ export const passwords = sqliteTable("passwords", {
   }),
   expiryDays: integer("expiry_days"),
   expiresAt: integer("expires_at", { mode: "timestamp" }),
+  isFavourite: integer("is_favourite", { mode: "boolean" })
+    .notNull()
+    .default(false),
+  accessCount: integer("access_count").notNull().default(0),
   createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
   updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
 });

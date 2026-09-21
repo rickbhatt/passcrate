@@ -1,4 +1,5 @@
 import ExpiringPasswords from "@/components/expiring-passwords";
+import FavouritePasswords from "@/components/favourite-passwords";
 import SearchInput from "@/components/search-input";
 import SecurityOverviewStats from "@/components/security-overview-stats";
 import { Button } from "@/components/ui/button";
@@ -11,7 +12,7 @@ const Home = () => {
   return (
     <ScrollView
       className="main"
-      contentContainerClassName="gap-y-4 pb-offset-32"
+      contentContainerClassName="gap-y-4 pb-safe-offset-32"
     >
       <Button
         variant="ghost"
@@ -29,6 +30,7 @@ const Home = () => {
 
       <SecurityOverviewStats />
       <ExpiringPasswords />
+      <FavouritePasswords />
     </ScrollView>
   );
 };

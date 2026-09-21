@@ -74,9 +74,9 @@ const SecurityOverviewStats = () => {
           <Text className="text-xl font-sans-bold text-text-primary">
             Security Overview
           </Text>
-          <Text className="text-sm font-sans-semibold text-text-secondary">
+          {/* <Text className="text-sm font-sans-semibold text-text-secondary">
             Your password health at a glance
-          </Text>
+          </Text> */}
         </View>
       </View>
 

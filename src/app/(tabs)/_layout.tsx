@@ -172,6 +172,26 @@ const TabsLayout = () => {
           ),
         }}
       />
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: "Settings",
+          tabBarIcon: ({ focused, color, size }) => (
+            <TabIconAndLabel
+              focused={focused}
+              label="Settings"
+              icon={
+                <DynamicIcon
+                  family="Ionicons"
+                  name="settings-sharp"
+                  size={TAB_ICON_SIZE}
+                  color={focused ? ACTIVE_ICON_COLOR : INACTIVE_ICON_COLOR}
+                />
+              }
+            />
+          ),
+        }}
+      />
     </Tabs>
   );
 };

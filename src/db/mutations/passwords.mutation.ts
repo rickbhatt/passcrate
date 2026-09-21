@@ -2,7 +2,7 @@ import { passwordTags, passwords } from "@/db/schema";
 import { Db } from "@/db/types";
 import { encrypt } from "@/lib/crypto";
 import { generateUUID } from "@/lib/utils";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { PasswordFormValue } from "types";
 import { resolveTags } from "./tags.mutations";
 
@@ -112,4 +112,29 @@ const deletePassword = async ({ db, id }: { db: Db; id: string }) => {
   await db.delete(passwords).where(eq(passwords.id, id));
 };
 
-export { addPassword, deletePassword, updatePassword };
+const toggleFavourite = async ({
+  db,
+  id,
+  isFavourite,
+}: {
+  db: Db;
+  id: string;
+  isFavourite: boolean;
+}) => {
+  await db.update(passwords).set({ isFavourite }).where(eq(passwords.id, id));
+};
+
+const incrementAccessCount = async ({ db, id }: { db: Db; id: string }) => {
+  await db
+    .update(passwords)
+    .set({ accessCount: sql`${passwords.accessCount} + 1` })
+    .where(eq(passwords.id, id));
+};
+
+export {
+  addPassword,
+  deletePassword,
+  incrementAccessCount,
+  toggleFavourite,
+  updatePassword,
+};
