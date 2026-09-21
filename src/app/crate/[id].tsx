@@ -10,6 +10,11 @@ import { useLiveQuery } from "drizzle-orm/expo-sqlite";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useMemo } from "react";
 import { FlatList, Text, View } from "react-native";
+import Animated, {
+  FadeIn,
+  FadeOut,
+  LinearTransition,
+} from "react-native-reanimated";
 
 const CrateById = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -59,6 +64,7 @@ const CrateById = () => {
       />
       <FlatList
         data={passwords}
+        extraData={tagsByPasswordId}
         keyExtractor={(password) => password.id}
         className="main"
         contentContainerClassName="gap-y-4 pb-4"
@@ -66,29 +72,35 @@ const CrateById = () => {
           const tags = tagsByPasswordId.get(password.id) ?? [];
 
           return (
-            <Button
-              variant="ghost"
-              onPress={() => router.push(`/password/detail/${password.id}`)}
-              className="h-auto flex-1 flex-col items-start justify-start gap-y-2 rounded-xl border border-primary-dark bg-primary-light p-4"
+            <Animated.View
+              entering={FadeIn.duration(200)}
+              exiting={FadeOut.duration(150)}
+              layout={LinearTransition.duration(200)}
             >
-              <Text
-                className="text-base font-sans-semibold text-text-primary"
-                numberOfLines={1}
+              <Button
+                variant="ghost"
+                onPress={() => router.push(`/password/detail/${password.id}`)}
+                className="h-auto w-full flex-col items-start justify-start gap-y-2 rounded-xl border border-primary-dark bg-primary-light p-4"
               >
-                {password.title}
-              </Text>
-              {tags.length > 0 ? (
-                <View className="flex-row flex-wrap gap-1.5">
-                  {tags.map((tag) => (
-                    <Badge key={tag.id} className="bg-white border-primary">
-                      <UiText className="text-xs text-text-primary">
-                        {tag.name}
-                      </UiText>
-                    </Badge>
-                  ))}
-                </View>
-              ) : null}
-            </Button>
+                <Text
+                  className="text-base font-sans-semibold text-text-primary"
+                  numberOfLines={1}
+                >
+                  {password.title}
+                </Text>
+                {tags.length > 0 ? (
+                  <View className="flex-row flex-wrap gap-1.5">
+                    {tags.map((tag) => (
+                      <Badge key={tag.id} className="bg-white border-primary">
+                        <UiText className="text-xs text-text-primary">
+                          {tag.name}
+                        </UiText>
+                      </Badge>
+                    ))}
+                  </View>
+                ) : null}
+              </Button>
+            </Animated.View>
           );
         }}
       />
