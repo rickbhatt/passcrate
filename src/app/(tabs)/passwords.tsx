@@ -66,7 +66,7 @@ const PasswordsHeader = ({
               family="FontAwesome6"
               name="trash"
               size={16}
-              color="#FFFFFF"
+              color={COLORS.primaryForeground}
             />
           </Button>
         </>
@@ -211,7 +211,7 @@ const Passwords = () => {
                         family="Feather"
                         name="check"
                         size={14}
-                        color="#FFFFFF"
+                        color={COLORS.primaryForeground}
                       />
                     ) : null}
                   </View>

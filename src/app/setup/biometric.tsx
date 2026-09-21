@@ -95,10 +95,10 @@ const SetupBiometric = () => {
     <View className="flex-1 flex-col items-center bg-background screen-x-padding pt-safe gap-y-3">
       <View className="flex-col items-center mt-10 gap-y-1">
         <Image source={image.fingerPrint} className="size-40" />
-        <Text className="font-sans-bold text-2xl">Setup Biometric</Text>
+        <Text className="font-sans-bold text-2xl text-text-primary">Setup Biometric</Text>
       </View>
       <View className="flex-col mt-5 w-full gap-y-3">
-        <Text className="font-sans-bold text-base">
+        <Text className="font-sans-bold text-base text-text-primary">
           If you don't enable biometric authentication, you'll need to enter
           your master password every time you open the app. Enabling biometrics
           lets you unlock the app using your fingerprint or face instead.

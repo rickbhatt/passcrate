@@ -3,7 +3,7 @@ import { Text, View } from "react-native";
 const Settings = () => {
   return (
     <View>
-      <Text>Settings</Text>
+      <Text className="text-text-primary">Settings</Text>
     </View>
   );
 };

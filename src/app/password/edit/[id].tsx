@@ -9,6 +9,7 @@ import { validatePasswordForm } from "@/lib/validation/password";
 import { useLiveQuery } from "drizzle-orm/expo-sqlite";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
+import { useThemeColors } from "@/constants/theme";
 import { ActivityIndicator, View } from "react-native";
 import { toast } from "sonner-native";
 import {
@@ -18,6 +19,7 @@ import {
 } from "types";
 
 const EditPassword = () => {
+  const COLORS = useThemeColors();
   const { id } = useLocalSearchParams<{ id: string }>();
 
   const db = useDb();
@@ -106,7 +108,7 @@ const EditPassword = () => {
   if (!formData) {
     return (
       <View className="flex-1 items-center justify-center bg-background">
-        <ActivityIndicator />
+        <ActivityIndicator color={COLORS.primary} />
       </View>
     );
   }

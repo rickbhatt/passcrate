@@ -1,11 +1,5 @@
-import { Text, View } from "react-native";
-
 const DummyCreatePassword = () => {
-  return (
-    <View>
-      <Text>DummyCreate</Text>
-    </View>
-  );
+  return null;
 };
 
 export default DummyCreatePassword;

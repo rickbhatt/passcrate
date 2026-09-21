@@ -92,7 +92,7 @@
   }
 
   .base-para {
-    @apply font-sans text-base;
+    @apply font-sans text-base text-text-primary;
   }
 
   .btn-active {
@@ -120,15 +120,15 @@
   }
 
   .h2-bold {
-    @apply text-2xl font-sans-bold;
+    @apply text-2xl font-sans-bold text-text-primary;
   }
 
   .h3-bold {
-    @apply text-xl font-sans-bold;
+    @apply text-xl font-sans-bold text-text-primary;
   }
 
   .base-bold {
-    @apply text-base font-sans-bold;
+    @apply text-base font-sans-bold text-text-primary;
   }
 
   .base-paragraph {

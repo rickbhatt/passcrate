@@ -30,9 +30,9 @@ const PasswordStrengthMeter = ({
           style={animatedStyle}
         />
       </View>
-      <Text className="font-sans-semibold text-sm">{label}</Text>
+      <Text className="font-sans-semibold text-sm text-text-primary">{label}</Text>
       {hintText && (
-        <Text className="font-sans-semibold text-sm">{hintText}</Text>
+        <Text className="font-sans-semibold text-sm text-text-primary">{hintText}</Text>
       )}
     </Animated.View>
   );

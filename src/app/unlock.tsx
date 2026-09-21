@@ -153,14 +153,14 @@ const UnlockScreen = () => {
       </View>
       {isBiometricEnabled === true && (
         <View className="flex-col gap-y-4 items-center w-full mt-5">
-          <Text className="h2-bold">PassCrate Locked</Text>
+          <Text className="h2-bold text-text-primary">PassCrate Locked</Text>
           <Button
             variant="outline"
             className="w-full"
             disabled={isBusy}
             onPress={() => biometricAuthRef.current()}
           >
-            <Text className="font-sans-semibold text-base">Unlock</Text>
+            <Text className="font-sans-semibold text-base text-text-primary">Unlock</Text>
           </Button>
         </View>
       )}
