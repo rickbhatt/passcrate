@@ -88,6 +88,7 @@ const Layout = () => {
           <Stack.Screen name="security-overview" />
           <Stack.Screen name="expiring-passwords" />
           <Stack.Screen name="favourite-passwords" />
+          <Stack.Screen name="setting" />
         </Stack.Protected>
       </Stack>
       <Toaster position="top-center" richColors />
