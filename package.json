@@ -10,6 +10,7 @@
     "@rn-primitives/dialog": "^1.5.2",
     "@rn-primitives/portal": "^1.5.2",
     "@rn-primitives/slot": "^1.5.2",
+    "@rn-primitives/switch": "^1.5.2",
     "@zxcvbn-ts/core": "^4.1.2",
     "@zxcvbn-ts/language-en": "^4.1.1",
     "class-variance-authority": "^0.7.1",

@@ -69,7 +69,7 @@ const SetupBiometric = () => {
         );
 
         setPendingMasterPassword(null);
-        await updateBiometric(db);
+        await updateBiometric({ db, enabled: true });
         toast.success("Biometric enabled successfully");
         setAppState("unlocked");
       } catch (error) {

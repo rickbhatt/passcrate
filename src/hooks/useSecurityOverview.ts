@@ -56,9 +56,18 @@ export const useSecurityOverview = () => {
     let isCancelled = false;
 
     const computeCategories = async () => {
-      const decryptedPasswords = passwords.map((password) =>
-        decrypt(password.encryptedPassword, derivedKey),
-      );
+      // Right after a master password change, the live query and derivedKey
+      // update on different renders, so one pass can pair the new key with
+      // old ciphertexts (or vice versa). Skip that pass and keep the last
+      // result; the next render with a matching pair recomputes.
+      let decryptedPasswords: string[];
+      try {
+        decryptedPasswords = passwords.map((password) =>
+          decrypt(password.encryptedPassword, derivedKey),
+        );
+      } catch {
+        return;
+      }
 
       const occurrences = decryptedPasswords.reduce<Map<string, number>>(
         (map, value) => map.set(value, (map.get(value) ?? 0) + 1),
