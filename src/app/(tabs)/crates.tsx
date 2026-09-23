@@ -15,7 +15,7 @@ import { useMemo, useState } from "react";
 import { FlatList, Image, Text, View } from "react-native";
 import { toast } from "sonner-native";
 
-const PasswordsHeader = ({
+const CratesHeader = ({
   value,
   onChangeText,
   isSelectionMode,
@@ -82,7 +82,7 @@ const PasswordsHeader = ({
   );
 };
 
-const Passwords = () => {
+const Crates = () => {
   const COLORS = useThemeColors();
   const db = useDb();
   const router = useRouter();
@@ -158,7 +158,7 @@ const Passwords = () => {
         columnWrapperStyle={{ gap: 16 }}
         contentContainerClassName="flex-grow gap-y-4 pb-safe-offset-32"
         ListHeaderComponent={
-          <PasswordsHeader
+          <CratesHeader
             value={search}
             onChangeText={setSearch}
             isSelectionMode={isSelectionMode}
@@ -244,4 +244,4 @@ const Passwords = () => {
   );
 };
 
-export default Passwords;
+export default Crates;

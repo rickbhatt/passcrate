@@ -47,13 +47,14 @@ const TabsLayout = () => {
         header: ({ options }) => <ScreenHeader title={options.title ?? ""} />,
         tabBarShowLabel: false,
         tabBarItemStyle: {
+          flex: 1,
           height: TAB_BAR_CONTENT_HEIGHT,
           justifyContent: "center",
-          alignItems: "center",
+          alignItems: "stretch",
           marginTop: 5,
         },
         tabBarIconStyle: {
-          width: 150,
+          width: "100%",
           height: 58,
           alignItems: "center",
           justifyContent: "center",
@@ -121,8 +122,8 @@ const TabsLayout = () => {
               label="Home"
               icon={
                 <DynamicIcon
-                  family="Octicons"
-                  name="home-fill"
+                  family="Ionicons"
+                  name={focused ? "home" : "home-outline"}
                   size={TAB_ICON_SIZE}
                   color={focused ? ACTIVE_ICON_COLOR : INACTIVE_ICON_COLOR}
                 />
@@ -145,8 +146,8 @@ const TabsLayout = () => {
             <TabIconAndLabel
               icon={
                 <DynamicIcon
-                  family="MaterialIcons"
-                  name="create"
+                  family="Ionicons"
+                  name={focused ? "create" : "create-outline"}
                   size={TAB_ICON_SIZE}
                   color={focused ? ACTIVE_ICON_COLOR : INACTIVE_ICON_COLOR}
                 />
@@ -158,17 +159,17 @@ const TabsLayout = () => {
         }}
       />
       <Tabs.Screen
-        name="passwords"
+        name="crates"
         options={{
-          title: "Passwords",
+          title: "Crates",
           tabBarIcon: ({ focused, color, size }) => (
             <TabIconAndLabel
               focused={focused}
-              label="Passwords"
+              label="Crates"
               icon={
                 <DynamicIcon
-                  family="FontAwesome6"
-                  name="lock"
+                  family="Ionicons"
+                  name={focused ? "lock-closed" : "lock-closed-outline"}
                   size={TAB_ICON_SIZE}
                   color={focused ? ACTIVE_ICON_COLOR : INACTIVE_ICON_COLOR}
                 />
@@ -188,7 +189,7 @@ const TabsLayout = () => {
               icon={
                 <DynamicIcon
                   family="Ionicons"
-                  name="settings-sharp"
+                  name={focused ? "settings" : "settings-outline"}
                   size={TAB_ICON_SIZE}
                   color={focused ? ACTIVE_ICON_COLOR : INACTIVE_ICON_COLOR}
                 />
