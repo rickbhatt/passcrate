@@ -13,6 +13,7 @@ const Home = () => {
     <ScrollView
       className="main"
       contentContainerClassName="gap-y-4 pb-safe-offset-32"
+      showsVerticalScrollIndicator={false}
     >
       <Button
         variant="ghost"
