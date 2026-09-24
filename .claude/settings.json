@@ -60,7 +60,11 @@
       "Read(//d/Projects/nativewind/dist/**)",
       "Bash(grep -n \"^/\\\\*\\\\|^@media\\\\|^:root\" src/global.css)",
       "WebFetch(domain:www.nativewind.dev)",
-      "Bash(rg --pcre2 -U -n -o '<\\(Text|UiText|TextInput\\)\\\\b\\(?:\\(?!font-\\)[^>]\\)*>' --glob '*.tsx' .)"
+      "Bash(rg --pcre2 -U -n -o '<\\(Text|UiText|TextInput\\)\\\\b\\(?:\\(?!font-\\)[^>]\\)*>' --glob '*.tsx' .)",
+      "Bash(cd \"d:/Projects/RN/passcrate/node_modules/@react-native-google-signin/google-signin\" && cat package.json | grep '\"version\"' && ls lib/typescript/src 2>/dev/null; ls; ls ../../../.env* 2>/dev/null)",
+      "Read(//d//**)",
+      "Bash(keytool -list -v -keystore debug.keystore -alias androiddebugkey -storepass android -keypass android)",
+      "WebFetch(domain:react-native-google-signin.github.io)"
     ]
   }
 }
