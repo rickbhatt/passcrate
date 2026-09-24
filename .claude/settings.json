@@ -64,7 +64,11 @@
       "Bash(cd \"d:/Projects/RN/passcrate/node_modules/@react-native-google-signin/google-signin\" && cat package.json | grep '\"version\"' && ls lib/typescript/src 2>/dev/null; ls; ls ../../../.env* 2>/dev/null)",
       "Read(//d//**)",
       "Bash(keytool -list -v -keystore debug.keystore -alias androiddebugkey -storepass android -keypass android)",
-      "WebFetch(domain:react-native-google-signin.github.io)"
+      "WebFetch(domain:react-native-google-signin.github.io)",
+      "Bash(rm src/app/setup/restore.tsx)",
+      "Bash(git checkout *)",
+      "Bash(cd \"C:/Users/ritankar/.claude/projects/d--Projects-RN-passcrate/memory\" *)",
+      "Read(//c/Users/ritankar/.claude/projects/d--Projects-RN-passcrate/memory/**)"
     ]
   }
 }

@@ -8,6 +8,7 @@ import m0003 from './0003_puzzling_ezekiel_stane.sql';
 import m0004 from './0004_rename_folders_to_crates.sql';
 import m0005 from './0005_lonely_major_mapleleaf.sql';
 import m0006 from './0006_glossy_marvel_zombies.sql';
+import m0007 from './0007_silky_inertia.sql';
 
   export default {
     journal,
@@ -18,7 +19,8 @@ m0002,
 m0003,
 m0004,
 m0005,
-m0006
+m0006,
+m0007
     }
   }
   

@@ -20,6 +20,14 @@ const SettingLayout = () => {
         name="back-and-restore"
         options={{ title: "Backup & Restore" }}
       />
+      {/* Only Restore or Skip may leave this screen: no back button or swipe. */}
+      <Stack.Screen
+        name="restore"
+        options={{
+          header: () => <ScreenHeader title="Restore Backup" />,
+          gestureEnabled: false,
+        }}
+      />
     </Stack>
   );
 };

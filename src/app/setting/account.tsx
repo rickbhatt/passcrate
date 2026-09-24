@@ -3,25 +3,32 @@ import DynamicIcon from "@/components/dynamic-icon";
 import { Button } from "@/components/ui/button";
 import { useThemeColors } from "@/constants/theme";
 import { useCrypto } from "@/contexts/CryptoContext";
+import { useDb } from "@/db/hooks/useDb";
 import {
-  configureGoogleSignIn,
-  DRIVE_APPDATA_SCOPE,
+  deleteCloudAccount,
+  upsertCloudAccount,
+} from "@/db/mutations/backup.mutations";
+import {
+  findRemoteBackup,
+  hasUnadoptedRemoteBackup,
+} from "@/lib/backup/backup";
+import { openRestoreScreen } from "@/lib/backup/restore-route";
+import {
   getGoogleUser,
+  signInWithGoogle,
+  signOutGoogle,
   type GoogleUser,
 } from "@/lib/google-auth";
-import {
-  GoogleSignin,
-  isErrorWithCode,
-  isSuccessResponse,
-  statusCodes,
-} from "@react-native-google-signin/google-signin";
 import { Image } from "expo-image";
+import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { ActivityIndicator, Platform, Text, View } from "react-native";
+import { ActivityIndicator, Text, View } from "react-native";
 import { toast } from "sonner-native";
 
 const AccountScreen = () => {
   const COLORS = useThemeColors();
+  const db = useDb();
+  const router = useRouter();
   const { setBiometricAuthInProgress } = useCrypto();
 
   const [user, setUser] = useState<GoogleUser | null>(null);
@@ -48,50 +55,44 @@ const AccountScreen = () => {
     };
   }, []);
 
+  /**
+   * Like WhatsApp: if this account already has a backup this phone hasn't
+   * restored or skipped, offer it right away. Best-effort: a Drive error
+   * doesn't undo the connect (backups re-check before overwriting anyway).
+   */
+  const offerRestore = async (email: string) => {
+    try {
+      if (!(await hasUnadoptedRemoteBackup(db))) return;
+      const file = await findRemoteBackup();
+      if (file) openRestoreScreen(router, file, email);
+    } catch (error) {
+      console.error("offerRestore: FAILED", error);
+    }
+  };
+
   const connect = async () => {
     setIsBusy(true);
     // The Google account picker backgrounds the app; don't lock the vault.
     setBiometricAuthInProgress(true);
 
     try {
-      configureGoogleSignIn();
-      if (Platform.OS === "android") {
-        await GoogleSignin.hasPlayServices({
-          showPlayServicesUpdateDialog: true,
-        });
+      let connectedUser: GoogleUser | null;
+      try {
+        connectedUser = await signInWithGoogle();
+      } finally {
+        setBiometricAuthInProgress(false);
       }
+      if (!connectedUser) return;
 
-      const response = await GoogleSignin.signIn();
-      if (!isSuccessResponse(response)) return;
-
-      // The user can untick Drive access on the consent screen.
-      if (!response.data.scopes.includes(DRIVE_APPDATA_SCOPE)) {
-        const scoped = await GoogleSignin.addScopes({
-          scopes: [DRIVE_APPDATA_SCOPE],
-        });
-        if (!scoped || !isSuccessResponse(scoped)) {
-          await GoogleSignin.signOut();
-          toast.error("Drive access is required for backups");
-          return;
-        }
-      }
-
-      setUser(response.data.user);
+      upsertCloudAccount({ db, email: connectedUser.email });
+      setUser(connectedUser);
       toast.success("Google account connected");
+
+      await offerRestore(connectedUser.email);
     } catch (error) {
       console.error(error);
-      if (isErrorWithCode(error)) {
-        switch (error.code) {
-          case statusCodes.IN_PROGRESS:
-            return;
-          case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
-            toast.error("Google Play Services is unavailable or outdated");
-            return;
-        }
-      }
-      toast.error("Couldn't connect your Google account. Please try again.");
+      toast.error("Something went wrong. Please try again.");
     } finally {
-      setBiometricAuthInProgress(false);
       setIsBusy(false);
     }
   };
@@ -101,9 +102,8 @@ const AccountScreen = () => {
     setIsBusy(true);
 
     try {
-      // Revoke so the next connect asks for Drive access again.
-      await GoogleSignin.revokeAccess().catch(() => null);
-      await GoogleSignin.signOut();
+      await signOutGoogle();
+      deleteCloudAccount(db);
       setUser(null);
       toast.success("Google account disconnected");
     } catch (error) {
