@@ -8,11 +8,11 @@ import {
 } from "react-native-reanimated";
 
 export const PASSWORD_STRENGTH_INDICATOR = [
-  { label: "Very Weak", color: "bg-red-500" },
-  { label: "Weak", color: "bg-orange-500" },
-  { label: "Fair", color: "bg-yellow-500" },
-  { label: "Good", color: "bg-sky-500" },
-  { label: "Strong", color: "bg-green-500" },
+  { label: "Very Weak", color: "bg-[#991b1b]" },
+  { label: "Weak", color: "bg-[#ef4444]" },
+  { label: "Fair", color: "bg-[#eab308]" },
+  { label: "Good", color: "bg-[#3b82f6]" },
+  { label: "Strong", color: "bg-[#22c55e]" },
 ];
 
 const options = {
@@ -22,6 +22,11 @@ const options = {
   translations: zxcvbnEnPackage.translations,
 };
 const zxcvbn = new ZxcvbnFactory(options);
+
+export const WEAK_SCORE_THRESHOLD = 1;
+
+export const scorePasswordStrength = (password: string) =>
+  zxcvbn.check(password).score;
 
 export const usePasswordStrength = (password: string) => {
   const [score, setScore] = useState(0);

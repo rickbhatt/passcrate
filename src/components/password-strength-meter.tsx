@@ -24,15 +24,15 @@ const PasswordStrengthMeter = ({
       entering={FadeInDown.duration(250)}
       exiting={FadeOutUp.duration(150)}
     >
-      <View className="h-3 rounded-full bg-gray-200 w-full">
+      <View className="h-3 rounded-full bg-elevated w-full">
         <Animated.View
           className={cn("h-3 rounded-full", color)}
           style={animatedStyle}
         />
       </View>
-      <Text className="font-sans-semibold text-sm">{label}</Text>
+      <Text className="font-sans-semibold text-sm text-text-primary">{label}</Text>
       {hintText && (
-        <Text className="font-sans-semibold text-sm">{hintText}</Text>
+        <Text className="font-sans-semibold text-sm text-text-primary">{hintText}</Text>
       )}
     </Animated.View>
   );

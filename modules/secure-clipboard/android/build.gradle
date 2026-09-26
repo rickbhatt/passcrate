@@ -1,0 +1,19 @@
+plugins {
+  id 'com.android.library'
+  id 'expo-module-gradle-plugin'
+}
+
+group = 'expo.modules.secureclipboard'
+version = '1.0.0'
+
+android {
+  namespace "expo.modules.secureclipboard"
+  defaultConfig {
+    versionCode 1
+    versionName '1.0.0'
+  }
+}
+
+dependencies {
+  implementation "androidx.work:work-runtime:2.10.1"
+}

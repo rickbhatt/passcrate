@@ -45,6 +45,9 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     },
     predictiveBackGestureEnabled: false,
     package: getUniqueIdentifier(),
+    // Encrypted Google Drive backups are the only backup. Android Auto Backup
+    // would silently restore the DB on reinstall and skip the restore prompt.
+    allowBackup: false,
   },
   plugins: [
     "expo-router",
@@ -56,9 +59,9 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         image: "./assets/images/splash-icon-dark.png",
         imageWidth: 200,
         resizeMode: "contain",
-        backgroundColor: "#ffffff",
+        backgroundColor: "#FAF9F6",
         dark: {
-          backgroundColor: "#000000",
+          backgroundColor: "#0D0D0F",
           image: "./assets/images/splash-icon-light.png",
         },
       },
@@ -86,6 +89,15 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       },
     ],
     "@react-native-google-signin/google-signin",
+    [
+      "expo-notifications",
+      {
+        // Android draws only the alpha channel: must be white on transparent.
+        icon: "./assets/images/notification-icon.png",
+        color: "#C87932",
+        defaultChannel: "backup",
+      },
+    ],
   ],
   experiments: {
     typedRoutes: true,

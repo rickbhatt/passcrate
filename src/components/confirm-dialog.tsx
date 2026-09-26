@@ -39,7 +39,7 @@ const ConfirmDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-surface">
+      <DialogContent className="bg-elevated">
         <DialogHeader>
           <DialogTitle className="h2-bold">{title}</DialogTitle>
           <DialogDescription className="base-paragraph">

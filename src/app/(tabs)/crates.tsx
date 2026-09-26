@@ -4,7 +4,7 @@ import EmptyState from "@/components/empty-state";
 import SearchInput from "@/components/search-input";
 import { Button } from "@/components/ui/button";
 import image from "@/constants/images";
-import { COLORS } from "@/constants/theme";
+import { useThemeColors } from "@/constants/theme";
 import { useDb } from "@/db/hooks/useDb";
 import { deleteCrates } from "@/db/mutations/crates.mutations";
 import { cratesQuery } from "@/db/queries/crates.queries";
@@ -15,7 +15,7 @@ import { useMemo, useState } from "react";
 import { FlatList, Image, Text, View } from "react-native";
 import { toast } from "sonner-native";
 
-const PasswordsHeader = ({
+const CratesHeader = ({
   value,
   onChangeText,
   isSelectionMode,
@@ -29,57 +29,61 @@ const PasswordsHeader = ({
   selectedCount: number;
   onCancelSelection: () => void;
   onDeletePress: () => void;
-}) => (
-  <View
-    className={cn(
-      "mb-4 h-14 flex-row items-center gap-x-2 rounded-md bg-background px-3",
-      !isSelectionMode && "border border-gray-700",
-    )}
-  >
-    {isSelectionMode ? (
-      <>
-        <Button
-          variant="ghost"
-          size="icon"
-          onPress={onCancelSelection}
-          className="h-10 w-10 min-h-0"
-        >
-          <DynamicIcon
-            family="Feather"
-            name="x"
-            size={20}
-            color={COLORS.textSecondary}
-          />
-        </Button>
-        <Text className="flex-1 font-sans-semibold text-base text-text-primary">
-          {selectedCount} selected
-        </Text>
-        <Button
-          variant="destructive"
-          size="icon"
-          onPress={onDeletePress}
-          className="h-10 w-10 min-h-0 rounded-full"
-        >
-          <DynamicIcon
-            family="FontAwesome6"
-            name="trash"
-            size={16}
-            color="white"
-          />
-        </Button>
-      </>
-    ) : (
-      <SearchInput
-        value={value}
-        onChangeText={onChangeText}
-        placeholder="Search crates..."
-        className="flex-1"
-      />
-    )}
-  </View>
-);
+}) => {
+  const COLORS = useThemeColors();
+  return (
+    <View
+      className={cn(
+        "mb-4 h-14 flex-row items-center gap-x-2 rounded-md bg-card px-3",
+        !isSelectionMode && "border border-border",
+      )}
+    >
+      {isSelectionMode ? (
+        <>
+          <Button
+            variant="ghost"
+            size="icon"
+            onPress={onCancelSelection}
+            className="h-10 w-10 min-h-0"
+          >
+            <DynamicIcon
+              family="Feather"
+              name="x"
+              size={20}
+              color={COLORS.textSecondary}
+            />
+          </Button>
+          <Text className="flex-1 font-sans-semibold text-base text-text-primary">
+            {selectedCount} selected
+          </Text>
+          <Button
+            variant="destructive"
+            size="icon"
+            onPress={onDeletePress}
+            className="h-10 w-10 min-h-0 rounded-full"
+          >
+            <DynamicIcon
+              family="FontAwesome6"
+              name="trash"
+              size={16}
+              color={COLORS.primaryForeground}
+            />
+          </Button>
+        </>
+      ) : (
+        <SearchInput
+          value={value}
+          onChangeText={onChangeText}
+          placeholder="Search crates..."
+          className="flex-1"
+        />
+      )}
+    </View>
+  );
+};
 
-const Passwords = () => {
+const Crates = () => {
+  const COLORS = useThemeColors();
   const db = useDb();
   const router = useRouter();
   const { data: crates } = useLiveQuery(cratesQuery(db));
@@ -154,7 +158,7 @@ const Passwords = () => {
         columnWrapperStyle={{ gap: 16 }}
         contentContainerClassName="flex-grow gap-y-4 pb-safe-offset-32"
         ListHeaderComponent={
-          <PasswordsHeader
+          <CratesHeader
             value={search}
             onChangeText={setSearch}
             isSelectionMode={isSelectionMode}
@@ -187,7 +191,7 @@ const Passwords = () => {
               onLongPress={() => handleCrateLongPress(crate.id)}
               className={cn(
                 "h-auto flex-1 flex-col items-center gap-y-2 rounded-md",
-                isSelected && "bg-primary-light",
+                isSelected && "bg-primary/10",
               )}
             >
               <View className="relative">
@@ -198,7 +202,7 @@ const Passwords = () => {
                 {isSelectionMode ? (
                   <View
                     className={cn(
-                      "absolute right-1 top-1 h-6 w-6 items-center justify-center rounded-full border-2 border-white",
+                      "absolute right-1 top-1 h-6 w-6 items-center justify-center rounded-full border-2 border-card",
                       isSelected ? "bg-primary" : "bg-black/30",
                     )}
                   >
@@ -207,7 +211,7 @@ const Passwords = () => {
                         family="Feather"
                         name="check"
                         size={14}
-                        color="white"
+                        color={COLORS.primaryForeground}
                       />
                     ) : null}
                   </View>
@@ -240,4 +244,4 @@ const Passwords = () => {
   );
 };
 
-export default Passwords;
+export default Crates;

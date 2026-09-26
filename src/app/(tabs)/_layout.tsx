@@ -1,6 +1,6 @@
 import DynamicIcon from "@/components/dynamic-icon";
 import ScreenHeader from "@/components/screen-header";
-import { COLORS } from "@/constants/theme";
+import { useThemeColors } from "@/constants/theme";
 import { cn } from "@/lib/utils";
 import * as Haptics from "expo-haptics";
 import { Tabs, useRouter } from "expo-router";
@@ -9,9 +9,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const TAB_ICON_SIZE = 24;
 const TAB_BAR_CONTENT_HEIGHT = 72;
-
-const ACTIVE_ICON_COLOR = COLORS.primary;
-const INACTIVE_ICON_COLOR = COLORS.textSecondary;
 
 const TabIconAndLabel = ({
   focused,
@@ -25,7 +22,12 @@ const TabIconAndLabel = ({
   <View className={cn("flex-col items-center justify-center")}>
     {icon}
     {label && (
-      <Text className={cn("text-xs font-sans-bold", focused && "text-primary")}>
+      <Text
+        className={cn(
+          "text-xs font-sans-bold",
+          focused ? "text-primary" : "text-text-secondary",
+        )}
+      >
         {label}
       </Text>
     )}
@@ -33,6 +35,9 @@ const TabIconAndLabel = ({
 );
 
 const TabsLayout = () => {
+  const COLORS = useThemeColors();
+  const ACTIVE_ICON_COLOR = COLORS.primary;
+  const INACTIVE_ICON_COLOR = COLORS.textSecondary;
   const router = useRouter();
   const insets = useSafeAreaInsets();
 
@@ -42,13 +47,14 @@ const TabsLayout = () => {
         header: ({ options }) => <ScreenHeader title={options.title ?? ""} />,
         tabBarShowLabel: false,
         tabBarItemStyle: {
+          flex: 1,
           height: TAB_BAR_CONTENT_HEIGHT,
           justifyContent: "center",
-          alignItems: "center",
+          alignItems: "stretch",
           marginTop: 5,
         },
         tabBarIconStyle: {
-          width: 150,
+          width: "100%",
           height: 58,
           alignItems: "center",
           justifyContent: "center",
@@ -64,7 +70,7 @@ const TabsLayout = () => {
           paddingHorizontal: 8,
           borderTopWidth: 1,
           borderTopColor: COLORS.border,
-          backgroundColor: COLORS.background,
+          backgroundColor: COLORS.card,
 
           // iOS shadow
           shadowColor: "#000",
@@ -116,8 +122,8 @@ const TabsLayout = () => {
               label="Home"
               icon={
                 <DynamicIcon
-                  family="Octicons"
-                  name="home-fill"
+                  family="Ionicons"
+                  name={focused ? "home" : "home-outline"}
                   size={TAB_ICON_SIZE}
                   color={focused ? ACTIVE_ICON_COLOR : INACTIVE_ICON_COLOR}
                 />
@@ -140,8 +146,8 @@ const TabsLayout = () => {
             <TabIconAndLabel
               icon={
                 <DynamicIcon
-                  family="MaterialIcons"
-                  name="create"
+                  family="Ionicons"
+                  name={focused ? "create" : "create-outline"}
                   size={TAB_ICON_SIZE}
                   color={focused ? ACTIVE_ICON_COLOR : INACTIVE_ICON_COLOR}
                 />
@@ -153,17 +159,37 @@ const TabsLayout = () => {
         }}
       />
       <Tabs.Screen
-        name="passwords"
+        name="crates"
         options={{
-          title: "Passwords",
+          title: "Crates",
           tabBarIcon: ({ focused, color, size }) => (
             <TabIconAndLabel
               focused={focused}
-              label="Passwords"
+              label="Crates"
               icon={
                 <DynamicIcon
-                  family="FontAwesome6"
-                  name="lock"
+                  family="Ionicons"
+                  name={focused ? "lock-closed" : "lock-closed-outline"}
+                  size={TAB_ICON_SIZE}
+                  color={focused ? ACTIVE_ICON_COLOR : INACTIVE_ICON_COLOR}
+                />
+              }
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: "Settings",
+          tabBarIcon: ({ focused, color, size }) => (
+            <TabIconAndLabel
+              focused={focused}
+              label="Settings"
+              icon={
+                <DynamicIcon
+                  family="Ionicons"
+                  name={focused ? "settings" : "settings-outline"}
                   size={TAB_ICON_SIZE}
                   color={focused ? ACTIVE_ICON_COLOR : INACTIVE_ICON_COLOR}
                 />

@@ -35,6 +35,48 @@ export const decrypt = (cipherText: string, derivedKey: string): string => {
   }
 };
 
+/** AES-256-GCM over raw bytes. Output: iv(12) | authTag(16) | ciphertext. */
+export const encryptBytes = (
+  data: Uint8Array,
+  derivedKey: string,
+): Uint8Array => {
+  const iv = QuickCrypto.randomBytes(12);
+  const keyBuffer = Buffer.from(derivedKey, "hex");
+
+  const cipher = QuickCrypto.createCipheriv("aes-256-gcm", keyBuffer, iv);
+  const encrypted = Buffer.concat([
+    cipher.update(Buffer.from(data)),
+    cipher.final(),
+  ]);
+
+  return new Uint8Array(
+    Buffer.concat([Buffer.from(iv), cipher.getAuthTag(), encrypted]),
+  );
+};
+
+export const decryptBytes = (
+  data: Uint8Array,
+  derivedKey: string,
+): Uint8Array => {
+  try {
+    const buffer = Buffer.from(data);
+    const keyBuffer = Buffer.from(derivedKey, "hex");
+
+    const decipher = QuickCrypto.createDecipheriv(
+      "aes-256-gcm",
+      keyBuffer,
+      buffer.subarray(0, 12),
+    );
+    decipher.setAuthTag(buffer.subarray(12, 28));
+
+    return new Uint8Array(
+      Buffer.concat([decipher.update(buffer.subarray(28)), decipher.final()]),
+    );
+  } catch {
+    throw new Error("Invalid password or corrupted encrypted data.");
+  }
+};
+
 export const getDerivedKey = async ({
   masterPassword,
   salt,

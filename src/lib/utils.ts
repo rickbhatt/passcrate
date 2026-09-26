@@ -1,5 +1,5 @@
 import { clsx, type ClassValue } from "clsx";
-import { format } from "date-fns";
+import { format, isToday, isYesterday } from "date-fns";
 import * as ExpoCrypto from "expo-crypto";
 import * as LocalAuthentication from "expo-local-authentication";
 import { twMerge } from "tailwind-merge";
@@ -46,4 +46,30 @@ export const formatDateTime = (date: string | Date | undefined) => {
   };
 };
 
-export { checkBiometricSupport, cn, generateUUID };
+/** "Today, 12:59 pm" / "Yesterday, 12:59 pm" / "3 Sep 2026, 12:59 pm". */
+const formatBackupDate = (date: Date) => {
+  const time = format(date, "h:mm aaa");
+  if (isToday(date)) return `Today, ${time}`;
+  if (isYesterday(date)) return `Yesterday, ${time}`;
+  return `${format(date, "d MMM yyyy")}, ${time}`;
+};
+
+const formatBytes = (bytes: number) => {
+  if (bytes < 1024) return `${bytes} B`;
+  const units = ["KB", "MB", "GB"];
+  let value = bytes / 1024;
+  let unit = 0;
+  while (value >= 1024 && unit < units.length - 1) {
+    value /= 1024;
+    unit++;
+  }
+  return `${value < 10 ? value.toFixed(1) : Math.round(value)} ${units[unit]}`;
+};
+
+export {
+  checkBiometricSupport,
+  cn,
+  formatBackupDate,
+  formatBytes,
+  generateUUID,
+};

@@ -59,7 +59,7 @@ const SetupMasterPassword = () => {
     <View className="flex-1 flex-col items-center bg-background screen-x-padding pt-safe gap-y-3">
       <View className="flex-col items-center mt-10 gap-y-1">
         <Image source={image.key} className="size-40" />
-        <Text className="font-sans-bold text-2xl">Master Password</Text>
+        <Text className="font-sans-bold text-2xl text-text-primary">Master Password</Text>
       </View>
 
       <View className="flex-col mt-5 w-full gap-y-3">

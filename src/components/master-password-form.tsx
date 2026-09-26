@@ -1,8 +1,5 @@
-import DynamicIcon from "@/components/dynamic-icon";
+import PasswordInput from "@/components/password-input";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { COLORS } from "@/constants/theme";
-import { useState } from "react";
 import { Text, View } from "react-native";
 
 interface MasterPasswordFormProps {
@@ -20,41 +17,9 @@ const MasterPasswordForm = ({
   buttonLabel,
   disabled,
 }: MasterPasswordFormProps) => {
-  const [secureTextEntry, setSecureTextEntry] = useState(true);
-  const toggleSecureText = () => {
-    setSecureTextEntry((prev) => !prev);
-  };
-
   return (
     <View className="flex-col gap-y-3 self-stretch">
-      <View className="flex-row items-center rounded-md border border-black h-14 overflow-hidden">
-        <Input
-          value={value}
-          onChangeText={onChange}
-          className="flex-1 rounded-none border-0 pl-3 pr-5"
-          cursorColor="#000000"
-          secureTextEntry={secureTextEntry}
-          autoCapitalize="none"
-          autoCorrect={false}
-          spellCheck={false}
-          textContentType="newPassword"
-          placeholder="your password here..."
-          textAlignVertical="center"
-          placeholderTextColor={COLORS.textSecondary}
-        />
-        <Button
-          className="bg-background border-0 rounded-none"
-          variant="ghost"
-          onPress={toggleSecureText}
-        >
-          <DynamicIcon
-            family="Entypo"
-            name={secureTextEntry ? "eye" : "eye-with-line"}
-            size={24}
-            color={"#000000"}
-          />
-        </Button>
-      </View>
+      <PasswordInput value={value} onChange={onChange} />
       <Button onPress={onSubmit} className="py-3 w-full" disabled={disabled}>
         <Text className="btn-label-white">{buttonLabel}</Text>
       </Button>

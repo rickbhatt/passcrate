@@ -29,7 +29,7 @@ function Input({
     <Comp
       ref={ref}
       className={cn(
-        "border-gray-700 bg-background font-sans h-10 text-text-primary flex min-w-0 flex-row items-center rounded-md border p-2 text-base leading-none placeholder:text-neutral-700",
+        "border-border bg-card font-sans h-10 text-text-primary flex min-w-0 flex-row items-center rounded-md border p-2 text-base leading-none placeholder:text-text-secondary",
         props.editable === false &&
           cn(
             "opacity-50",

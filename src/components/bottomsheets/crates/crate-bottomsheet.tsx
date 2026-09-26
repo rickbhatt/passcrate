@@ -32,6 +32,7 @@
  * the keyboard appears.
  */
 
+import { useThemeColors } from "@/constants/theme";
 import EmptyState from "@/components/empty-state";
 import FormInput from "@/components/form-input";
 import { Button } from "@/components/ui/button";
@@ -87,6 +88,7 @@ const CrateBottomSheet = ({
   };
 
   const insets = useSafeAreaInsets();
+  const COLORS = useThemeColors();
   const nameInputRef = useRef<TextInput>(null);
 
   const [formData, setFormData] = useState<Partial<CrateInsertType>>({
@@ -146,6 +148,8 @@ const CrateBottomSheet = ({
     <BottomSheetModal
       ref={ref}
       snapPoints={["75%"]}
+      backgroundStyle={{ backgroundColor: COLORS.background }}
+      handleIndicatorStyle={{ backgroundColor: COLORS.border }}
       enableDynamicSizing={false}
       backdropComponent={renderBackdrop}
       bottomInset={insets.bottom}
@@ -183,7 +187,7 @@ const CrateBottomSheet = ({
                       "text-base",
                       isActive
                         ? "font-sans-semibold text-text-primary"
-                        : "font-sans text-[#5c5c6b]",
+                        : "font-sans text-text-secondary",
                     )}
                   >
                     {label}
@@ -218,8 +222,8 @@ const CrateBottomSheet = ({
                       className={cn(
                         "rounded-full border px-4 py-2",
                         isSelected
-                          ? "border-[#e0ac1f] bg-secondary"
-                          : "border-dark bg-secondary-light",
+                          ? "border-primary bg-primary/10"
+                          : "border-border bg-elevated",
                       )}
                     >
                       <Text

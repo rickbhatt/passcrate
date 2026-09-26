@@ -1,7 +1,7 @@
 import DynamicIcon from "@/components/dynamic-icon";
 import SearchInput from "@/components/search-input";
 import { Button } from "@/components/ui/button";
-import { COLORS } from "@/constants/theme";
+import { useThemeColors } from "@/constants/theme";
 import { useDb } from "@/db/hooks/useDb";
 import { passwordsBySearch } from "@/db/queries/passwords.queries";
 import { useLiveQuery } from "drizzle-orm/expo-sqlite";
@@ -17,34 +17,38 @@ const SearchHeader = ({
   value: string;
   onChangeText: (text: string) => void;
   onBackPress: () => void;
-}) => (
-  <View className="mb-2 flex-row items-center gap-x-2 pt-safe-offset-3">
-    <Button
-      variant="ghost"
-      size="icon"
-      onPress={onBackPress}
-      className="h-10 w-10 min-h-0"
-    >
-      <DynamicIcon
-        family="Feather"
-        name="chevron-left"
-        size={24}
-        color={COLORS.textPrimary}
+}) => {
+  const COLORS = useThemeColors();
+  return (
+    <View className="mb-2 flex-row items-center gap-x-2 pt-safe-offset-3">
+      <Button
+        variant="ghost"
+        size="icon"
+        onPress={onBackPress}
+        className="h-10 w-10 min-h-0"
+      >
+        <DynamicIcon
+          family="Feather"
+          name="chevron-left"
+          size={24}
+          color={COLORS.textPrimary}
+        />
+      </Button>
+      <SearchInput
+        mode="debounced"
+        minQueryLength={2}
+        value={value}
+        onChangeText={onChangeText}
+        placeholder="Search by title, tags, username......"
+        autoFocus
+        className="h-14 flex-1 rounded-md border border-border bg-card px-3"
       />
-    </Button>
-    <SearchInput
-      mode="debounced"
-      minQueryLength={2}
-      value={value}
-      onChangeText={onChangeText}
-      placeholder="Search by title, tags, username......"
-      autoFocus
-      className="h-14 flex-1 rounded-md border border-gray-700 bg-background px-3"
-    />
-  </View>
-);
+    </View>
+  );
+};
 
 const Search = () => {
+  const COLORS = useThemeColors();
   const db = useDb();
   const router = useRouter();
   const [query, setQuery] = useState("");
@@ -90,7 +94,7 @@ const Search = () => {
               {password.title}
             </Text>
             {password.username ? (
-              <Text className="text-sm text-text-secondary" numberOfLines={1}>
+              <Text className="font-sans text-sm text-text-secondary" numberOfLines={1}>
                 {password.username}
               </Text>
             ) : null}
@@ -99,7 +103,7 @@ const Search = () => {
       )}
       ListEmptyComponent={
         trimmedQuery ? (
-          <Text className="mt-4 text-center text-sm text-text-secondary">
+          <Text className="font-sans mt-4 text-center text-sm text-text-secondary">
             No results found
           </Text>
         ) : null

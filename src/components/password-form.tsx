@@ -21,7 +21,7 @@ import PasswordStrengthMeter from "@/components/password-strength-meter";
 import TagsInput from "@/components/tags-input";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { COLORS } from "@/constants/theme";
+import { useThemeColors } from "@/constants/theme";
 import { generatePassword } from "@/lib/password-generator";
 import { cn } from "@/lib/utils";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
@@ -51,6 +51,7 @@ const PasswordForm = ({
   onSubmit,
   errors = {},
 }: PasswordFormProps) => {
+  const COLORS = useThemeColors();
   const insets = useSafeAreaInsets();
 
   const crateBottomSheetRef = useRef<BottomSheetModal | null>(null);
@@ -143,13 +144,13 @@ const PasswordForm = ({
           />
           <View className="form-group">
             <Text className="form-label">
-              Password<Text className="text-red-500"> *</Text>
+              Password<Text className="text-danger"> *</Text>
             </Text>
 
             <View
               className={cn(
-                "flex-row items-center rounded-md border border-gray-700 bg-background overflow-hidden",
-                errors.password && "border-red-500",
+                "flex-row items-center rounded-md border border-border bg-card overflow-hidden",
+                errors.password && "border-danger",
               )}
             >
               <Input
@@ -159,14 +160,14 @@ const PasswordForm = ({
                 }
                 secureTextEntry={secureTextEntry}
                 placeholder="**********"
-                className="flex-1 h-14 rounded-none border-0 text-base bg-background"
+                className="flex-1 h-14 rounded-none border-0 text-base bg-card"
                 autoCapitalize="none"
                 autoCorrect={false}
                 spellCheck={false}
                 textContentType="newPassword"
               />
               <Button
-                className="bg-background border-0 rounded-none h-14"
+                className="bg-card border-0 rounded-none h-14"
                 variant="ghost"
                 onPress={toggleSecureText}
               >
@@ -178,7 +179,7 @@ const PasswordForm = ({
                 />
               </Button>
               <Button
-                className="bg-background border-0 rounded-none h-14"
+                className="bg-card border-0 rounded-none h-14"
                 variant="ghost"
                 onPress={handleGeneratePassword}
               >
@@ -192,7 +193,7 @@ const PasswordForm = ({
             </View>
 
             {errors.password && (
-              <Text className="text-red-500 text-sm mt-1">
+              <Text className="font-sans text-danger text-sm mt-1">
                 {errors.password}
               </Text>
             )}
@@ -211,16 +212,16 @@ const PasswordForm = ({
             onChange={handleFormInputOnChange}
             placeholder="https://github.com"
           />
-          <View className="form-group bg-background">
+          <View className="form-group">
             <Text className="form-label">
-              Crate<Text className="text-red-500"> *</Text>
+              Crate<Text className="text-danger"> *</Text>
             </Text>
 
             <Pressable
               onPress={handleCratePress}
               className={cn(
-                "h-14 flex-row items-center justify-start rounded-md border border-gray-700 p-2",
-                errors.crateId && "border-red-500",
+                "h-14 flex-row items-center justify-start rounded-md border border-border bg-card p-2",
+                errors.crateId && "border-danger",
               )}
             >
               <Text className="base-paragraph">
@@ -228,18 +229,18 @@ const PasswordForm = ({
               </Text>
             </Pressable>
             {errors.crateId && (
-              <Text className="text-red-500 text-sm mt-1">
+              <Text className="font-sans text-danger text-sm mt-1">
                 {errors.crateId}
               </Text>
             )}
           </View>
           <View className="form-group">
             <Text className="form-label">
-              Tags<Text className="text-red-500"> *</Text>
+              Tags<Text className="text-danger"> *</Text>
             </Text>
             <TagsInput value={value.tags ?? []} onChange={handleTagsChange} />
             {errors.tags && (
-              <Text className="text-red-500 text-sm mt-1">{errors.tags}</Text>
+              <Text className="font-sans text-danger text-sm mt-1">{errors.tags}</Text>
             )}
           </View>
           <FormInput
