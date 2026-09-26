@@ -1,8 +1,8 @@
-import { useThemeColors } from "@/constants/theme";
 import ConfirmDialog from "@/components/confirm-dialog";
 import DynamicIcon from "@/components/dynamic-icon";
 import ScreenHeader from "@/components/screen-header";
 import { Button } from "@/components/ui/button";
+import { useThemeColors } from "@/constants/theme";
 import { useCrypto } from "@/contexts/CryptoContext";
 import { useDb } from "@/db/hooks/useDb";
 import {
@@ -11,10 +11,10 @@ import {
   toggleFavourite,
 } from "@/db/mutations/passwords.mutation";
 import { passwordById } from "@/db/queries/passwords.queries";
+import { copySensitiveText } from "@/lib/clipboard";
 import { decrypt } from "@/lib/crypto";
 import { formatDateTime } from "@/lib/utils";
 import { useLiveQuery } from "drizzle-orm/expo-sqlite";
-import * as Clipboard from "expo-clipboard";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { Linking, Pressable, Text, View } from "react-native";
@@ -113,8 +113,8 @@ const PasswordDetail = () => {
       const decrypted = getDecryptedPassword();
       if (!decrypted) return;
 
-      await Clipboard.setStringAsync(decrypted);
-      toast.success("Password copied to clipboard");
+      await copySensitiveText(decrypted);
+      toast.success("Password copied");
     } catch (error) {
       console.error("🚀 ~ handleCopyPassword ~ error", error);
       toast.error("Failed to copy password");
@@ -146,7 +146,11 @@ const PasswordDetail = () => {
               <DynamicIcon
                 family="FontAwesome6"
                 name="star"
-                color={password?.isFavourite ? COLORS.primaryForeground : COLORS.textPrimary}
+                color={
+                  password?.isFavourite
+                    ? COLORS.primaryForeground
+                    : COLORS.textPrimary
+                }
               />
             </Button>
             {/* delete */}
@@ -156,7 +160,11 @@ const PasswordDetail = () => {
               onPress={() => setIsDeleteDialogOpen(true)}
               className="h-14 w-14 rounded-full"
             >
-              <DynamicIcon family="FontAwesome6" name="trash" color={COLORS.primaryForeground} />
+              <DynamicIcon
+                family="FontAwesome6"
+                name="trash"
+                color={COLORS.primaryForeground}
+              />
             </Button>
             {/* edit */}
             <Button
@@ -165,7 +173,11 @@ const PasswordDetail = () => {
               onPress={() => router.push(`/password/edit/${id}`)}
               className="h-14 w-14 rounded-full"
             >
-              <DynamicIcon family="FontAwesome6" name="pen" color={COLORS.textPrimary} />
+              <DynamicIcon
+                family="FontAwesome6"
+                name="pen"
+                color={COLORS.textPrimary}
+              />
             </Button>
           </View>
         </View>
@@ -202,11 +214,7 @@ const PasswordDetail = () => {
               onPress={handleCopyPassword}
               className="h-11 w-11 min-h-0 rounded-full"
             >
-              <DynamicIcon
-                family="FontAwesome6"
-                name="copy"
-                size={18}
-              />
+              <DynamicIcon family="FontAwesome6" name="copy" size={18} />
             </Button>
           </View>
 

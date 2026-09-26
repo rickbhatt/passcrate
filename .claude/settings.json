@@ -68,7 +68,16 @@
       "Bash(rm src/app/setup/restore.tsx)",
       "Bash(git checkout *)",
       "Bash(cd \"C:/Users/ritankar/.claude/projects/d--Projects-RN-passcrate/memory\" *)",
-      "Read(//c/Users/ritankar/.claude/projects/d--Projects-RN-passcrate/memory/**)"
+      "Read(//c/Users/ritankar/.claude/projects/d--Projects-RN-passcrate/memory/**)",
+      "PowerShell(npx tsc --noEmit)",
+      "PowerShell(npx eslint src/lib/clipboard.ts \"src/app/password/detail/[id].tsx\")",
+      "WebFetch(domain:docs.expo.dev)",
+      "PowerShell($b=\"node_modules/expo-clipboard\"; Get-Content \"$b/expo-module.config.json\"; Get-ChildItem -Recurse \"$b/android\" -File | Select-Object -ExpandProperty FullName; Get-Content \"$b/android/build.gradle\")",
+      "PowerShell($b=\"node_modules/expo-clipboard\"; Get-ChildItem $b -Force | Select-Object Name; if \\(Test-Path \"$b/tsconfig.json\"\\) { Get-Content \"$b/tsconfig.json\" }; Test-Path node_modules/expo-module-scripts; Get-Content \"$b/package.json\" | Select-String -Pattern '\"version\"|\"main\"|\"types\"|expo-module-scripts|peerDependencies')",
+      "PowerShell(node node_modules/typescript/bin/tsc --noEmit -p node_modules/expo-clipboard 2>&1)",
+      "PowerShell(node node_modules/typescript/bin/tsc --noEmit -p .; \"tsc exit: $LASTEXITCODE\"; Set-Location android; .\\\\gradlew.bat :secure-clipboard:compileDebugKotlin --quiet; \"gradle exit: $LASTEXITCODE\")",
+      "PowerShell(Get-ChildItem \"$env:USERPROFILE\\\\.gradle\\\\caches\\\\modules-2\\\\files-2.1\\\\androidx.work\" -ErrorAction SilentlyContinue | ForEach-Object { $_.Name; Get-ChildItem $_.FullName | Select-Object -ExpandProperty Name })",
+      "PowerShell(.\\\\gradlew.bat :secure-clipboard:compileDebugKotlin --quiet 2>&1 | Select-String -Pattern \"e: |FAIL\"; \"gradle exit: $LASTEXITCODE\")"
     ]
   }
 }
